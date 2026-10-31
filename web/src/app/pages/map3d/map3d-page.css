@@ -1,0 +1,60 @@
+.wide { max-width: none; }
+.tools { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; margin-bottom: 10px; }
+.grp { display: flex; flex-wrap: wrap; gap: 6px; }
+.tools .btn[aria-pressed='false'] { opacity: .55; }
+.tools .btn[aria-pressed='true'] { background: var(--azure); color: var(--sheet); border-color: var(--azure); }
+
+.stage { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; position: relative; height: min(80vh, 900px); min-height: 440px; overflow: hidden; background: #9fbad0; border: 1px solid var(--rule); touch-action: none; }
+canvas { display: block; width: 100%; height: 100%; cursor: grab; }
+canvas:active { cursor: grabbing; }
+.labels { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+.labels ::ng-deep a {
+  position: absolute; left: 0; top: 0; padding: 1px 6px; white-space: nowrap; pointer-events: auto; border-radius: 2px;
+  background: rgba(250, 248, 240, .88); color: #2a1416; font: 500 11.5px/1.45 var(--sans);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, .35); will-change: transform;
+  -webkit-user-select: none; user-select: none; -webkit-user-drag: none;
+}
+.labels ::ng-deep a.t-capital { font: 600 13.5px/1.45 var(--serif); background: rgba(252, 246, 228, .96); border: 1px solid var(--gold); }
+.labels ::ng-deep a.t-city, .labels ::ng-deep a.t-stronghold, .labels ::ng-deep a.t-industrial { font: 600 12.5px/1.45 var(--serif); }
+.labels ::ng-deep a.t-town, .labels ::ng-deep a.t-camp, .labels ::ng-deep a.t-castle { background: rgba(240, 236, 226, .8); font-size: 10.5px; }
+.labels ::ng-deep a.t-land { background: none; box-shadow: none; color: #fff; font: 500 17px/1.2 var(--caps); letter-spacing: .12em; text-shadow: 0 1px 4px rgba(0, 0, 0, .85), 0 0 12px rgba(0, 0, 0, .45); }
+.labels ::ng-deep a.t-water { background: none; box-shadow: none; color: #e4f3ff; font: italic 500 14px/1.2 var(--serif); letter-spacing: .06em; text-shadow: 0 1px 3px rgba(4, 30, 52, .9); }
+.labels ::ng-deep a.t-nature { background: none; box-shadow: none; color: #fffbe8; font: italic 500 12.5px/1.2 var(--serif); text-shadow: 0 1px 3px rgba(0, 0, 0, .85); }
+.labels ::ng-deep a:hover { background: #fff; text-decoration: none; z-index: 2; }
+.labels ::ng-deep a.t-land:hover, .labels ::ng-deep a.t-water:hover, .labels ::ng-deep a.t-nature:hover { background: none; color: #fff7d6; }
+.labels ::ng-deep a.hidden { display: none; }
+.no-labels .labels ::ng-deep a:not(.t-land) { display: none; }
+.no-lands .labels ::ng-deep a.t-land { display: none; }
+.loading { position: absolute; inset: 0; display: grid; place-items: center; color: var(--gold); font: 500 1.05rem var(--caps); background: var(--azure); }
+@media (max-width: 700px) {
+  .stage { height: 72vh; }
+  .labels ::ng-deep a { font-size: 10.5px; }
+  .labels ::ng-deep a.t-land { font-size: 14px; }
+}
+
+@media (min-width: 1280px) {
+  .layout { display: grid; grid-template-columns: minmax(0, 1fr) 18.75rem; gap: 16px; align-items: start; }
+  .layout.folded { grid-template-columns: minmax(0, 1fr) auto; }
+  .stage { height: calc(100vh - 210px); min-height: 520px; }
+}
+
+/* timeline marker, its trail and the numbered steps of a hero's route */
+.labels ::ng-deep .now {
+  position: absolute; left: 0; top: 0; width: 30px; height: 30px; border-radius: 50%; pointer-events: none; z-index: 3;
+  border: 3px solid var(--spark); background: radial-gradient(circle, var(--spark) 0 5px, var(--spark-glow) 6px);
+  box-shadow: 0 0 0 6px var(--spark-glow); animation: pulse 1.8s ease-out 1;
+}
+.labels ::ng-deep .now span {
+  position: absolute; left: 50%; bottom: calc(100% + 6px); transform: translateX(-50%); padding: 2px 8px;
+  background: #2a1416; color: #f6ece7; font: 500 12px/1.3 var(--sans); white-space: nowrap;
+}
+.labels ::ng-deep .trail {
+  position: absolute; left: 0; top: 0; width: 12px; height: 12px; border-radius: 50%; pointer-events: none;
+  border: 2px solid var(--spark); background: var(--spark-glow);
+}
+.labels ::ng-deep .jr-dot {
+  position: absolute; left: 0; top: 0; min-width: 21px; height: 21px; padding: 0 4px; border: 2px solid #fff; border-radius: 11px;
+  background: var(--wax); color: #fff; font: 700 11px/17px var(--sans); cursor: pointer; pointer-events: auto; z-index: 2;
+}
+.labels ::ng-deep .jr-dot.on { background: var(--spark); z-index: 3; }
+@keyframes pulse { from { box-shadow: 0 0 0 0 var(--spark-glow); } to { box-shadow: 0 0 0 22px transparent; } }

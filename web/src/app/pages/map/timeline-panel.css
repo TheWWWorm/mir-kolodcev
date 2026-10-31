@@ -1,0 +1,234 @@
+:host {
+  display: block;
+  min-width: 0;
+}
+.timeline {
+  margin-top: 12px;
+  padding: 22px;
+  border-radius: 5px;
+  background: var(--sheet-2);
+}
+.timeline.folded {
+  padding: 10px 22px;
+}
+.fold {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  min-height: 44px;
+  margin: -6px 0 6px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--ink-2);
+  font: 500 var(--fs-ui)/1.3 var(--sans);
+  text-align: left;
+  cursor: pointer;
+}
+.folded .fold {
+  margin: 0;
+}
+.fold:hover {
+  color: var(--ink);
+}
+/* a chevron that points down when open and right when folded */
+.chev {
+  width: 9px;
+  height: 9px;
+  margin-right: 4px;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: translateY(-2px) rotate(45deg);
+  transition: transform .15s;
+}
+.folded .chev {
+  transform: rotate(-45deg);
+}
+.jr {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+  font-size: var(--fs-ui);
+  color: var(--ink-2);
+}
+.ticks button,
+.place {
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  background: var(--sheet-2);
+  color: var(--ink);
+  font: 12.5px/1.4 var(--sans);
+  padding: 1px 9px;
+  cursor: pointer;
+}
+.row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.row input {
+  flex: 1;
+  min-width: 0;
+  accent-color: var(--spark);
+}
+.count {
+  color: var(--ink-3);
+  font-size: var(--fs-small);
+  white-space: nowrap;
+}
+.ticks {
+  position: relative;
+  height: 24px;
+  margin-top: 4px;
+}
+.ticks button {
+  position: absolute;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  font-size: 11px;
+  min-height: 30px;
+}
+.mode {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 8px 0 4px;
+}
+.mode .btn[aria-pressed='true'] {
+  background: var(--azure);
+  color: var(--sheet);
+  border-color: var(--azure);
+}
+.card {
+  margin-top: 8px;
+}
+.when {
+  color: var(--azure);
+  font: 500 var(--fs-ui)/1.4 var(--sans);
+}
+.what {
+  margin: 4px 0;
+  font-size: 1.08rem;
+  line-height: 1.5;
+  max-width: var(--measure);
+}
+.links {
+  margin: 0;
+  color: var(--ink-3);
+  font-size: var(--fs-ui);
+}
+.nav {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+.near {
+  display: none;
+  margin: 10px 0 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--rule);
+}
+.near li {
+  border-bottom: 1px solid var(--rule);
+}
+.near button {
+  display: grid;
+  grid-template-columns: 9.5em minmax(0, 1fr);
+  gap: 8px;
+  width: 100%;
+  padding: 6px 4px;
+  border: 0;
+  background: none;
+  text-align: left;
+  font-size: var(--fs-small);
+  color: var(--ink-2);
+  cursor: pointer;
+}
+.near button:hover {
+  background: var(--sheet-2);
+}
+.near .p {
+  color: var(--ink);
+}
+.near li.on button {
+  background: color-mix(in srgb, var(--spark) 14%, transparent);
+  color: var(--ink);
+  font-weight: 500;
+}
+
+/* beside the map on wide screens: a scrolling column with the slider on its own line */
+@media (min-width: 1280px) {
+  :host {
+    max-height: calc(100vh - 210px);
+    min-height: 520px;
+    overflow-y: auto;
+  }
+  :host:has(.folded) {
+    min-height: 0;
+  }
+  /* folded beside the map: a narrow vertical tab */
+  .timeline.folded {
+    padding: 16px 6px;
+  }
+  .folded .fold {
+    writing-mode: vertical-rl;
+    width: 32px;
+    min-height: 0;
+    justify-content: flex-start;
+  }
+  .folded .chev {
+    margin: 4px 0 0;
+    transform: rotate(135deg);
+  }
+  .timeline {
+    margin-top: 0;
+  }
+  .row {
+    flex-wrap: wrap;
+  }
+  .row input {
+    order: 5;
+    flex-basis: 100%;
+  }
+  .ticks {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    height: auto;
+    margin-top: 8px;
+  }
+  .ticks button {
+    position: static;
+    transform: none;
+  }
+  .near {
+    display: block;
+  }
+  .what {
+    font-size: 1.02rem;
+  }
+}
+@media (max-width: 700px) {
+  .ticks button:nth-child(even) {
+    display: none;
+  }
+}
+@media (max-width: 599px) {
+  .jr {
+    width: 100%;
+  }
+  .row {
+    flex-wrap: wrap;
+  }
+  .count {
+    white-space: normal;
+  }
+  .mode .btn {
+    font-size: 0.75rem;
+  }
+}

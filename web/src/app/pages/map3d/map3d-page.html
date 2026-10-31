@@ -1,0 +1,33 @@
+<div class="page wide">
+  <div class="crumbs"><a routerLink="/">Заглавная</a> / <a routerLink="/map">Карта</a></div>
+  <h1 class="page-title">Мир колодцев в объёме</h1>
+  <p class="page-sub">Рельеф, реки, озёра, леса и города построены по авторской карте Романа Суржикова: хребты стоят там, где на карте нарисованы горы, у каждой страны свой край — хвойные горы Дангара, зелёные равнины Олландии, сухие поля Мерганы, оливковые рощи, рисовые поля Селезии и заводские трубы Бреги в Каталии, — а между городами проложены дороги и каталийская железная дорога. Тяните левой кнопкой, чтобы двигать карту, правой — чтобы поворачивать и наклонять; колёсико приближает к точке под курсором. На телефоне: один палец двигает, два — поворачивают и приближают. Шкала времени ведёт по главам романа «Следы на воде», а маршрут показывает путь героя.</p>
+  <div class="tools ui">
+    <span class="grp">
+      <button class="btn" (click)="fly('overview')">Весь мир</button>
+      <button class="btn" (click)="fly('dangar')">Дангар</button>
+      <button class="btn" (click)="fly('ollandiya')">Олландия</button>
+      <button class="btn" (click)="fly('war')">Фронт</button>
+      <button class="btn" (click)="fly('mergana')">Мергана</button>
+      <button class="btn" (click)="fly('kataliya')">Каталия</button>
+      <button class="btn" (click)="fly('laerta')">Лаэрта</button>
+    </span>
+    <span class="grp">
+      <button class="btn" [attr.aria-pressed]="labels()" (click)="labels.set(!labels())">Города</button>
+      <button class="btn" [attr.aria-pressed]="lands()" (click)="lands.set(!lands())">Земли</button>
+      <button class="btn" [attr.aria-pressed]="forests()" (click)="toggleForests()">Леса</button>
+      <button class="btn" [attr.aria-pressed]="roads()" (click)="toggleRoads()">Дороги</button>
+      <button class="btn" [attr.aria-pressed]="painted()" (click)="togglePainted()">Рисованная карта</button>
+      <button class="btn" [attr.aria-pressed]="spin()" (click)="toggleSpin()">Облёт</button>
+    </span>
+  </div>
+  <div class="layout" [class.folded]="tl.collapsed()">
+  <div class="stage" #stage [class.no-labels]="!labels()" [class.no-lands]="!lands()">
+    <canvas #canvas></canvas>
+    <div class="labels" #labelLayer></div>
+    @if (progress() < 100 && !failed()) { <div class="loading ui"><span>Строим мир… {{ progress() }}%</span></div> }
+    @if (failed()) { <div class="loading ui">Не удалось загрузить 3D-модель. <a routerLink="/map">Открыть плоскую карту</a></div> }
+  </div>
+  <app-timeline-panel #tl (focus)="flyToPlace($event)" (placeClick)="flyToPlace($event)" />
+  </div>
+</div>

@@ -1,0 +1,96 @@
+a	b	type	label	ch
+alvaro-da-silva	fernan-gerejra	дружба	друг	0
+alvaro-da-silva	lyusil	дружба	друг	0
+fernan-gerejra	lyusil	супруги	муж	0
+rikardo-flores	alvaro-da-silva	родня	дед	0
+vinsente-ramires	alvaro-da-silva	вражда	противник по спору	1
+vinsente-ramires	fatima	служба	подручный	1
+ditrikh	milosh	служба	хозяин	2
+ditrikh	zejdvist	служба	подчинённый	2
+ditrikh	spasenie	вражда	убийца	2
+gelb	ditrikh	служба	подчинённый	2
+shpeer	ditrikh	служба	подчинённый после гибели командира	2
+alvaro-da-silva	filippe	служба	заказчик	3
+alvaro-da-silva	osa	дружба	учитель	3
+alvaro-da-silva	farmiga	служба	подчинённый	3
+osa	fernan-gerejra	союз	знакомые	3
+joriksen	red	служба	хозяин (владелец)	4
+joriksen	yakka	служба	хозяин	4
+red	brigadir	вражда	противник	4
+yakka	red	служба	конвоир	4
+alvaro-da-silva	beatris	служба	наставник	5
+emil	khuanes	служба	дворецкий	5
+ditrikh	olkha	любовь	возлюбленная	17
+ditrikh	spasenie	служба	командир	6
+klyajn	ditrikh	вражда	следователь	6
+alvaro-da-silva	karlos	служба	автор, герой книги	7
+karlos	izabel	супруги	муж	7
+alvaro-da-silva	dezerej	дружба	читатель и автор	9
+beatris	sudya-enkhal	родня	дочь	9
+ditrikh	mari	супруги	муж	10
+ditrikh	khajnts	родня	отец	10
+gizeke	ditrikh	дружба	хозяйка, опекает как сына	10
+mari	khajnts	родня	мать	10
+alvaro-da-silva	malena	любовь	бывшая любовница	11
+fatima	balboa	союз	защитница в суде	11
+red	greta	любовь	ночь	12
+alvaro-da-silva	beatris	дружба	наставник	13
+alvaro-da-silva	salvador	вражда	противник	13
+diego-ingres	alvaro-da-silva	служба	расследует дело	13
+kristobal-maduro	balboa	союз	союзник	13
+mor	osa	служба	командир	13
+salvador	kristobal-maduro	служба	охранник	13
+salvador	balboa	служба	бывший наёмник	13
+zolotoj-dukat	karlos	служба	квартирмейстер	13
+ditrikh	gizeke	служба	жилец	14
+ditrikh	varkhajt	союз	знакомый	14
+elza	joriksen	любовь	близкая	14
+elza	varkhajt	дружба	знакомая	14
+joriksen	viglaf	служба	командир	14
+lents	olkha	родня	дядя	14
+landau	joriksen	служба	начальник	15
+sokol	joriksen	союз	напарник	15
+khose-flarbo	alvaro-da-silva	дружба	знакомый	16
+katrina	lurd	супруги	жена	17
+olkha	katrina	дружба	подруга	17
+alvaro-da-silva	karlos	дружба	друг	18
+fatima	khuanes	вражда	недоброжелатель	18
+landau	brigadir	союз	покровитель	19
+mor	malysh	союз	соратница	20
+ditrikh	joriksen	служба	клиент (формально наниматель)	21
+joriksen	amir-sedoj	служба	ученик	21
+otto	joriksen	служба	ученик	21
+fatima	beatris	родня	мать	22
+karlos	red	служба	капитан	34
+karmensita-estevos	red	любовь	возлюбленная (по её словам)	34
+joriksen	red	союз	наставник	23
+klyajn	landau	вражда	противник	23
+landau	amir-sedoj	служба	подчинённый	23
+red	kara	любовь	отец ребёнка	23
+red	klyajn	дружба	друг	23
+khuanes	dezerej	дружба	врач и пациент	24
+kristobal-maduro	liess-van-khalm	служба	покровитель (посылал помощь)	24
+elza	olkha	служба	опекунша	25
+lurd	lents	вражда	оппонент	25
+khuanes	liess-van-khalm	служба	врач	26
+joriksen	klyajn	дружба	друг	27
+landau	joriksen	вражда	обманутый начальник	27
+landau	red	вражда	мучитель	27
+alvaro-da-silva	fatima	любовь	любовник	28
+fatima	dezerej	союз	политический союзник	28
+amir-sedoj	flammel	служба	начальник	29
+dezerej	alvaro-da-silva	союз	заказчик книги-предупреждения	30
+kristobal-maduro	mor	вражда	противник	30
+mor	fernan-gerejra	союз	связана с реформистами	30
+katrina	ditrikh	дружба	покровитель	31
+klyajn	otto	родня	отец	31
+klyajn	khofmajer	союз	тайный союзник	31
+rajniger	khofmajer	служба	командир	31
+rajniger	kurtsleben	служба	командир	31
+khavyer-salam	markes	союз	напарник по экскурсиям	32
+greta	pisarenok	любовь	жених (по расчёту)	33
+fatima	frej	служба	хозяйка	34
+khuanes	karlos	служба	врач	34
+liess-van-khalm	red	вражда	пленник	34
+red	karlos	вражда	враг	34
+salvador	red	вражда	охотится	34

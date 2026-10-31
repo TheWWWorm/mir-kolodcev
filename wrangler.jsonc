@@ -1,0 +1,13 @@
+// Cloudflare Worker serving the static Angular build. Set the route below before the first deploy.
+// Cloudflare reads this file on every push: `wrangler deploy` runs the build below, then uploads the assets.
+{
+  "name": "mirkolodcev",
+  "compatibility_date": "2026-10-01",
+  "build": { "command": "cd web && npm ci && npm run build" },
+  "assets": {
+    "directory": "./web/dist/web/browser",
+    // /slug serves the prerendered slug.html; any other path (e.g. /slug/section) falls back to index.html
+    "not_found_handling": "single-page-application"
+  },
+  "routes": [{ "pattern": "mirkolodcev.wwworm.com", "custom_domain": true }]
+}

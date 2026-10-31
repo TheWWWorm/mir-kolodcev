@@ -1,0 +1,107 @@
+<div class="directory-tools">
+  <label class="directory-search"
+    ><span class="sr-only">Найти персонажа</span
+    ><svg viewBox="0 0 24 24" aria-hidden="true">
+      <circle cx="10" cy="10" r="7" />
+      <path d="m15 15 6 6" /></svg
+    ><input
+      class="field"
+      type="search"
+      placeholder="Найти персонажа"
+      [value]="query()"
+      (input)="query.set($any($event.target).value)"
+  /></label>
+  <div class="group-filter" aria-label="Группа персонажей">
+    <button class="btn" [attr.aria-pressed]="!group()" (click)="group.set('')">Все</button
+    ><button
+      class="btn"
+      [attr.aria-pressed]="group() === 'Каталия'"
+      (click)="group.set('Каталия')"
+    >
+      Каталия</button
+    ><button
+      class="btn"
+      [attr.aria-pressed]="group() === 'Олландия'"
+      (click)="group.set('Олландия')"
+    >
+      Олландия</button
+    ><select
+      class="field"
+      aria-label="Другие группы персонажей"
+      [value]="group() === 'Каталия' || group() === 'Олландия' ? '' : group()"
+      (change)="group.set($any($event.target).value)"
+    >
+      <option value="">Другие разделы</option>
+      @for (g of otherGroups(); track g.name) {
+        <option [value]="g.name">{{ g.name }}</option>
+      }
+    </select>
+  </div>
+</div>
+@if (!filtering()) {
+  <div class="featured">
+    @for (a of features(); track a.slug; let first = $first) {
+      <a class="feature" [class.pale]="first" [routerLink]="'/' + a.slug"
+        ><figure>
+          <img [src]="data.imageSrc(a)" alt="" width="160" height="215" />
+          <figcaption>{{ credit(a) }}</figcaption>
+        </figure>
+        <span class="feature-copy"
+          ><span class="affiliation">{{ a.group }}</span>
+          <h2>{{ a.title }}</h2>
+          <span class="role">{{
+            spoilers.partly(a) ? 'Сведения частично скрыты' : a.ru || summary(a)
+          }}</span
+          ><span class="feature-action"
+            >Открыть статью <span aria-hidden="true">→</span></span
+          ></span
+        ></a
+      >
+    }
+  </div>
+}
+<nav class="alphabet" aria-label="Фильтр по первой букве">
+  <span>Перейти к букве:</span
+  ><button [attr.aria-pressed]="!letter()" (click)="letter.set('')">Все</button>
+  @for (l of letters(); track l) {
+    <button [attr.aria-pressed]="letter() === l" (click)="letter.set(letter() === l ? '' : l)">
+      {{ l }}
+    </button>
+  }
+</nav>
+@if (filtering()) {
+  <div class="result-count ui" role="status">
+    <span>Найдено: {{ count() }}</span
+    ><button class="btn" (click)="reset()">Сбросить фильтры</button>
+  </div>
+}
+<div class="groups">
+  @for (g of results(); track g.name) {
+    <section class="band">
+      <h2>
+        {{ g.name }}<small>{{ g.items.length }}</small>
+      </h2>
+      <ul>
+        @for (a of g.items; track a.slug) {
+          <li>
+            <a [routerLink]="'/' + a.slug">
+              @if (data.imageSrc(a); as src) {
+                <img class="portrait" [src]="src" alt="" loading="lazy" width="42" height="54" />
+              }
+              <span class="copy"
+                ><b>{{ a.title }}</b
+                ><span class="summary">{{ summary(a) }}</span></span
+              ><span class="entry-arrow" aria-hidden="true">→</span></a
+            >
+          </li>
+        }
+      </ul>
+    </section>
+  }
+</div>
+@if (!count()) {
+  <div class="empty">
+    <p>Персонажи не найдены. Попробуйте другое имя или раздел.</p>
+    <button class="btn" (click)="reset()">Показать всех персонажей</button>
+  </div>
+}

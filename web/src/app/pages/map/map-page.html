@@ -1,0 +1,54 @@
+<div class="page wide">
+  <div class="crumbs"><a routerLink="/">Заглавная</a></div>
+  <h1 class="page-title">Карта мира колодцев</h1>
+  <p class="page-sub">Авторская карта мира колодцев с пометками Романа Суржикова. Нажмите на метку, чтобы прочитать о месте. Шкала под картой ведёт по событиям романа, а маршрут показывает путь героя по главам.</p>
+
+  <div class="tools ui">
+    <button class="btn" (click)="zoom(1.4)" aria-label="Приблизить">＋</button>
+    <button class="btn" (click)="zoom(1 / 1.4)" aria-label="Отдалить">－</button>
+    <button class="btn" (click)="fit()">Вписать</button>
+    <a class="btn" routerLink="/map3d">3D-карта</a>
+    <button class="btn" [attr.aria-pressed]="showLands()" (click)="showLands.set(!showLands())">Земли</button>
+    <button class="btn" [attr.aria-pressed]="showCities()" (click)="showCities.set(!showCities())">Города и места</button>
+  </div>
+
+  <div class="stage" [class.folded]="tl.collapsed()">
+  <div class="view" #view [class.labels]="labelsOn()" [class.hide-lands]="!showLands()" [class.hide-cities]="!showCities()"
+    (wheel)="wheel($event)" (pointerdown)="down($event)" (pointermove)="move($event)" (pointerup)="up()" (pointerleave)="up()">
+    <img src="img/map.jpg" alt="Карта мира колодцев" draggable="false" [style.transform]="imgTransform()" (load)="imageLoaded()" />
+
+    @if (tl.journey().length > 1) {
+      <svg class="jr-line" aria-hidden="true"><polyline [attr.points]="journeyPoints(tl.journey())" /></svg>
+    }
+    @for (pl of placeList(); track pl.k) {
+      <button class="pin" [class]="'pin pin-' + pl.p.kind" [class.nolink]="!pl.linked" [style.left.px]="px(pl.p)" [style.top.px]="py(pl.p)"
+        (click)="openPlace(pl.k)" [attr.aria-label]="pl.title"><i></i><span>{{ pl.title }}</span></button>
+    }
+    @if (tl.journeySlug()) {
+      @for (j of tl.journey(); track $index; let i = $index) {
+        <button class="jr-dot" [class.on]="i === tl.step()" [style.left.px]="px(places()[j.key])" [style.top.px]="py(places()[j.key])" (click)="tl.showStep(i)">{{ i + 1 }}</button>
+      }
+    } @else if (tl.stop(); as s) {
+      @for (t of tl.trail(); track $index) {
+        <span class="trail" [style.left.px]="px(places()[t.p])" [style.top.px]="py(places()[t.p])"></span>
+      }
+      <span class="now" [style.left.px]="px(places()[s.p])" [style.top.px]="py(places()[s.p])"><span>{{ s.label }}</span></span>
+    }
+
+    @if (popup(); as k) {
+      <div class="pop" [style.left.px]="px(places()[k])" [style.top.px]="py(places()[k])" [class.above]="py(places()[k]) > 300">
+        <button class="x" (click)="popup.set('')" aria-label="Закрыть">×</button>
+        <b>{{ placeTitle(k) }}</b>
+        @if (summary(k)) { <p>{{ summary(k) }}</p> }
+        @let evs = popupEvents(tl);
+        @if (evs.length) {
+          <div class="pop-ev">@for (e of evs; track e.i) {<button (click)="tl.show(e.i)">{{ e.s.label }}</button>}</div>
+        }
+        @if (linked(k)) { <a [routerLink]="'/' + k">Читать статью</a> }
+      </div>
+    }
+  </div>
+
+  <app-timeline-panel #tl (focus)="onFocus($event)" (placeClick)="openPlace($event)" />
+  </div>
+</div>

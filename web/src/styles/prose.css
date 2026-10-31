@@ -1,0 +1,29 @@
+/* Article body HTML comes from build.py (markdown -> html), so it is styled globally. */
+.prose { max-width: var(--measure); }
+.prose p { margin: 0 0 1em; }
+.prose h2 { font-size: var(--fs-h2); margin: 2em 0 .5em; padding-bottom: 4px; border-bottom: 1px solid var(--rule); scroll-margin-top: calc(var(--anchor-gap) + 80px); }
+.prose h3 { font-size: var(--fs-h3); margin: 1.6em 0 .4em; scroll-margin-top: calc(var(--anchor-gap) + 80px); }
+.prose h4 { font-size: 1.1rem; margin: 1.3em 0 .3em; }
+.prose ul, .prose ol { padding-left: 1.3em; margin: 0 0 1em; }
+.prose li { margin: .25em 0; }
+.prose strong { font-weight: 700; }
+.prose blockquote {
+  margin: 1.2em 0 .3em; padding: 2px 0 2px 18px; border-left: 3px solid var(--gold);
+  font-style: italic; font-size: 1.15rem; color: var(--ink);
+}
+.prose blockquote + p { margin-top: 0; color: var(--ink-3); font: var(--fs-ui)/1.4 var(--sans); }
+.prose a.wl { color: var(--azure); }
+.prose .wl-missing { color: var(--ink-2); }
+.prose .lede { font-size: 1.22rem; line-height: 1.55; color: var(--ink); margin-bottom: 1.2em; }
+
+.spoil-ph {
+  display: grid; grid-template-columns: 1fr auto; gap: 4px 14px; align-items: center;
+  margin: 1.6em 0; padding: 12px 16px; border: 1px dashed var(--wax); border-radius: var(--radius-m);
+  background: color-mix(in srgb, var(--wax) 6%, var(--sheet));
+}
+.spoil-ph b { font: 500 var(--fs-h3)/1.25 var(--caps); grid-column: 1 / -1; }
+.spoil-ph span { font: var(--fs-ui)/1.4 var(--sans); color: var(--ink-2); }
+.spoil-note {
+  margin: 0 0 1.2em; padding: 8px 14px; border-left: 3px solid var(--wax);
+  background: color-mix(in srgb, var(--wax) 7%, var(--sheet)); font: var(--fs-ui)/1.45 var(--sans); color: var(--ink-2);
+}

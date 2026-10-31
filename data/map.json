@@ -1,0 +1,115 @@
+{
+ "places": {
+  "dangar": {
+   "x": 13.5,
+   "y": 23.0,
+   "kind": "land"
+  },
+  "ollandiya": {
+   "x": 66.0,
+   "y": 19.0,
+   "kind": "land"
+  },
+  "mergana": {
+   "x": 39.5,
+   "y": 46.67,
+   "kind": "land"
+  },
+  "kataliya": {
+   "x": 81.5,
+   "y": 58.33,
+   "kind": "land"
+  },
+  "chinkhar": {
+   "x": 18.0,
+   "y": 10.0,
+   "kind": "land"
+  },
+  "plyutva": {
+   "x": 43.4,
+   "y": 23.67,
+   "kind": "city"
+  },
+  "latsen": {
+   "x": 55.35,
+   "y": 25.2,
+   "kind": "city"
+  },
+  "ejring": {
+   "x": 14.6,
+   "y": 34.67,
+   "kind": "city"
+  },
+  "khofshtadt": {
+   "x": 25.65,
+   "y": 34.33,
+   "kind": "city"
+  },
+  "mershants": {
+   "x": 67.85,
+   "y": 37.53,
+   "kind": "city"
+  },
+  "ginarva": {
+   "x": 65.9,
+   "y": 44.33,
+   "kind": "city"
+  },
+  "bargot": {
+   "x": 58.5,
+   "y": 48.87,
+   "kind": "city"
+  },
+  "khursla": {
+   "x": 52.0,
+   "y": 48.0,
+   "kind": "site"
+  },
+  "indra": {
+   "x": 71.0,
+   "y": 55.67,
+   "kind": "city"
+  },
+  "gerona": {
+   "x": 76.0,
+   "y": 53.67,
+   "kind": "city"
+  },
+  "brega": {
+   "x": 73.0,
+   "y": 65.67,
+   "kind": "land"
+  },
+  "seleziya": {
+   "x": 76.75,
+   "y": 70.33,
+   "kind": "land"
+  },
+  "ortiyar": {
+   "x": 83.15,
+   "y": 74.0,
+   "kind": "city"
+  },
+  "laerta": {
+   "x": 85.25,
+   "y": 80.0,
+   "kind": "city"
+  },
+  "solanta": {
+   "x": 61.75,
+   "y": 97.0,
+   "kind": "land"
+  },
+  "dunkvald": {
+   "x": 2.0,
+   "y": 37.33,
+   "kind": "site"
+  },
+  "tres-molinos": {
+   "x": 75.0,
+   "y": 72.67,
+   "kind": "city"
+  }
+ },
+ "events": []
+}

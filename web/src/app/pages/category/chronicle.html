@@ -1,0 +1,152 @@
+<div class="chronicle-tools">
+  <nav class="years" aria-label="Год событий">
+    @for (y of years(); track y) {
+      <button [attr.aria-pressed]="year() === y" (click)="chooseYear(y)">{{ y }}</button>
+    }
+  </nav>
+  <label class="search"
+    ><span class="sr-only">Найти событие</span
+    ><input
+      class="field"
+      type="search"
+      placeholder="Найти событие"
+      [value]="query()"
+      (input)="query.set($any($event.target).value)"
+  /></label>
+</div>
+<aside class="reading">
+  <app-spoiler-select [expanded]="true" /><span
+    >Поздние события скрываются с учётом прочитанной книги.</span
+  >
+</aside>
+@if (year() && year() !== 'Древность' && year() !== 'Без даты') {
+  <nav class="months" aria-label="Месяц событий">
+    <button [attr.aria-pressed]="!month()" (click)="month.set('')">Весь год</button>
+    @for (m of months; track m; let i = $index) {
+      <button
+        [class.has-events]="hasMonth(i)"
+        [attr.aria-pressed]="month() === monthValue(i)"
+        (click)="month.set(monthValue(i))"
+      >
+        {{ m }}
+      </button>
+    }
+  </nav>
+}
+<div class="stage">
+  <section class="timeline" aria-label="События выбранного периода">
+    <h2>
+      {{ monthTitle() }} <span>{{ year() }}</span>
+    </h2>
+    <p class="sr-only" role="status">Найдено событий: {{ visible().length }}</p>
+    @if (periodStories().length) {
+      <section class="stories" aria-label="Истории этого периода">
+        <h3>{{ month() ? 'Истории этого месяца' : 'Истории этого года' }}</h3>
+        <ul>
+          @for (s of periodStories(); track s.id) {
+            <li>
+              <a [routerLink]="'/' + s.slug"
+                ><b>{{ s.title }}</b><span>{{ s.group }} · {{ span(s) }}</span></a
+              >
+            </li>
+          }
+        </ul>
+      </section>
+    }
+    <ol class="spine">
+      @for (a of visible(); track a.id) {
+        <li class="event" [class.key]="!a.article">
+          <time [attr.datetime]="a.iso"
+            ><b>{{ dateParts(a).day }}</b
+            ><span>{{ dateParts(a).month }}</span></time
+          >
+          <div class="event-entry" [class.selected]="selectedId() === a.id">
+            <button
+              class="event-select"
+              [attr.aria-pressed]="selectedId() === a.id"
+              (click)="selectedId.set(a.id)"
+            >
+              <h3>{{ a.title }}</h3>
+              @if (a.summary) {
+                <span class="event-summary">{{ a.summary }}</span>
+              }
+            </button>
+            <div class="event-links">
+              <span>{{ a.group }}</span>
+              @if (a.open) {
+                <a [routerLink]="'/' + a.open"
+                  >{{ a.article ? 'Открыть статью' : data.title(a.open) }}
+                  <span aria-hidden="true">→</span></a
+                >
+              }
+            </div>
+          </div>
+        </li>
+      }
+    </ol>
+    @if (!visible().length && !periodStories().length) {
+      <div class="empty" role="status">
+        <p>
+          За выбранный период событий не найдено. Проверьте фильтр и последнюю прочитанную книгу.
+        </p>
+        <button class="btn" (click)="month.set(''); query.set('')">Показать весь год</button>
+      </div>
+    }
+    @if (year() && year() !== 'Древность' && year() !== 'Без даты') {
+      <nav class="period-nav" aria-label="Перейти к другому месяцу">
+        <button class="btn" [disabled]="!canMove(-1)" (click)="moveMonth(-1)">
+          ← Предыдущий месяц</button
+        ><button class="btn" [disabled]="!canMove(1)" (click)="moveMonth(1)">
+          Следующий месяц →
+        </button>
+      </nav>
+    }
+  </section>
+  @if (selected(); as a) {
+    <aside class="inspector" aria-label="Выбранное событие">
+      <h2>{{ a.title }}</h2>
+      <p class="event-date">{{ a.when }}</p>
+      <p class="event-type">{{ a.group }}</p>
+      @if (a.summary) {
+        <p class="inspector-summary">{{ a.summary }}</p>
+      }
+      @if (info.isLoading()) {
+        <p class="muted ui" role="status">Загрузка сведений…</p>
+      }
+      @if (info.error()) {
+        <p class="muted ui">Подробные сведения доступны в статье.</p>
+      }
+      <dl>
+        @for (f of facts(); track f[0]) {
+          <dt>{{ f[0] }}</dt>
+          <dd [innerHTML]="f[1]"></dd>
+        }
+      </dl>
+      @if (a.article) {
+        <a class="btn primary" [routerLink]="'/' + a.open"
+          >Открыть статью <span aria-hidden="true">→</span></a
+        >
+      } @else if (a.links.length) {
+        <section class="related">
+          <h3>Подробнее в статьях</h3>
+          @for (l of a.links; track l) {
+            <a [routerLink]="'/' + l">{{ data.title(l) }}</a>
+          }
+        </section>
+      }
+      @if (related().length) {
+        <section class="related">
+          <h3>Связанные события</h3>
+          @for (r of related(); track r.id) {
+            <a [routerLink]="'/' + r.open"
+              >{{ r.title }}<small>{{ r.when }}</small></a
+            >
+          }
+        </section>
+      }
+    </aside>
+  }
+</div>
+<p class="full-chronology ui">
+  <a routerLink="/khronologiya">Подробная хронология по тексту книг</a>
+</p>

@@ -1,0 +1,72 @@
+<div class="page wide">
+  <div class="crumbs"><a routerLink="/">Заглавная</a></div>
+  <h1 class="page-title">Связи персонажей</h1>
+  <p class="page-sub">Кто кому родня, союзник, враг или возлюбленный. Нажмите на персонажа, чтобы выделить его связи. Колесо мыши или два пальца меняют масштаб, перетаскивание двигает схему.</p>
+
+  <div class="tools ui">
+    <div class="legend">
+      @for (c of types; track c[0]) {
+        <button class="btn" [attr.aria-pressed]="!hiddenTypes().has(c[0])" (click)="toggleType(c[0])">
+          <svg class="swatch" viewBox="0 0 28 8" aria-hidden="true"><line x1="1" y1="4" x2="27" y2="4" [attr.class]="'k-' + c[1]" [attr.stroke-dasharray]="c[2] || null" /></svg>{{ c[0] }}
+        </button>
+      }
+    </div>
+    <input class="field find" type="search" placeholder="Найти персонажа" aria-label="Найти персонажа" (input)="find($any($event.target).value)" />
+  </div>
+
+  <div class="stage">
+    <div class="canvas">
+      <svg #svg [attr.viewBox]="viewBox()" [class.has-sel]="selected()" (pointerdown)="down($event)" (pointermove)="move($event)" (pointerup)="up($event)" (pointercancel)="up($event)" (pointerleave)="up($event)">
+        <g class="edges">
+          @for (e of paths(); track $index) {
+            <path [attr.d]="e.d" [class]="'k-' + key(e.r.t)" [attr.stroke-dasharray]="dash(e.r.t) || null"
+              [class.sel]="selected() && (e.r.a === selected() || e.r.b === selected())"><title>{{ name(e.r.a) }} — {{ e.r.l }} для {{ name(e.r.b) }}</title></path>
+          }
+        </g>
+        @for (n of nodes(); track n.id) {
+          <g class="node" [class.sel]="neighbours().has(n.id)" [class.me]="n.id === selected()" [attr.transform]="'translate(' + n.x + ',' + n.y + ')'"
+            (click)="pick(n.id)" (pointerenter)="$event.pointerType === 'mouse' && hover.set(n.id)" (pointerleave)="hover.set('')">
+            <circle class="hit" [attr.r]="radius(n) + 8 * k()" />
+            <circle [attr.r]="radius(n)" [attr.stroke-width]="2 * k()" />
+            <title>{{ name(n.id) }}</title>
+          </g>
+        }
+        <g class="labels">
+          @for (n of nodes(); track n.id) {
+            @if (labels().get(n.id); as l) {
+              <text [class.me]="n.id === selected()" [attr.x]="n.x + l.x" [attr.y]="n.y + l.y" [attr.text-anchor]="l.a" [attr.font-size]="13 * k()" [attr.stroke-width]="4 * k()">{{ name(n.id) }}</text>
+            }
+          }
+        </g>
+      </svg>
+      <div class="zoom ui">
+        <button class="btn" (click)="zoom(1 / 1.5)" aria-label="Приблизить" title="Приблизить">+</button>
+        <button class="btn" (click)="zoom(1.5)" aria-label="Отдалить" title="Отдалить">−</button>
+        <button class="btn" (click)="fit()" aria-label="Показать всю схему" title="Показать всю схему">
+          <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5" fill="none" stroke="currentColor" stroke-width="2" /></svg>
+        </button>
+      </div>
+    </div>
+
+    <aside class="info">
+      @if (selected()) {
+        <h2><a [routerLink]="'/' + selected()">{{ name(selected()) }}</a></h2>
+        <button class="clear" (click)="select('')">Снять выделение</button>
+        @for (g of details(); track g.t) {
+          <h3><svg class="swatch" viewBox="0 0 28 8" aria-hidden="true"><line x1="1" y1="4" x2="27" y2="4" [attr.class]="'k-' + g.key" [attr.stroke-dasharray]="g.dash || null" /></svg>{{ g.t }}</h3>
+          <ul>
+            @for (r of g.items; track $index) {
+              @if (r.a === selected()) {
+                <li>{{ r.l }} для <a href="" (click)="$event.preventDefault(); select(r.b)">{{ name(r.b) }}</a></li>
+              } @else {
+                <li><a href="" (click)="$event.preventDefault(); select(r.a)">{{ name(r.a) }}</a> — {{ r.l }}</li>
+              }
+            }
+          </ul>
+        }
+      } @else {
+        <p class="muted">Выберите персонажа на схеме или найдите его по имени. Всего связей: {{ edges().length }}.</p>
+      }
+    </aside>
+  </div>
+</div>

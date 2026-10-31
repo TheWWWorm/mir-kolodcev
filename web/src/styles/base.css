@@ -1,0 +1,296 @@
+* {
+  box-sizing: border-box;
+}
+html {
+  -webkit-text-size-adjust: 100%;
+  /* past 1920px the whole UI grows with the viewport (to 125% at ~2880px), so wide or
+     high-density screens get a larger copy of the layout instead of a narrow strip of it */
+  font-size: clamp(100%, 50% + 0.4167vw, 125%);
+}
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font: 400 var(--fs-body)/1.65 var(--serif);
+  font-variant-numeric: oldstyle-nums proportional-nums;
+}
+a {
+  color: var(--azure);
+  text-decoration: none;
+  text-underline-offset: 0.18em;
+}
+a:hover {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+}
+:focus-visible {
+  outline: 3px solid var(--azure-2);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+button,
+input,
+select {
+  font: inherit;
+  color: inherit;
+}
+img {
+  max-width: 100%;
+}
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--caps);
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+}
+h1,
+h2 {
+  font-family: var(--display);
+  font-weight: 600;
+  letter-spacing: 0;
+}
+
+.boot {
+  padding: 30vh 20px;
+  text-align: center;
+  color: #7d6866;
+  font:
+    1.2rem Georgia,
+    serif;
+}
+
+/* shared UI primitives */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  padding: 10px 15px;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-m);
+  background: var(--sheet);
+  color: var(--ink);
+  font: 500 var(--fs-ui)/1.3 var(--sans);
+  cursor: pointer;
+}
+.btn:hover {
+  border-color: var(--azure-2);
+}
+.btn[aria-pressed='true'] {
+  background: var(--azure);
+  border-color: var(--azure);
+  color: var(--sheet);
+}
+.field {
+  min-height: 44px;
+  padding: 10px 12px;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-m);
+  background: var(--sheet);
+  color: var(--ink);
+  font: var(--fs-ui)/1.3 var(--sans);
+}
+/* our own chevron, inset from the edge, instead of the native arrow pressed against the border */
+select.field {
+  appearance: none;
+  -webkit-appearance: none;
+  padding-right: 42px;
+  background-image: linear-gradient(45deg, transparent 50%, currentColor 50%), linear-gradient(135deg, currentColor 50%, transparent 50%);
+  background-position: calc(100% - 22px) 52%, calc(100% - 16px) 52%;
+  background-size: 6px 6px;
+  background-repeat: no-repeat;
+}
+.muted {
+  color: var(--ink-3);
+}
+.ui {
+  font-family: var(--sans);
+}
+.page {
+  max-width: 120rem;
+  margin: 0 auto;
+  padding: 30px 32px 80px;
+}
+.crumbs {
+  font: var(--fs-small)/1.4 var(--sans);
+  color: var(--ink-3);
+  margin-bottom: 22px;
+}
+.crumbs a {
+  color: var(--ink-3);
+}
+.page-title {
+  font-size: var(--fs-h1);
+  margin: 0 0 4px;
+}
+.page-sub {
+  margin: 0 0 22px;
+  color: var(--ink-2);
+  font-size: 1.15rem;
+  max-width: var(--measure);
+}
+.section-title {
+  font-size: var(--fs-h2);
+  margin: 42px 0 14px;
+}
+
+.spoil-blur {
+  filter: blur(5px);
+  cursor: pointer;
+  user-select: none;
+  transition: filter 0.2s;
+}
+
+.table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-m);
+  background: var(--sheet);
+}
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font: 0.95rem/1.45 var(--serif);
+}
+.table th {
+  position: sticky;
+  top: 0;
+  background: var(--sheet-2);
+  text-align: left;
+  padding: 14px 12px;
+  font: 500 var(--fs-small)/1.3 var(--sans);
+  color: var(--ink-2);
+}
+.table td {
+  padding: 16px 12px;
+  border-top: 1px solid var(--rule);
+  vertical-align: top;
+}
+.table .sub {
+  display: block;
+  font: var(--fs-small)/1.35 var(--sans);
+  color: var(--ink-3);
+  margin-top: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+@media (max-width: 720px) {
+  .page {
+    padding: 18px 16px 60px;
+  }
+  :root {
+    --fs-h1: 2rem;
+    --fs-h2: 1.45rem;
+  }
+}
+
+[hidden] {
+  display: none !important;
+}
+button,
+a,
+input,
+select {
+  touch-action: manipulation;
+}
+button:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+input,
+select {
+  max-width: 100%;
+}
+summary {
+  cursor: pointer;
+  min-height: 44px;
+  padding: 12px 0;
+  font: var(--fs-ui)/1.5 var(--sans);
+}
+details > summary:focus-visible {
+  outline: 3px solid var(--azure-2);
+}
+.table-wrap {
+  max-width: 100%;
+}
+.prose {
+  overflow-wrap: anywhere;
+}
+.page-title {
+  letter-spacing: -0.025em;
+}
+.page-sub {
+  line-height: 1.5;
+}
+.btn.primary {
+  background: var(--ink);
+  color: var(--sheet);
+  border-color: var(--ink);
+}
+.table {
+  font-family: var(--sans);
+  font-size: 0.875rem;
+}
+.page > p.page-sub {
+  font-style: normal;
+}
+.skip-link {
+  position: fixed;
+  top: -100px;
+  left: 15px;
+  z-index: 100;
+  background: var(--sheet);
+  padding: 12px;
+}
+.skip-link:focus {
+  top: 10px;
+}
+/* Room under the sticky header for anchor jumps. It sits on the targets, not as scroll-padding on html:
+   with scroll-padding Chrome counts the search box in the header as covered and scrolls the page up on
+   every keystroke to reveal the caret. */
+html {
+  --anchor-gap: 100px;
+}
+[id],
+details {
+  scroll-margin-top: var(--anchor-gap);
+}
+@media (max-width: 599px) {
+  .page {
+    padding: 22px 18px 50px;
+  }
+  .page-title {
+    font-size: 2.125rem;
+  }
+  .page-sub {
+    font-size: 1.05rem;
+  }
+  .section-title {
+    margin-top: 30px;
+  }
+  html {
+    --anchor-gap: 140px;
+  }
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}

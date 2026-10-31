@@ -1,0 +1,74 @@
+:host {
+  position: relative;
+  display: block;
+}
+.box {
+  position: relative;
+}
+.box svg {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--ink-3);
+  pointer-events: none;
+}
+input {
+  width: 100%;
+  min-width: 0;
+  height: 44px;
+  padding: 0 12px 0 36px;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-m);
+  background: var(--paper);
+  font: 1rem/1 var(--sans);
+  outline: none;
+}
+input:focus {
+  border-color: var(--azure-2);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--azure) 18%, transparent);
+}
+.suggest {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 46px;
+  margin: 0;
+  padding: 6px;
+  list-style: none;
+  background: var(--sheet);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-m);
+  box-shadow: 0 14px 34px rgba(35, 10, 12, 0.18);
+  max-height: 70vh;
+  overflow-y: auto;
+}
+.suggest a {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 7px 10px;
+  border-radius: var(--radius-s);
+  color: var(--ink);
+  font-family: var(--sans);
+}
+.suggest a:hover,
+.suggest li.on a {
+  background: var(--sheet-2);
+  text-decoration: none;
+}
+.suggest b {
+  font: 500 1.02rem/1.3 var(--serif);
+}
+.suggest span {
+  color: var(--ink-3);
+  font-size: var(--fs-small);
+}
+.suggest .all a {
+  color: var(--azure);
+  font-size: var(--fs-ui);
+  border-top: 1px solid var(--rule);
+  border-radius: 0;
+  margin-top: 4px;
+}

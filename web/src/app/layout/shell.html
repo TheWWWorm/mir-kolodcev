@@ -1,0 +1,70 @@
+<a class="skip-link" href="#main-content" (click)="skipToContent($event)">К содержанию</a>
+<header class="bar">
+  <button
+    #menuButton
+    class="icon menu"
+    (click)="navOpen.set(!navOpen())"
+    [attr.aria-expanded]="navOpen()"
+    aria-label="Меню"
+    aria-controls="wiki-navigation"
+  >
+    <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+      <path
+        d="M3 6h18M3 12h18M3 18h18"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+      />
+    </svg>
+  </button>
+  <a class="brand" routerLink="/">
+    <svg class="star" viewBox="0 0 32 32" width="22" height="22" aria-hidden="true">
+      <circle cx="16" cy="16" r="3.5" />
+      <circle cx="16" cy="16" r="8.5" fill="none" stroke="currentColor" stroke-width="2" />
+      <circle cx="16" cy="16" r="14" fill="none" stroke="currentColor" stroke-width="1.5" opacity=".6" />
+    </svg>
+    <span>Мир колодцев</span>
+  </a>
+  <app-search-box class="search" />
+  <app-spoiler-select class="spoil" />
+  <button class="icon" (click)="theme.toggle()" aria-label="Сменить тему" title="Сменить тему">
+    <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+      <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" fill="currentColor" />
+    </svg>
+  </button>
+</header>
+
+<div class="frame" [class.nav-open]="navOpen()">
+  <button
+    class="backdrop"
+    [class.open]="navOpen()"
+    [attr.tabindex]="navOpen() ? 0 : -1"
+    (click)="navOpen.set(false)"
+    aria-label="Закрыть меню"
+  ></button>
+  <nav id="wiki-navigation" class="side" aria-label="Разделы вики">
+    @for (g of nav; track g.title) {
+      <div class="group">
+        <div class="group-title">{{ g.title }}</div>
+        @for (l of g.links; track l[0]) {
+          <a
+            [routerLink]="l[0]"
+            routerLinkActive="on"
+            [routerLinkActiveOptions]="{ exact: true }"
+            ariaCurrentWhenActive="page"
+            ><svg viewBox="0 0 24 24" aria-hidden="true"><path [attr.d]="navIcon(l[0])" /></svg
+            ><span>{{ l[1] }}</span></a
+          >
+        }
+      </div>
+    }
+    <app-spoiler-select class="drawer-spoil" />
+    <p class="about">
+      Энциклопедия мира колодцев из романа Романа Суржикова «Следы на воде», составленная по тексту
+      книги, авторской карте и интервью автора.
+    </p>
+  </nav>
+  <main class="main" id="main-content" tabindex="-1"><router-outlet /></main>
+</div>
+<app-lightbox-view />
+<app-reading-dialog />

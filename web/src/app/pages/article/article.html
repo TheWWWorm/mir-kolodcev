@@ -1,0 +1,273 @@
+@if (meta(); as m) {
+  <div class="page" [class.book-page]="bookView()">
+    <div class="crumbs">
+      <a routerLink="/">Заглавная</a> /
+      <a [routerLink]="'/c/' + m.type">{{ types[m.type].many }}</a>
+    </div>
+
+    @if (spoilers.hidden(m)) {
+      <div class="gate">
+        <h1 class="page-title">{{ m.title }}</h1>
+        <p>
+          Эта статья относится к главе {{ spoilers.bookTitle(m.first) }}, а вы отметили, что
+          прочитали роман только до главы {{ spoilers.bookTitle(spoilers.level()) }}.
+        </p>
+        <button class="btn" (click)="spoilers.reveal(m.slug)">Показать статью со спойлерами</button>
+      </div>
+    } @else {
+      @if (bookView()) {
+        <header class="book-hero" [class.with-cover]="lead() !== null">
+          @if (lead() !== null) {
+            <app-figure class="hero-cover" [index]="lead()!" />
+          }
+          <div class="book-intro">
+            <p class="book-kind ui">{{ m.group }}</p>
+            <h1 class="page-title">{{ m.title }}</h1>
+            @if (m.summary) {
+              <p
+                class="book-summary"
+                [class.spoil-blur]="spoilers.partly(m)"
+                (click)="unblur($event)"
+              >
+                {{ m.summary }}
+              </p>
+            }
+            <div class="book-meta ui">
+              @if (chapters().length) {
+                <span>{{ chapterCount() }}</span>
+              }
+              @if (bookYear()) {
+                <span>{{ bookYear() }}</span>
+              }
+              @if (narrators().length) {
+                <span>Рассказчиков: {{ narrators().length }}</span>
+              }
+            </div>
+          </div>
+          <aside class="cycle-info">
+            <span class="ui">В цикле</span><strong>{{ m.group }}</strong>
+            @if (nextBook(); as next) {
+              <span class="ui">Следующая книга</span
+              ><a [routerLink]="'/' + next.slug"
+                >{{ next.title }} <span aria-hidden="true">→</span></a
+              >
+            }
+            <a class="all-books ui" routerLink="/c/book"
+              >Все книги <span aria-hidden="true">→</span></a
+            >
+          </aside>
+        </header>
+        <aside class="book-reading">
+          <app-spoiler-select [expanded]="true" /><span
+            >Содержание глав может раскрывать сюжет.</span
+          >
+        </aside>
+        <nav class="book-sections" aria-label="Разделы книги">
+          @if (chapters().length) {
+            <a
+              [routerLink]="tocLink('h-glavy')"
+              [class.active]="!anchor() || anchor() === 'h-glavy'"
+              >Главы</a
+            >
+          }
+          <a [routerLink]="tocLink('h-about')" [class.active]="anchor() === 'h-about'">О книге</a>
+          @if (narrators().length) {
+            <a [routerLink]="tocLink('h-pov')" [class.active]="anchor() === 'h-pov'">Персонажи</a>
+          }
+          @if (articleBody()?.gallery?.length) {
+            <a [routerLink]="tocLink('h-art')" [class.active]="anchor() === 'h-art'">Иллюстрации</a>
+          }
+        </nav>
+      } @else {
+        <header class="head">
+          @if (m.type === 'event' && m.when) {
+            <p class="when">{{ m.when }}</p>
+          }
+          <h1 class="page-title">{{ m.title }}</h1>
+          @if (m.ru) {
+            <p class="page-sub">{{ m.ru }}</p>
+          }
+          @if (lead() !== null) {
+            <app-figure class="head-lead" [index]="lead()!" />
+          }
+          @if (bookChips().length) {
+            <details class="appearances">
+              <summary>Появления в книгах</summary>
+              <p class="books ui">
+                @for (b of bookChips(); track b.slug) {
+                  <a [routerLink]="'/' + b.slug">{{ b.title }}</a>
+                }
+              </p>
+            </details>
+          }
+        </header>
+      }
+
+      <div class="layout" [class.no-toc]="toc().length < 3" [class.book-layout]="bookView()">
+        @if (!bookView() && toc().length >= 3) {
+          <nav class="toc ui" aria-label="Содержание">
+            <details [open]="!compact()">
+              <summary>В статье</summary>
+
+              <ol>
+                @for (t of toc(); track t[0]) {
+                  <li>
+                    <a [routerLink]="tocLink(t[0])">{{ t[1] }}</a>
+                  </li>
+                }
+              </ol>
+            </details>
+          </nav>
+        }
+
+        <article class="body">
+          @if (!bookView() && m.summary) {
+            <p class="lede" [class.spoil-blur]="spoilers.partly(m)" (click)="unblur($event)">
+              {{ m.summary }}
+            </p>
+          }
+          @if (body.isLoading()) {
+            <p class="muted" role="status">Загрузка статьи…</p>
+          }
+          @if (body.error()) {
+            <p role="alert">Не удалось загрузить статью.</p>
+            <button class="btn" (click)="body.reload()">Повторить загрузку</button>
+          }
+          @if (bookView()) {
+            <app-chapter-table [book]="m.slug" />
+          }
+          @if (bookView()) {
+            <h2 class="section-title" id="h-about">О книге</h2>
+          }
+          <div class="prose" #content></div>
+
+          <div class="prose">
+            @for (f of families(); track f.title) {
+              <h2 id="h-rod">Родословное древо</h2>
+              @if (f.note) {
+                <p class="muted">{{ f.note }}</p>
+              }
+              <app-family-tree [family]="f" />
+            }
+            @if (m.slug === 'velikie-doma') {
+              <h2>Сводная таблица</h2>
+            }
+          </div>
+          @if (m.slug === 'velikie-doma') {
+            <app-houses-table />
+          }
+
+          @if (articleBody()?.gallery?.length) {
+            <section class="art">
+              <h2 class="section-title" id="h-art">Иллюстрации</h2>
+              <div class="gallery">
+                @for (i of articleBody()!.gallery; track i) {
+                  <app-figure [index]="i" />
+                }
+              </div>
+            </section>
+          }
+
+          @if (backlinks().length) {
+            <section class="back ui">
+              <h2>Ссылки сюда</h2>
+              <p>
+                @for (b of backlinks(); track b.slug) {
+                  <a [routerLink]="'/' + b.slug">{{ b.title }}</a>
+                }
+              </p>
+            </section>
+          }
+        </article>
+
+        <aside class="infobox" [class.book-guide]="bookView()">
+          @if (bookView()) {
+            @if (bookPlaces().length) {
+              <section class="book-places">
+                <h2>Места этой книги</h2>
+                <app-mini-map [keys]="bookPlaces()" [labels]="false" [minSpan]="20" />
+                <nav aria-label="Места книги">
+                  @for (k of bookPlaces().slice(0, 4); track k) {
+                    <a routerLink="/map" [queryParams]="{ p: k }">{{ data.title(k) }}</a>
+                  }
+                </nav>
+              </section>
+            }
+            @if (narrators().length) {
+              <section class="narrator-guide" id="h-pov">
+                <h2>Истории книги</h2>
+                @for (n of narrators(); track n.slug; let i = $index) {
+                  <a
+                    [routerLink]="'/' + n.slug"
+                    [style.--story-color]="
+                      i % 3 === 0 ? '#c9897a' : i % 3 === 1 ? '#d2b160' : '#72b2d3'
+                    "
+                    ><strong>{{ n.chapter }}</strong
+                    ><span>{{ n.title }}</span></a
+                  >
+                }
+              </section>
+            }
+            <details class="book-facts">
+              <summary>Сведения о книге</summary>
+              <dl>
+                @for (row of articleBody()?.infobox ?? []; track row[0]) {
+                  <dt>{{ row[0] }}</dt>
+                  <dd [innerHTML]="row[1]"></dd>
+                }
+              </dl>
+            </details>
+          } @else {
+            @if (lead() !== null) {
+              <app-figure class="lead" [index]="lead()!" />
+            }
+            @if (m.type === 'place' && onMap()) {
+              <app-mini-map class="ib-map" [keys]="mapKeys()" [focus]="m.slug" [minSpan]="22" />
+            }
+            <div class="ib-head">
+              <b>{{ m.title }}</b>
+              @if (m.ru) {
+                <span>{{ m.ru }}</span>
+              }
+            </div>
+            @if (onMap() || hasRelations()) {
+              <p class="ib-links ui">
+                @if (onMap()) {
+                  <a routerLink="/map" [queryParams]="{ p: m.slug }">Показать на карте</a>
+                }
+                @if (hasRelations()) {
+                  <a routerLink="/relations" [queryParams]="{ id: m.slug }">Связи на схеме</a>
+                }
+              </p>
+            }
+            <dl>
+              @for (row of articleBody()?.infobox ?? []; track row[0]) {
+                <dt>{{ row[0] }}</dt>
+                <dd
+                  [innerHTML]="row[1]"
+                  [class.spoil-blur]="blurInfo(row[0], row[1])"
+                  (click)="unblur($event)"
+                ></dd>
+              }
+              @if (m.aliases.length) {
+                <dt>Другие имена</dt>
+                <dd [class.spoil-blur]="blurInfo('Другие имена', m.aliases.join(', '))" (click)="unblur($event)">
+                  {{ m.aliases.join(', ') }}
+                </dd>
+              }
+            </dl>
+          }
+        </aside>
+      </div>
+    }
+  </div>
+} @else {
+  <div class="page">
+    <h1 class="page-title">Статьи нет</h1>
+    <p>
+      Статьи «{{ slug() }}» в вики нет.
+      <a [routerLink]="'/search/' + slug()">Поискать по тексту</a> или вернуться на
+      <a routerLink="/">заглавную</a>.
+    </p>
+  </div>
+}
