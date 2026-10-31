@@ -23,7 +23,7 @@ const LABEL: Partial<Record<Settlement, { far: number; rank: number; lift: numbe
 };
 const DEFAULT_LABEL = { far: 9, rank: 5, lift: .1 };
 /** Bump when map3d/ assets are re-exported, so browsers don't keep the old model. */
-const ASSETS = 'v=4';
+const ASSETS = 'v=6';
 /** Ground kept clear of trees around each settlement type. */
 const CLEARING: Partial<Record<Settlement, number>> = {
   capital: .36, city: .23, stronghold: .22, town: .14, castle: .1, camp: .22, industrial: .26,
@@ -392,10 +392,10 @@ export class Map3dPage implements OnDestroy {
     overview: [[0, 23, 20.5], [0, 0, 1.6]],
     dangar: [[-7.2, 3.8, 1.2], [-10.2, 0.2, -5.2]],
     ollandiya: [[3.0, 4.0, 1.5], [5.0, 0.3, -5.0]],
-    war: [[1.0, 2.6, 0.6], [3.0, 0.05, -4.2]],
+    war: [[0.6, 5.4, 4.2], [2.2, 0.05, -3.6]],
     mergana: [[-1.5, 3.0, 5.5], [-2.5, 0.05, 0.5]],
     kataliya: [[7.5, 4.2, 11.0], [9.6, 0.3, 4.0]],
-    laerta: [[10.4, 1.4, 9.2], [11.2, 0.05, 6.8]],
+    laerta: [[10.0, 1.5, 10.0], [11.2, 0.05, 7.5]],
     // close-ups for deep links
     hofshtadt: [[-7.0, 1.1, -2.3], [-7.8, 0.1, -3.8]],
     dunkvald: [[-13.6, 1.0, -2.6], [-14.5, 0.1, -3.9]],
