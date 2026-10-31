@@ -1,2 +1,30 @@
 # file (web/public/img/)	articles (first = main; role per article: slug or slug:portrait / slug:cover / slug:emblem / slug:map)	caption	credit
 map.jpg	mir-kolodtsev:map,kataliya,ollandiya,dangar,mergana,olandskaya-vojna	Авторская карта мира колодцев с пометками к первой книге: Дангар, Олландия, Мергана и Каталия	Карта: Алексей Сафин
+portrait-alvaro-da-silva-leyendecker.webp	alvaro-da-silva:portrait	Альваро да Силва — портрет по описанию в романе, в стиле Дж. К. Лейендекера	ИИ-иллюстрация · OpenAI ImageGen
+portrait-fatima-leyendecker.webp	fatima:portrait	Фатима Ир-Рейя — портрет по описанию в романе, в стиле Дж. К. Лейендекера	ИИ-иллюстрация · OpenAI ImageGen
+portrait-fernan-gerejra-leyendecker.webp	fernan-gerejra:portrait	Фернан Герейра — портрет по описанию в романе, в стиле Дж. К. Лейендекера	ИИ-иллюстрация · OpenAI ImageGen
+portrait-beatris-leyendecker.webp	beatris:portrait	Беатрис — портрет по описанию в романе, в стиле Дж. К. Лейендекера	ИИ-иллюстрация · OpenAI ImageGen
+portrait-karlos-leyendecker.webp	karlos:portrait	Карлос эль Нинья — портрет по описанию в романе, в стиле Дж. К. Лейендекера	ИИ-иллюстрация · OpenAI ImageGen
+portrait-ditrikh-leyendecker.webp	ditrikh:portrait	Дитрих фон Дорт — портрет по описанию в романе, в стиле Дж. К. Лейендекера	ИИ-иллюстрация · OpenAI ImageGen
+portrait-red-leyendecker.webp	red:portrait	Рэд — портрет по описанию в романе, в стиле Дж. К. Лейендекера	ИИ-иллюстрация · OpenAI ImageGen
+portrait-joriksen-leyendecker.webp	joriksen:portrait	Фритьоф Йориксен — портрет по описанию в романе, в стиле Дж. К. Лейендекера	ИИ-иллюстрация · OpenAI ImageGen
+portrait-landau-leyendecker.webp	landau:portrait	Ландау — портрет по описанию в романе, в стиле Дж. К. Лейендекера	ИИ-иллюстрация · OpenAI ImageGen
+portrait-greta-leyendecker.webp	greta:portrait	Грета — портрет по описанию в романе, в стиле Дж. К. Лейендекера	ИИ-иллюстрация · OpenAI ImageGen
+portrait-yakka-leyendecker.webp	yakka:portrait	Якка — портрет по описанию в романе, в стиле Дж. К. Лейендекера	ИИ-иллюстрация · OpenAI ImageGen
+portrait-olkha-leyendecker.webp	olkha:portrait	Ольха Ленц — портрет по описанию в романе, в стиле Дж. К. Лейендекера	ИИ-иллюстрация · OpenAI ImageGen
+portrait-lurd-leyendecker.webp	lurd:portrait	Людвиг фон Лурд — портрет по описанию в романе, в стиле Дж. К. Лейендекера	ИИ-иллюстрация · OpenAI ImageGen
+portrait-lents-leyendecker.webp	lents:portrait	Владислав Ленц — портрет по описанию в романе, в стиле Дж. К. Лейендекера	ИИ-иллюстрация · OpenAI ImageGen
+portrait-elza-leyendecker.webp	elza:portrait	Эльза фон Вальбрехт — портрет по описанию в романе, в стиле Дж. К. Лейендекера	ИИ-иллюстрация · OpenAI ImageGen
+portrait-milosh-leyendecker.webp	milosh:portrait	Милош — портрет по описанию в романе, в стиле Дж. К. Лейендекера	ИИ-иллюстрация · OpenAI ImageGen
+portrait-katrina-leyendecker.webp	katrina:portrait	Катрина фон Лурд — портрет по описанию в романе, в стиле Дж. К. Лейендекера	ИИ-иллюстрация · OpenAI ImageGen
+portrait-sokol-leyendecker.webp	sokol:portrait	Чёрный сокол — портрет по описанию в романе, в стиле Дж. К. Лейендекера	ИИ-иллюстрация · OpenAI ImageGen
+portrait-dezerej-leyendecker.webp	dezerej:portrait	Габриэль Дезерей — портрет по описанию в романе, в стиле Дж. К. Лейендекера	ИИ-иллюстрация · OpenAI ImageGen
+portrait-liess-van-khalm-leyendecker.webp	liess-van-khalm:portrait	Лиесс ван Хальм — портрет по описанию в романе, в стиле Дж. К. Лейендекера	ИИ-иллюстрация · OpenAI ImageGen
+portrait-mor-leyendecker.webp	mor:portrait	Мор — портрет по описанию в романе, в стиле Дж. К. Лейендекера	ИИ-иллюстрация · OpenAI ImageGen
+portrait-izabel-leyendecker.webp	izabel:portrait	Изабель эль Нинья — портрет по описанию в романе, в стиле Дж. К. Лейендекера	ИИ-иллюстрация · OpenAI ImageGen
+portrait-malysh-leyendecker.webp	malysh:portrait	Малыш — портрет по описанию в романе, в стиле Дж. К. Лейендекера	ИИ-иллюстрация · OpenAI ImageGen
+portrait-filippe-leyendecker.webp	filippe:portrait	Филиппе ди Берро — портрет по описанию в романе, в стиле Дж. К. Лейендекера	ИИ-иллюстрация · OpenAI ImageGen
+portrait-lyusil-leyendecker.webp	lyusil:portrait	Люсиль Герейра — портрет по описанию в романе, в стиле Дж. К. Лейендекера	ИИ-иллюстрация · OpenAI ImageGen
+portrait-klyajn-leyendecker.webp	klyajn:portrait	Вольфганг фон Кляйн — портрет по описанию в романе, в стиле Дж. К. Лейендекера	ИИ-иллюстрация · OpenAI ImageGen
+portrait-amir-sedoj-leyendecker.webp	amir-sedoj:portrait	Амир Седой — портрет по описанию в романе, в стиле Дж. К. Лейендекера	ИИ-иллюстрация · OpenAI ImageGen
+portrait-salvador-leyendecker.webp	salvador:portrait	Сальвадор — портрет по описанию в романе, в стиле Дж. К. Лейендекера	ИИ-иллюстрация · OpenAI ImageGen
