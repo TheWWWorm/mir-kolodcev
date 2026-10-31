@@ -1,2 +1,14 @@
 # file (web/public/img/)	articles (first = main; role per article: slug or slug:portrait / slug:cover / slug:emblem / slug:map)	caption	credit
 map.jpg	mir-kolodtsev:map,kataliya,ollandiya,dangar,mergana,olandskaya-vojna	Авторская карта мира колодцев с пометками к первой книге: Дангар, Олландия, Мергана и Каталия	Карта: Алексей Сафин
+portrait-alvaro-da-silva.jpg	alvaro-da-silva:portrait	Альваро да Силва — портрет по описанию в романе, цветной карандаш	ИИ-иллюстрация · OpenAI ImageGen
+portrait-red.jpg	red:portrait	Рэд — портрет по описанию в романе, цветной карандаш	ИИ-иллюстрация · OpenAI ImageGen
+portrait-ditrikh.jpg	ditrikh:portrait	Дитрих фон Дорт — портрет по описанию в романе, цветной карандаш	ИИ-иллюстрация · OpenAI ImageGen
+portrait-fatima.jpg	fatima:portrait	Фатима Ир-Рейя — портрет по описанию в романе, цветной карандаш	ИИ-иллюстрация · OpenAI ImageGen
+portrait-fernan-gerejra.jpg	fernan-gerejra:portrait	Фернан Герейра — портрет по описанию в романе, цветной карандаш	ИИ-иллюстрация · OpenAI ImageGen
+portrait-beatris.jpg	beatris:portrait	Беатрис Энхаль — портрет по описанию в романе, цветной карандаш	ИИ-иллюстрация · OpenAI ImageGen
+portrait-joriksen.jpg	joriksen:portrait	Фритьоф Йориксен — портрет по описанию в романе, цветной карандаш	ИИ-иллюстрация · OpenAI ImageGen
+portrait-landau.jpg	landau:portrait	Барон фон Ландау — портрет по описанию в романе, цветной карандаш	ИИ-иллюстрация · OpenAI ImageGen
+portrait-greta.jpg	greta:portrait	Грета — портрет по описанию в романе, цветной карандаш	ИИ-иллюстрация · OpenAI ImageGen
+portrait-yakka.jpg	yakka:portrait	Якка — портрет по описанию в романе, цветной карандаш	ИИ-иллюстрация · OpenAI ImageGen
+portrait-olkha.jpg	olkha:portrait	Ольха Ленц — портрет по описанию в романе, цветной карандаш	ИИ-иллюстрация · OpenAI ImageGen
+portrait-karlos.jpg	karlos:portrait	Карлос эль Нинья — портрет по описанию в романе, цветной карандаш	ИИ-иллюстрация · OpenAI ImageGen
