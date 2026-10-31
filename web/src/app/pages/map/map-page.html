@@ -1,7 +1,7 @@
 <div class="page wide">
   <div class="crumbs"><a routerLink="/">Заглавная</a></div>
   <h1 class="page-title">Карта мира колодцев</h1>
-  <p class="page-sub">Авторская карта мира колодцев с пометками Романа Суржикова. Нажмите на метку, чтобы прочитать о месте. Шкала под картой ведёт по событиям романа, а маршрут показывает путь героя по главам.</p>
+  <p class="page-sub">Авторская карта мира колодцев. Нажмите на метку, чтобы прочитать о месте. Шкала под картой ведёт по событиям романа, а маршрут показывает путь героя по главам.</p>
 
   <div class="tools ui">
     <button class="btn" (click)="zoom(1.4)" aria-label="Приблизить">＋</button>
@@ -15,7 +15,7 @@
   <div class="stage" [class.folded]="tl.collapsed()">
   <div class="view" #view [class.labels]="labelsOn()" [class.hide-lands]="!showLands()" [class.hide-cities]="!showCities()"
     (wheel)="wheel($event)" (pointerdown)="down($event)" (pointermove)="move($event)" (pointerup)="up()" (pointerleave)="up()">
-    <img src="img/map.jpg" alt="Карта мира колодцев" draggable="false" [style.transform]="imgTransform()" (load)="imageLoaded()" />
+    <img src="img/map.jpg" alt="Карта мира колодцев" draggable="false" [style.width.px]="w0" [style.height.px]="h0" [style.transform]="imgTransform()" (load)="imageLoaded()" />
 
     @if (tl.journey().length > 1) {
       <svg class="jr-line" aria-hidden="true"><polyline [attr.points]="journeyPoints(tl.journey())" /></svg>
