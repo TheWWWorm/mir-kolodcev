@@ -173,6 +173,12 @@ figcaption {
   gap: 18px;
   align-items: start;
 }
+.col {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  min-width: 0;
+}
 .band {
   padding: 17px 18px 6px;
   background: var(--sheet);

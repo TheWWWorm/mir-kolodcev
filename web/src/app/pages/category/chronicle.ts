@@ -50,6 +50,9 @@ interface Entry {
   /** article the entry opens: the event itself, or the place / first related article of a key event */
   open: string;
   links: string[];
+  /** era label and order within it, when the chronology is told by eras */
+  era?: string;
+  w?: number;
 }
 
 /** A book, or one story of a collection, placed on the chronology by its in-world span. */
@@ -86,7 +89,22 @@ export class Chronicle {
   protected readonly spoilers = inject(Spoilers);
   protected readonly query = signal('');
   protected readonly months = SHORT_MONTHS;
+  /** Eras of the map data: the book names no years, so events are grouped by period instead. */
+  private readonly eras = computed(() => this.data.extra().map.eras ?? []);
+  private eraLabel(id?: string): string | undefined {
+    return this.eras().find((e) => e.id === id)?.label;
+  }
+  protected bucketOf(e: Entry): string {
+    return e.era ?? bucket(e.iso);
+  }
+  private bucketKey(b: string): string {
+    const i = this.eras().findIndex((e) => e.label === b);
+    return i >= 0 ? String(i).padStart(3, '0') : bucketKey(b);
+  }
+  /** A calendar year is selected (months and stories make sense), not an era or an undated bucket. */
+  protected readonly dated = computed(() => /^\d{4}$/.test(this.year()));
   protected readonly available = computed<Entry[]>(() => {
+    const byArticle = new Map(this.data.extra().map.events.filter((e) => e.a).map((e) => [e.a!, e]));
     const articles = this.items()
       .filter(
         (a) => !this.spoilers.hidden(a) && (!a.iso || this.spoilers.eventVisible({ d: a.iso })),
@@ -94,7 +112,9 @@ export class Chronicle {
       .map((a) => ({
         id: a.slug,
         iso: a.iso ?? '',
-        when: (a.when || a.iso || 'Дата не указана').replace(/\s*\(.*$/, '').trim(),
+        when: (byArticle.get(a.slug)?.label || a.when || a.iso || 'Дата не указана').replace(/\s*\(.*$/, '').trim(),
+        era: this.eraLabel(byArticle.get(a.slug)?.era),
+        w: byArticle.get(a.slug)?.w,
         title: a.title,
         summary: this.spoilers.partly(a) ? 'Часть сведений скрыта с учётом выбранной книги.' : a.summary,
         group: a.group,
@@ -118,10 +138,16 @@ export class Chronicle {
           group: ['Ключевое событие', this.data.get(e.p) ? this.data.title(e.p) : ''].filter(Boolean).join(' · '),
           open: links[0] ?? (this.data.get(e.p) ? e.p : ''),
           links,
+          era: this.eraLabel(e.era),
+          w: e.w,
         };
       });
     return [...articles, ...keys].sort(
-      (a, b) => (a.iso || '9999').localeCompare(b.iso || '9999') || a.title.localeCompare(b.title, 'ru'),
+      (a, b) =>
+        this.bucketKey(this.bucketOf(a)).localeCompare(this.bucketKey(this.bucketOf(b))) ||
+        (a.w ?? 0) - (b.w ?? 0) ||
+        (a.iso || '9999').localeCompare(b.iso || '9999') ||
+        a.title.localeCompare(b.title, 'ru'),
     );
   });
   /** Books by their in-world span; a collection («Фантазии») is split into its stories. */
@@ -156,10 +182,11 @@ export class Chronicle {
     return out.sort((a, b) => a.from.localeCompare(b.from) || a.to.localeCompare(b.to));
   });
   protected readonly years = computed(() => {
-    const ys = new Set(this.available().map((e) => bucket(e.iso)));
-    for (const s of this.stories())
-      for (let y = +s.from.slice(0, 4); y <= +s.to.slice(0, 4); y++) ys.add(bucket(String(y)));
-    return [...ys].sort((a, b) => bucketKey(a).localeCompare(bucketKey(b)));
+    const ys = new Set(this.available().map((e) => this.bucketOf(e)));
+    if (!this.eras().length)
+      for (const s of this.stories())
+        for (let y = +s.from.slice(0, 4); y <= +s.to.slice(0, 4); y++) ys.add(bucket(String(y)));
+    return [...ys].sort((a, b) => this.bucketKey(a).localeCompare(this.bucketKey(b)));
   });
   // the chronology reads from its beginning: the earliest period, the whole year
   protected readonly year = linkedSignal(() => this.years()[0] ?? '');
@@ -168,7 +195,7 @@ export class Chronicle {
     const q = norm(this.query());
     return this.available().filter(
       (e) =>
-        bucket(e.iso) === this.year() &&
+        this.bucketOf(e) === this.year() &&
         (!this.month() || e.iso.slice(5, 7) === this.month()) &&
         (!q || norm(e.title + ' ' + e.group).includes(q)),
     );

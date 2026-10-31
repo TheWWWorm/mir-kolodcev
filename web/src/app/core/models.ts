@@ -104,6 +104,14 @@ export interface MapEvent {
   s?: string[];
   /** Event article that tells this event in full (the chronology shows the article instead). */
   a?: string;
+  /** Era of the chronology (MapEra id) and order within it, for worlds whose books name no years. */
+  era?: string;
+  w?: number;
+}
+
+export interface MapEra {
+  id: string;
+  label: string;
 }
 
 export interface WikiExtra {
@@ -113,7 +121,7 @@ export interface WikiExtra {
   relations: Relation[];
   /** Hand-made routes: a hero's stops in order, each tied to a book and possibly a chapter. */
   routes?: Record<string, (Chapter & { book: string })[]>;
-  map: { places: Record<string, MapPlace>; events: MapEvent[] };
+  map: { places: Record<string, MapPlace>; events: MapEvent[]; eras?: MapEra[] };
 }
 
 export interface WikiIndex {

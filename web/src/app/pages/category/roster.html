@@ -76,7 +76,9 @@
   </div>
 }
 <div class="groups">
-  @for (g of results(); track g.name) {
+  @for (col of columns(); track $index) {
+  <div class="col">
+  @for (g of col; track g.name) {
     <section class="band">
       <h2>
         {{ g.name }}<small>{{ g.items.length }}</small>
@@ -97,6 +99,8 @@
         }
       </ul>
     </section>
+  }
+  </div>
   }
 </div>
 @if (!count()) {

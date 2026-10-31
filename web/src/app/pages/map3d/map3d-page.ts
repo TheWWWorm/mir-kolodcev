@@ -65,6 +65,8 @@ export class Map3dPage implements OnDestroy {
 
   private renderer?: THREE.WebGLRenderer;
   private controls?: MapControls;
+  /** labels or markers changed: place them on the next frame even if the camera is still */
+  private markersDirty = true;
   private camera?: THREE.PerspectiveCamera;
   private terrainMat?: THREE.MeshStandardMaterial;
   private textures: { relief?: THREE.Texture; painted?: THREE.Texture } = {};
@@ -101,13 +103,17 @@ export class Map3dPage implements OnDestroy {
 
   private init(): void {
     const canvas = this.canvas().nativeElement, stage = this.stage().nativeElement;
-    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
-    renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance' });
+    // full resolution at rest, plain 1x while the camera moves: dragging stays smooth on retina screens
+    const sharp = Math.min(devicePixelRatio, 2), quick = Math.min(devicePixelRatio, 1);
+    renderer.setPixelRatio(sharp);
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 1.2;
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    // the shadow pass (terrain and every tree) is redrawn only when the view changed, and less often while it moves
+    renderer.shadowMap.autoUpdate = false;
     this.renderer = renderer;
 
     const scene = new THREE.Scene();
@@ -121,7 +127,7 @@ export class Map3dPage implements OnDestroy {
     // The sun's shadow box follows the view and is snapped to whole shadow texels in light space,
     // so shadows stay crisp up close and do not crawl or shimmer while the camera moves.
     const sun = new THREE.DirectionalLight(0xfff1dd, 2.6);
-    const SHADOW = Math.min(innerWidth, innerHeight) < 700 ? 2048 : 4096;
+    const SHADOW = 2048;
     sun.castShadow = true;
     sun.shadow.mapSize.set(SHADOW, SHADOW);
     sun.shadow.bias = -0.0002;
@@ -161,9 +167,11 @@ export class Map3dPage implements OnDestroy {
     controls.touches = { ONE: THREE.TOUCH.PAN, TWO: THREE.TOUCH.DOLLY_ROTATE };
     controls.addEventListener('start', () => (this.flight = null));
     this.controls = controls;
+    let w = 1, h = 1, still = 0;
     const resize = () => {
-      const w = stage.clientWidth, h = stage.clientHeight;
+      w = stage.clientWidth; h = stage.clientHeight;
       renderer.setSize(w, h, false);
+      still = 0;
       camera.aspect = w / h;
       camera.updateProjectionMatrix();
     };
@@ -175,13 +183,15 @@ export class Map3dPage implements OnDestroy {
     this.setView(start && this.VIEWS[start] ? start : 'overview', true);
 
     let water: THREE.Mesh | undefined;
-    this.load(scene, renderer).then((w) => (water = w)).catch(() => this.failed.set(true));
+    this.load(scene, renderer).then((wm) => { water = wm; this.markersDirty = true; }).catch(() => this.failed.set(true));
 
     const clock = new THREE.Clock();
     const v = new THREE.Vector3();
+    const lastView = new THREE.Matrix4();
+    let frameNo = 0, lowRes = false;
     const loop = () => {
       this.frame = requestAnimationFrame(loop);
-      if (water) (water.material as THREE.ShaderMaterial).uniforms['uTime'].value = clock.getElapsedTime();
+      frameNo++;
       if (this.flight) {
         const f = this.flight;
         f.t = Math.min(1, f.t + 0.016);
@@ -195,10 +205,31 @@ export class Map3dPage implements OnDestroy {
       controls.target.z = THREE.MathUtils.clamp(controls.target.z, -D_UNITS / 2, D_UNITS / 2);
       controls.target.y = Math.max(0, controls.target.y);
       controls.update();
-      fitShadow(controls.target, camera.position.distanceTo(controls.target));
-      renderer.render(scene, camera);
-      this.placeLabels(camera, stage.clientWidth, stage.clientHeight, v);
-      this.placeMarkers(camera, stage.clientWidth, stage.clientHeight, v);
+      camera.updateMatrixWorld();
+      const moved = !camera.matrixWorld.equals(lastView);
+      lastView.copy(camera.matrixWorld);
+      still = moved ? 0 : still + 1;
+      // a few frames after the camera stops: back to full resolution and a fresh shadow pass
+      if (moved !== lowRes && (moved || still > 6)) {
+        lowRes = moved;
+        renderer.setPixelRatio(lowRes ? quick : sharp);
+        renderer.setSize(w, h, false);
+        if (!lowRes) still = 0;
+      }
+      if (moved ? frameNo % 3 === 0 : still === 1 || this.markersDirty) {
+        fitShadow(controls.target, camera.position.distanceTo(controls.target));
+        renderer.shadowMap.needsUpdate = true;
+      }
+      // at rest only the water ripples: redraw it at a third of the frame rate
+      if (moved || still < 3 || this.markersDirty || frameNo % 3 === 0) {
+        if (water) (water.material as THREE.ShaderMaterial).uniforms['uTime'].value = clock.getElapsedTime();
+        renderer.render(scene, camera);
+      }
+      if (moved || still < 3 || this.markersDirty) {
+        this.placeLabels(camera, w, h, v);
+        this.placeMarkers(camera, w, h, v);
+        this.markersDirty = false;
+      }
     };
     loop();
   }
@@ -338,6 +369,7 @@ export class Map3dPage implements OnDestroy {
   private drawMarkers(pos: Record<string, [number, number, number]>, route: string[], step: number,
                       now: { key: string; label: string } | null, trail: string[]): void {
     const layer = this.labelLayer().nativeElement, hf = this.hf;
+    this.markersDirty = true;
     for (const m of this.markers) m.el.remove();
     this.markers = [];
     const at = (k: string) => { const p = pos[k]; return p && new THREE.Vector3(p[0], Math.max(hf?.at(p[0], p[1]) ?? p[2], 0) + .03, p[1]); };
@@ -361,7 +393,7 @@ export class Map3dPage implements OnDestroy {
     if (this.routeLine) { this.scene?.remove(this.routeLine); this.routeLine.geometry.dispose(); this.routeLine = undefined; }
     const pts = route.map((k) => pos[k]).filter(Boolean).map((p) => [p[0], p[1]] as [number, number]);
     if (hf && pts.length > 1) {
-      this.routeLine = new THREE.Mesh(ribbon(pts, .022, .012, hf), new THREE.MeshBasicMaterial({ color: 0xb8322a, transparent: true, opacity: .85, depthWrite: false, side: THREE.DoubleSide }));
+      this.routeLine = new THREE.Mesh(ribbon(pts, .045, .014, hf), new THREE.MeshBasicMaterial({ color: 0xb8322a, transparent: true, opacity: .85, depthWrite: false, side: THREE.DoubleSide }));
       this.routeLine.renderOrder = 3;
       this.scene?.add(this.routeLine);
     }
@@ -418,12 +450,12 @@ export class Map3dPage implements OnDestroy {
   }
 
   protected fly(name: string): void { this.spin.set(false); if (this.controls) this.controls.autoRotate = false; this.setView(name); }
-  protected toggleSpin(): void { this.spin.set(!this.spin()); if (this.controls) this.controls.autoRotate = this.spin(); }
-  protected toggleForests(): void { this.forests.set(!this.forests()); if (this.forestGroup) this.forestGroup.visible = this.forests(); }
-  protected toggleRoads(): void { this.roads.set(!this.roads()); if (this.routeGroup) this.routeGroup.visible = this.roads(); }
+  protected toggleSpin(): void { this.markersDirty = true; this.spin.set(!this.spin()); if (this.controls) this.controls.autoRotate = this.spin(); }
+  protected toggleForests(): void { this.markersDirty = true; this.forests.set(!this.forests()); if (this.forestGroup) this.forestGroup.visible = this.forests(); }
+  protected toggleRoads(): void { this.markersDirty = true; this.roads.set(!this.roads()); if (this.routeGroup) this.routeGroup.visible = this.roads(); }
 
   /** Swap the synthesised relief colours for the original painted map draped over the terrain. */
-  protected togglePainted(): void {
+  protected togglePainted(): void { this.markersDirty = true;
     const on = !this.painted();
     this.painted.set(on);
     const mat = this.terrainMat;

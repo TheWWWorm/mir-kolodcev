@@ -4,7 +4,7 @@
   display: flex;
   align-items: start;
   gap: 18px;
-  padding: 18px 0;
+  padding: 18px 16px;
   border-bottom: 1px solid var(--rule);
   color: var(--ink);
   height: 100%;
@@ -12,11 +12,11 @@
 .card:hover {
   text-decoration: none;
 }
-/* hover fill reaches past the text on both sides, so the text keeps its alignment but doesn't touch the edge */
+/* the card's own side padding keeps its text off the hover fill; the grid pulls cards out by that padding so the text lines up with the heading */
 .card::before {
   content: '';
   position: absolute;
-  inset: 0 -12px;
+  inset: 0;
   z-index: -1;
   border-radius: var(--radius-m);
   background: var(--sheet-2);

@@ -1,5 +1,5 @@
 <div class="chronicle-tools">
-  <nav class="years" aria-label="Год событий">
+  <nav class="years" aria-label="Период событий">
     @for (y of years(); track y) {
       <button [attr.aria-pressed]="year() === y" (click)="chooseYear(y)">{{ y }}</button>
     }
@@ -19,7 +19,7 @@
     >Поздние события скрываются с учётом прочитанной книги.</span
   >
 </aside>
-@if (year() && year() !== 'Древность' && year() !== 'Без даты') {
+@if (dated()) {
   <nav class="months" aria-label="Месяц событий">
     <button [attr.aria-pressed]="!month()" (click)="month.set('')">Весь год</button>
     @for (m of months; track m; let i = $index) {
@@ -92,7 +92,7 @@
         <button class="btn" (click)="month.set(''); query.set('')">Показать весь год</button>
       </div>
     }
-    @if (year() && year() !== 'Древность' && year() !== 'Без даты') {
+    @if (dated()) {
       <nav class="period-nav" aria-label="Перейти к другому месяцу">
         <button class="btn" [disabled]="!canMove(-1)" (click)="moveMonth(-1)">
           ← Предыдущий месяц</button
