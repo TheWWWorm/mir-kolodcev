@@ -277,6 +277,39 @@ def load_data(slugs, data):
     return extra
 
 
+def track_changes(data):
+    """Keep data/changes.tsv, the wiki's log of new and expanded articles, and return its latest entries.
+
+    The log is a ledger rather than git history: every build compares each article with its last
+    recorded size. An unknown slug is a new article; a size that moved by at least ~15% (100 words or more)
+    is an expansion. Small edits are not news. The ledger is committed with the content, so a rebuild
+    with no changes leaves it as it was. BUILD_DATE (YYYY-MM-DD) overrides today's date.
+    """
+    import datetime
+    path = os.path.join(ROOT, 'data', 'changes.tsv')
+    today = os.environ.get('BUILD_DATE') or datetime.date.today().isoformat()
+    old = {r['slug']: r for r in read_tsv(path)} if os.path.exists(path) else None
+    rows = {}
+    for slug, d in data.items():
+        r = dict((old or {}).get(slug) or {})
+        if not r:
+            # the first build of a wiki records what is there as the starting point, not as news
+            r = dict(slug=slug, words=str(d['words']), added='-' if old is None else today, updated='-')
+        elif abs(d['words'] - int(r['words'])) >= max(100, int(r['words']) * 0.15):
+            r.update(words=str(d['words']), updated=today)
+        rows[slug] = r
+    cols = ['slug', 'words', 'added', 'updated']
+    with open(path, 'w', encoding='utf-8') as fh:
+        fh.write('\t'.join(cols) + '\n')
+        for slug in sorted(rows):
+            fh.write('\t'.join(rows[slug][c] for c in cols) + '\n')
+    log = [dict(slug=s, date=r['added'], kind='new') for s, r in rows.items() if r['added'] != '-']
+    log += [dict(slug=s, date=r['updated'], kind='more') for s, r in rows.items()
+            if r['updated'] != '-' and r['updated'] != r['added']]
+    log.sort(key=lambda e: (e['date'], e['kind'] == 'new', e['slug']), reverse=True)
+    return log[:150]
+
+
 def main():
     images, img_by_slug = load_images()
     files = sorted(glob.glob(os.path.join(ROOT, 'content', '*', '*.md')))
@@ -399,6 +432,8 @@ def main():
                     print(f'warning: quiz.json: bad answer in «{q.get("q", "")[:40]}»', file=sys.stderr)
         with open(os.path.join(out_dir, 'quiz.json'), 'w', encoding='utf-8') as fh:
             fh.write(dump(quiz))
+    with open(os.path.join(out_dir, 'changes.json'), 'w', encoding='utf-8') as fh:
+        fh.write(dump(track_changes(data)))
     mp = os.path.join(ROOT, 'data', 'map.json')
     extra['map'] = json.load(open(mp, encoding='utf-8')) if os.path.exists(mp) else {'places': {}, 'events': []}
     out = os.path.join(out_dir, 'index.json')

@@ -29,6 +29,27 @@ import { SITE, pageTitle } from '../../core/site';
 const SAFE_ROW = /^(полное имя|имя|дом|род|род \(праматерь\)|родители|отец|мать|первое появление|тип|вид|что это|расположение|место|место действия|климат|экономика|столица|крупнейшие города|население|герб|девиз|цвета|народ|святыни|достопримечательности|дороги|соседи|внешность|возраст|номер в цикле|предыдущая книга|следующая книга|главные герои|дата|действие|хронология)$/i;
 /** Words that give away a fate or a hidden truth. */
 const FATE = /убит|убил|погиб|умер|умерл|казн[её]н|казнил|смерт|мёртв|мертв|гибел|отравл|свергн|призрак|на (самом )?деле|в действительности|по крови|урожд|втайне|тайн(ый|ая|ое|о|ые)\b|оказал|оказыва|позже|позднее|впоследствии|в итоге/i;
+/** A small button at the end of every section heading of the article text: report a mistake in this section. */
+function addReportButtons(body: HTMLElement): void {
+  for (const h of Array.from(body.querySelectorAll('h2, h3'))) {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'report';
+    b.title = 'Сообщить об ошибке в этом разделе';
+    b.setAttribute('aria-label', `Сообщить об ошибке в разделе «${h.textContent?.trim()}»`);
+    h.append(b);
+  }
+}
+
+/** The heading of the section an element is in: the nearest h2/h3 before it in the article text. */
+function sectionOf(el: Element): Element | null {
+  let n: Element | null = el.closest('.prose > *');
+  while (n && !/^H[23]$/.test(n.tagName)) n = n.previousElementSibling;
+  return n;
+}
+
+const headingText = (h: Element) => (h.textContent ?? '').trim();
+
 const MONTH_STEMS = ['янв', 'фев', 'мар', 'апр', 'ма', 'июн', 'июл', 'авг', 'сен', 'окт', 'ноя', 'дек'];
 /** A year of the cycle's era, optionally preceded by a month («ноября 1774»). */
 const DATED = /(?:(январ|феврал|март|апрел|ма[йяе]|июн|июл|август|сентябр|октябр|ноябр|декабр)[а-я]*\s+)?(17[5-9]\d)/gi;
@@ -164,6 +185,7 @@ export class ArticlePage {
       if (!el || !b || !m) return;
       el.innerHTML = b.html;
       if (this.spoilers.partly(m)) applySpoilers(el, level, (o) => this.spoilers.bookTitle(o));
+      if (SITE.issues) addReportButtons(el);
     });
     // Jump to /slug/anchor once the body is in place: smoothly within the article already on screen,
     // at once when arriving from elsewhere. A heading inside a folded spoiler section lands on the fold.
@@ -218,6 +240,55 @@ export class ArticlePage {
       return new RegExp(words.map((w) => w.slice(0, Math.max(3, w.length - 2))).join('[а-яё]*[\\s,]+(?:[а-яё]{1,2}[\\s,]+)?'), 'i');
     }),
   );
+
+  /** Text the reader selected in the article, caught before a click on a report button can clear it. */
+  private selected = '';
+  private selectedIn: Element | null = null;
+
+  protected noteSelection(): void {
+    const sel = getSelection();
+    const text = sel?.toString().trim() ?? '';
+    const node = sel?.rangeCount ? sel.getRangeAt(0).startContainer : null;
+    const inside = !!node && !!this.content()?.nativeElement.contains(node);
+    this.selected = inside ? text : '';
+    this.selectedIn = inside ? (node instanceof Element ? node : node!.parentElement) : null;
+  }
+
+  /** A report button next to a section heading in the article text (delegated: the text is plain HTML). */
+  protected bodyDown(ev: PointerEvent): void {
+    if ((ev.target as Element | null)?.closest?.('button.report')) this.noteSelection();
+  }
+
+  protected bodyClick(ev: MouseEvent): void {
+    const btn = (ev.target as Element | null)?.closest?.('button.report');
+    if (!btn) return;
+    this.report(btn.closest('h2, h3'));
+  }
+
+  /**
+   * Opens a new issue in the wiki's public repository, filled in with the article, the section and the
+   * selected words if the reader marked any. The section is the one of the button, or the one the selection is in.
+   */
+  protected report(heading?: Element | null): void {
+    const m = this.meta();
+    if (!m || !SITE.issues) return;
+    // from the keyboard there was no press to catch the selection: it is still in place
+    if (getSelection()?.toString().trim()) this.noteSelection();
+    heading ??= this.selectedIn ? sectionOf(this.selectedIn) : null;
+    const section = heading ? headingText(heading) : '';
+    const url = SITE.url + '/' + m.slug + (heading?.id ? '/' + heading.id : '');
+    const quote = this.selected.length > 600 ? this.selected.slice(0, 600) + '…' : this.selected;
+    const body = [
+      `**Статья:** [${m.title}](${url})`,
+      section ? `**Раздел:** ${section}` : '',
+      quote ? `\n**Фрагмент:**\n${quote.split('\n').map((l) => '> ' + l).join('\n')}` : '',
+      '\n**Что не так и как правильно** (если можно — со ссылкой на книгу и главу):\n\n',
+    ].filter(Boolean).join('\n');
+    const title = `Ошибка: ${m.title}${section ? ' — ' + section : ''}`;
+    window.open(`${SITE.issues}?title=${encodeURIComponent(title)}&body=${encodeURIComponent(body)}`, '_blank', 'noopener');
+    this.selected = '';
+    this.selectedIn = null;
+  }
 
   protected unblur(ev: Event): void {
     (ev.currentTarget as HTMLElement).classList.remove('spoil-blur');

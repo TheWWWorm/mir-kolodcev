@@ -9,6 +9,7 @@ import { SITE, fmt } from '../core/site';
   template: `
     <label
       [class.on]="spoilers.active()"
+      [class.stacked]="stacked()"
       [title]="'Скрывать события ' + site.spoilers.word.genPl + ', которые вы ещё не прочитали'"
     >
       <span class="lbl">Прочитано до</span>
@@ -52,6 +53,22 @@ import { SITE, fmt } from '../core/site';
         max-width: 118px;
       }
     }
+    /* in the side drawer: the label above a full-width field, as the drawer's other groups */
+    label.stacked {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 8px;
+      color: inherit;
+    }
+    label.stacked .lbl {
+      display: block;
+      font-size: 0.6875rem;
+      margin: 0 12px;
+    }
+    label.stacked select {
+      max-width: none;
+      width: 100%;
+    }
   `,
 })
 export class SpoilerSelect {
@@ -60,6 +77,8 @@ export class SpoilerSelect {
     return fmt(SITE.spoilers.option, { n: b.order, title: b.title });
   }
   readonly expanded = input(false);
+  /** Label above the field at every width (the side drawer on phones). */
+  readonly stacked = input(false);
   protected readonly spoilers = inject(Spoilers);
   protected readonly data = inject(WikiData);
   protected readonly all = ALL_BOOKS;

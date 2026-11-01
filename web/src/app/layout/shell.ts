@@ -8,10 +8,12 @@ import { SearchBox } from './search-box';
 import { SpoilerSelect } from './spoiler-select';
 import { LightboxView } from '../shared/lightbox-view';
 import { ReadingDialog } from './reading-dialog';
+import { LinkPreview } from './link-preview';
+import { OfflineSave } from './offline-save';
 
 @Component({
   selector: 'app-shell',
-  imports: [RouterOutlet, RouterLink, RouterLinkActive, SearchBox, SpoilerSelect, LightboxView, ReadingDialog],
+  imports: [RouterOutlet, RouterLink, RouterLinkActive, SearchBox, SpoilerSelect, LightboxView, ReadingDialog, LinkPreview, OfflineSave],
   host: { '(document:keydown.escape)': 'closeNavigation()' },
   templateUrl: './shell.html',
   styleUrl: './shell.css',
@@ -49,6 +51,7 @@ export class Shell {
       return 'M22 12a10 10 0 1 1-20 0 10 10 0 0 1 20 0ZM12 6v6l4 3';
     if (path.includes('ispytaniya')) return 'M22 12a10 10 0 1 1-20 0 10 10 0 0 1 20 0ZM9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3M12 17h.01';
     if (path.includes('stratemy')) return 'M3 3h18v18H3ZM3 9h18M3 15h18M9 3v18M15 3v18';
+    if (path.includes('novoe')) return 'M12 2v4M12 18v4M2 12h4M18 12h4M5 5l2.5 2.5M16.5 16.5 19 19M5 19l2.5-2.5M16.5 7.5 19 5';
     if (path === '/') return 'M3 10 12 3l9 7v11h-6v-7H9v7H3Z';
     return 'M4 4h16v16H4ZM8 8h8M8 12h8M8 16h5';
   }

@@ -1,8 +1,15 @@
 import { Injectable, inject } from '@angular/core';
 import { NavigationEnd, NavigationStart, Router } from '@angular/router';
 
+/** Key of the scroll position in the state of each history entry. */
+const KEY = 'scrollY';
+/** Wait after scrolling stops before recording the position (browsers limit how often history may be rewritten). */
+const SETTLE = 150;
+
 /**
- * Where each page was scrolled to, so back and forward return the reader to the same spot.
+ * Where each page was scrolled to, so back, forward and a reload return the reader to the same spot.
+ * The position lives in the page's own history entry, which the browser keeps across a reload and
+ * which knows nothing of the router's navigation ids (those start again after a reload).
  * Article text arrives after the navigation ends, so the position is re-applied until the page has settled,
  * and given up as soon as the reader scrolls themselves.
  * A new page starts at the top, except a link to a section (/slug/anchor): the article scrolls there
@@ -11,29 +18,50 @@ import { NavigationEnd, NavigationStart, Router } from '@angular/router';
 @Injectable({ providedIn: 'root' })
 export class ScrollMemory {
   private readonly router = inject(Router);
-  /** Scroll positions by the router's navigation id, which is kept in each history entry. */
-  private readonly saved = new Map<number, number>();
-  private last = 0;
   private target: number | undefined;
   private stop: (() => void) | undefined;
+  private pending: ReturnType<typeof setTimeout> | undefined;
 
-  /** True while a back/forward navigation is still bringing the page back to its old position. */
+  /** True while a back/forward navigation or a reload is still bringing the page back to its old position. */
   get restoring(): boolean { return this.stop != null; }
 
   init(): void {
     history.scrollRestoration = 'manual';
+    let first = true;
     this.router.events.subscribe((e) => {
       if (e instanceof NavigationStart) {
         this.cancel();
-        this.saved.set(this.last, scrollY);
-        this.target = e.navigationTrigger === 'popstate' && e.restoredState
-          ? this.saved.get(e.restoredState.navigationId) : undefined;
+        // a popstate has already switched history to the destination entry: its state holds the position;
+        // a link click still sits on the page being left: record where it was before the router moves on
+        if (e.navigationTrigger === 'popstate' || first) {
+          const y = history.state?.[KEY];
+          this.target = typeof y === 'number' ? y : undefined;
+        } else {
+          this.record();
+          this.target = undefined;
+        }
+        first = false;
       } else if (e instanceof NavigationEnd) {
-        this.last = e.id;
         if (this.target != null) this.restore(this.target);
         else if (!this.hasAnchor()) window.scrollTo(0, 0);
       }
     });
+    addEventListener('scroll', () => {
+      if (this.restoring) return;
+      clearTimeout(this.pending);
+      this.pending = setTimeout(() => this.record(), SETTLE);
+    }, { passive: true });
+    // a reload or a closed tab straight after scrolling
+    addEventListener('pagehide', () => this.record());
+  }
+
+  /** Writes the current position into the current history entry, keeping the router's own state. */
+  private record(): void {
+    clearTimeout(this.pending);
+    if (this.restoring || history.state?.[KEY] === scrollY) return;
+    try {
+      history.replaceState({ ...history.state, [KEY]: scrollY }, '');
+    } catch { /* too many history updates: the next scroll tries again */ }
   }
 
   private hasAnchor(): boolean {
@@ -70,7 +98,10 @@ export class ScrollMemory {
   }
 
   private cancel(): void {
+    const was = this.stop;
     this.stop?.();
     this.stop = undefined;
+    // the page now sits where the restore left it (or where the reader took it): keep that
+    if (was) this.record();
   }
 }

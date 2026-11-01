@@ -6,6 +6,8 @@ import RAW from '../../site.json';
  */
 export interface SiteConfig {
   url: string;
+  /** Address of a new issue in the public repo: readers report mistakes in articles there. */
+  issues?: string;
   /** Full name, used in page titles: «Статья · {name}». */
   name: string;
   /** Short name in the header. */

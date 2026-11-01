@@ -139,7 +139,13 @@
           @if (bookView()) {
             <h2 class="section-title" id="h-about">О книге</h2>
           }
-          <div class="prose" #content [attr.aria-busy]="body.isLoading() || null"></div>
+          <div
+            class="prose"
+            #content
+            [attr.aria-busy]="body.isLoading() || null"
+            (click)="bodyClick($event)"
+            (pointerdown)="bodyDown($event)"
+          ></div>
 
           <div class="prose">
             @for (f of families(); track f.title) {
@@ -177,6 +183,13 @@
                 }
               </p>
             </section>
+          }
+          @if (site.issues && articleBody()) {
+            <p class="report-line ui">
+              Нашли ошибку или неточность?
+              <button class="link" (pointerdown)="noteSelection()" (click)="report()">Сообщите нам</button>
+              — выделите неверное место в тексте, и оно попадёт в сообщение.
+            </p>
           }
         </article>
 

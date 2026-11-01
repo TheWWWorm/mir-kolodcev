@@ -61,6 +61,11 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/category/category').then((m) => m.CategoryPage),
   },
   {
+    path: 'novoe',
+    title: pageTitle('Что нового'),
+    loadComponent: () => import('./pages/changes/changes').then((m) => m.ChangesPage),
+  },
+  {
     path: 'c/:type',
     loadComponent: () => import('./pages/category/category').then((m) => m.CategoryPage),
   },

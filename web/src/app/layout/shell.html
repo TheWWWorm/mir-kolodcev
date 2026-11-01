@@ -62,7 +62,8 @@
         }
       </div>
     }
-    <app-spoiler-select class="drawer-spoil" />
+    <app-spoiler-select class="drawer-spoil" [stacked]="true" />
+    <app-offline-save />
     <p class="about">
       {{ site.about }}
     </p>
@@ -71,3 +72,4 @@
 </div>
 <app-lightbox-view />
 <app-reading-dialog />
+<app-link-preview />

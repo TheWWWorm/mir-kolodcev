@@ -27,3 +27,44 @@
   margin: 0 0 1.2em; padding: 8px 14px; border-left: 3px solid var(--wax);
   background: color-mix(in srgb, var(--wax) 7%, var(--sheet)); font: var(--fs-ui)/1.45 var(--sans); color: var(--ink-2);
 }
+
+/* report a mistake: a faint mark after each section heading, clearer when the heading is hovered */
+.prose :is(h2, h3) .report {
+  display: inline-grid;
+  place-items: center;
+  width: 1.6rem;
+  height: 1.6rem;
+  margin-left: 0.35em;
+  padding: 0;
+  vertical-align: middle;
+  background: none;
+  border: 0;
+  border-radius: var(--radius-s);
+  color: var(--ink-3);
+  opacity: 0;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+.prose :is(h2, h3) .report::before {
+  content: '';
+  width: 0.95rem;
+  height: 0.95rem;
+  background: currentColor;
+  -webkit-mask: var(--flag) center / contain no-repeat;
+  mask: var(--flag) center / contain no-repeat;
+  --flag: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 22V4m0 0h12l-2 4 2 4H4'/%3E%3C/svg%3E");
+}
+.prose :is(h2, h3):hover .report,
+.prose .report:focus-visible {
+  opacity: 0.75;
+}
+.prose .report:hover {
+  opacity: 1;
+  color: var(--wax);
+  background: var(--sheet-2);
+}
+@media (hover: none) {
+  .prose :is(h2, h3) .report {
+    opacity: 0.45;
+  }
+}

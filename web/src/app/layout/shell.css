@@ -175,11 +175,8 @@
   }
   .drawer-spoil {
     display: block;
-    margin: 20px 12px;
-    padding: 16px;
-    background: var(--sheet);
-    border-radius: 4px;
-    color: var(--ink);
+    margin: 22px 2px 0;
+    color: var(--side-ink-2);
   }
   .backdrop {
     position: fixed;

@@ -606,3 +606,21 @@ dd {
     margin: 0;
   }
 }
+
+.report-line {
+  margin: 34px 0 0;
+  padding-top: 16px;
+  border-top: 1px solid var(--rule);
+  font-size: var(--fs-ui);
+  color: var(--ink-3);
+}
+.report-line .link {
+  padding: 0;
+  background: none;
+  border: 0;
+  font: inherit;
+  color: var(--azure);
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
