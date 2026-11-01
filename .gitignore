@@ -4,16 +4,3 @@ dist/
 .wrangler/
 __pycache__/
 .DS_Store
-
-# source material and tooling — not published (same as Polari)
-*.doc
-*.docx
-*.fb2
-tactiq-*.txt
-/Pasted *.png
-/map3d/
-.claude/
-.work/
-output/
-web/README.md
-web/.vscode/
