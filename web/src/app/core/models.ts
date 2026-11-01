@@ -1,3 +1,5 @@
+import { SITE } from './site';
+
 export type ArticleType = 'book' | 'character' | 'house' | 'place' | 'event' | 'concept';
 
 /** Light article record from data/index.json (enough for lists, cards and search). */
@@ -67,15 +69,11 @@ export interface Family {
   people: FamilyPerson[];
 }
 
+/** A row of data/houses.tsv: its columns differ between the wikis (see houses.cols of the site). */
 export interface HouseRow {
   slug: string;
-  capital: string;
-  government: string;
-  army: string;
-  ending: string;
-  society: string;
-  color: string;
   notes: string;
+  [column: string]: string;
 }
 
 export interface Relation {
@@ -130,11 +128,4 @@ export interface WikiIndex {
   data: WikiExtra;
 }
 
-export const TYPE_LABELS: Record<ArticleType, { one: string; many: string; about: string }> = {
-  book: { one: 'Книга', many: 'Книги', about: 'Книги о мире колодцев.' },
-  character: { one: 'Персонаж', many: 'Персонажи', about: 'Люди мира колодцев — от писателей и солдат до генералов и каторжников.' },
-  house: { one: 'Страна', many: 'Страны и сообщества', about: 'Государства, армии, рода и сообщества мира колодцев.' },
-  place: { one: 'Место', many: 'Места', about: 'Страны, города, крепости и реки мира колодцев.' },
-  event: { one: 'Событие', many: 'События', about: 'Войны, сражения, заговоры и поворотные моменты.' },
-  concept: { one: 'Понятие', many: 'Понятия и мир', about: 'Колодцы, эсферы, браслеты, техника, обычаи и устройство мира.' },
-};
+export const TYPE_LABELS = SITE.types as Record<ArticleType, { one: string; many: string; about: string }>;

@@ -8,16 +8,22 @@ Entry format:
     type: character | place | event | concept | house | book
     aliases: Comma, Separated, Names
     summary: One-sentence summary.
-    chapters: 2, 6, 14     (chapters of the novel where the entry appears; first/last drive the spoiler filter)
+    books: b1, b2          (book ids from content/book/*.md; wikis whose spoiler unit is the book)
+    chapters: 2, 6, 14     (chapters of the novel; wikis whose spoiler unit is the chapter)
     image: optional
     infobox:
     - Key: value (may contain [[links]])
     ---
     Markdown body. Links: [[slug]] or [[slug|text]].
+
+Usage: build.py [site folder]   (default: the folder of this script, as in a published site repo)
+The site's web/src/site.json says how spoilers are counted (spoilers.unit: books | chapters).
 """
 import html, json, os, re, sys, glob
 
-ROOT = os.path.dirname(os.path.abspath(__file__))
+ROOT = os.path.abspath(sys.argv[1]) if len(sys.argv) > 1 else os.path.dirname(os.path.abspath(__file__))
+CONFIG = json.load(open(os.path.join(ROOT, 'web', 'src', 'site.json'), encoding='utf-8'))
+BY_CHAPTER = CONFIG['spoilers']['unit'] == 'chapters'
 TITLES = {}
 TYPES = ['book', 'character', 'house', 'place', 'event', 'concept']
 
@@ -67,8 +73,10 @@ def inline(text, links, slugs, missing):
     return text
 
 
-# Spoiler units are chapters of the novel: a heading that ends with "(гл. 3–7)" belongs to chapter 7.
-BOOK = 'sledy-na-vode'
+# Book mentioned in a heading -> reading order of that book (used by the spoiler filter).
+BOOK_PATTERNS = [(o, rx) for o, rx in CONFIG.get('build', {}).get('bookPatterns', [])]
+# When spoiler units are chapters of one novel, a heading that ends with "(гл. 3–7)" belongs to chapter 7.
+BOOK = CONFIG.get('build', {}).get('book', '')
 
 
 MONTHS = {'январ': 1, 'феврал': 2, 'март': 3, 'апрел': 4, 'ма': 5, 'июн': 6, 'июл': 7, 'август': 8, 'сентябр': 9, 'октябр': 10, 'ноябр': 11, 'декабр': 12}
@@ -99,14 +107,18 @@ def when_iso(when):
 
 
 def heading_book(title):
-    """Largest chapter number in a "(гл. N)" / "(главы N–M)" parenthesis of a heading, else 0."""
+    """Spoiler unit of a heading: the latest book it names, or the largest chapter in "(гл. N)" / "(главы N–M)"; else 0."""
+    if not BY_CHAPTER:
+        t = title.lower().replace('ё', 'е')
+        found = [o for o, rx in BOOK_PATTERNS if re.search(rx.replace('ё', 'е'), t)]
+        return max(found) if found else 0
     nums = [int(n) for p in re.findall(r'\((?:гл\.|глав[аы])\s*([^)]*)\)', title) for n in re.findall(r'\d+', p)]
     return max(nums) if nums else 0
 
 
 def chapter_iso(n):
-    """In-world 'date' of chapter n: the novel names no years, so the timeline orders events by chapter."""
-    return str(1000 + int(n)) if str(n).isdigit() else ''
+    """In-world 'date' of chapter n when the novel names no years: the timeline orders events by chapter."""
+    return str(1000 + int(n)) if BY_CHAPTER and str(n).isdigit() else ''
 
 
 def render(md, slugs, missing):
@@ -238,8 +250,14 @@ def load_data(slugs, data):
     if os.path.exists(rel):
         for r in read_tsv(rel):
             if r.get('a') in slugs and r.get('b') in slugs:
-                ch = r.get('ch', '')
-                extra['relations'].append(dict(a=r['a'], b=r['b'], t=r.get('type', ''), l=r.get('label', ''), o=int(ch) if ch.isdigit() else 0))
+                # the relation is revealed in a chapter (column ch) or in a book (column book)
+                if BY_CHAPTER:
+                    ch = r.get('ch', '')
+                    o = int(ch) if ch.isdigit() else 0
+                else:
+                    o = data.get(r.get('book', ''), {}).get('order', 0)
+                    o = o if o != 999 else 0
+                extra['relations'].append(dict(a=r['a'], b=r['b'], t=r.get('type', ''), l=r.get('label', ''), o=o))
     # routes.tsv: a hero's travels stop by stop, including chapters told by others; on the maps it
     # replaces the route drawn from the hero's own chapters.
     rt = os.path.join(d, 'routes.tsv')
@@ -293,14 +311,14 @@ def main():
             slug=slug, type=e['type'], title=meta.get('title', slug), ru=meta.get('full', meta.get('ru', '')),
             aliases=[a.strip() for a in meta.get('aliases', '').split(',') if a.strip()],
             summary=re.sub(r'\[\[([^\]|]+)\|?([^\]]*)\]\]', lambda m: m.group(2) or TITLES.get(m.group(1).strip(), m.group(1)), meta.get('summary', '')),
-            books=[BOOK] if e['type'] != 'book' and BOOK in entries else [],
+            books=([BOOK] if e['type'] != 'book' and BOOK in entries else []) if BY_CHAPTER else [b.strip() for b in meta.get('books', '').split(',') if b.strip()],
             chapters=sorted({int(c) for c in re.findall(r'\d+', meta.get('chapters', ''))}),
             order=int(meta.get('order', '999') or 999), group=meta.get('group', ''),
             infobox=info, html=body_html, toc=toc, links=links, words=len(text.split()),
             text=' '.join(text.split())[:1200],
         )
         when = next((v for k, v in meta['infobox'] if k in ('Дата', 'Время', 'Год', 'Датировка')), '')
-        glava = next((v for k, v in meta['infobox'] if k == 'Глава'), '')
+        glava = next((v for k, v in meta['infobox'] if k == 'Глава'), '') if BY_CHAPTER else ''
         if glava and re.search(r'\d+', glava):
             data[slug]['when'] = re.sub(r'\[\[([^\]|]+)\|?([^\]]*)\]\]', lambda m: m.group(2) or TITLES.get(m.group(1).strip(), m.group(1)), 'гл. ' + glava)
             data[slug]['iso'] = chapter_iso(re.search(r'\d+', glava).group(0))
@@ -308,13 +326,22 @@ def main():
             when = re.sub(r'\[\[([^\]|]+)\|?([^\]]*)\]\]', lambda m: m.group(2) or TITLES.get(m.group(1).strip(), m.group(1)), when)
             data[slug]['when'] = when
             data[slug]['iso'] = when_iso(when)
+    orders = {k: v['order'] for k, v in data.items() if v['type'] == 'book'}
     for slug, d in data.items():
         d['backlinks'] = sorted(s for s, o in data.items() if slug in o['links'] and s != slug)
-        # spoiler range: chapters listed in the header plus chapters named in the section headings
-        heads = [heading_book(t) for t in re.findall(r'<h[234][^>]*>(.*?)</h[234]>', d['html'])]
-        chs = [c for c in d.pop('chapters') + heads if c]
-        d['first'] = 0 if d['type'] == 'book' else (min(chs) if chs else 0)
-        d['last'] = max(chs) if chs else 0
+        chapters = d.pop('chapters')
+        if BY_CHAPTER:
+            # spoiler range: chapters listed in the header plus chapters named in the section headings
+            heads = [heading_book(t) for t in re.findall(r'<h[234][^>]*>(.*?)</h[234]>', d['html'])]
+            chs = [c for c in chapters + heads if c]
+            d['first'] = 0 if d['type'] == 'book' else (min(chs) if chs else 0)
+            d['last'] = max(chs) if chs else 0
+        else:
+            bo = [orders[b] for b in d['books'] if b in orders]
+            if d['type'] == 'book':
+                bo = [d['order']]
+            d['first'] = min(bo) if bo else 0
+            d['last'] = max(bo) if bo else 0
         # lead image (portrait/cover/emblem/map) goes to the infobox, the rest to the gallery
         refs = img_by_slug.get(slug, [])
         lead = next((i for r, i in refs if r != 'gallery'), None)

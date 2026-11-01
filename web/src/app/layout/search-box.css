@@ -39,7 +39,7 @@ input:focus {
   background: var(--sheet);
   border: 1px solid var(--rule);
   border-radius: var(--radius-m);
-  box-shadow: 0 14px 34px rgba(35, 10, 12, 0.18);
+  box-shadow: 0 14px 34px var(--popup-shadow);
   max-height: 70vh;
   overflow-y: auto;
 }

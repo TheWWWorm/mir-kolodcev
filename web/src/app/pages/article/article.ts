@@ -22,6 +22,7 @@ import { HousesTable } from '../../shared/houses-table';
 import { SpoilerSelect } from '../../layout/spoiler-select';
 import { MiniMap } from '../../shared/mini-map';
 import { applySpoilers } from './spoiler-dom';
+import { SITE, pageTitle } from '../../core/site';
 
 /** Infobox fields that hold stable facts rather than plot outcomes. */
 const SAFE_ROW = /^(полное имя|имя|дом|род|род \(праматерь\)|родители|отец|мать|первое появление|тип|вид|что это|расположение|место|место действия|климат|экономика|столица|крупнейшие города|население|герб|девиз|цвета|народ|святыни|достопримечательности|дороги|соседи|внешность|возраст|номер в цикле|предыдущая книга|следующая книга|главные герои|дата|действие|хронология)$/i;
@@ -39,6 +40,7 @@ const DATED = /(?:(январ|феврал|март|апрел|ма[йяе]|ию
   styleUrl: './article.css',
 })
 export class ArticlePage {
+  protected readonly site = SITE;
   protected readonly compact = signal(matchMedia('(max-width: 700px)').matches);
   protected updateCompact(): void {
     this.compact.set(matchMedia('(max-width: 700px)').matches);
@@ -148,7 +150,7 @@ export class ArticlePage {
   constructor() {
     effect(() => {
       const m = this.meta();
-      this.titleSvc.setTitle(m ? `${m.title} · Мир колодцев · Вики` : 'Статья не найдена · Мир колодцев · Вики');
+      this.titleSvc.setTitle(pageTitle(m ? m.title : 'Статья не найдена'));
     });
     // The body HTML is produced by build.py from our own markdown, so it is inserted as-is and then
     // post-processed: sections about unread books are folded, general sections are blurred.

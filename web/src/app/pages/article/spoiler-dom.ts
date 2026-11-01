@@ -1,3 +1,5 @@
+import { SITE } from '../../core/site';
+
 /**
  * Folds article sections about books after `level` and blurs sections that are not tied to a book.
  * Headings carry data-book="<reading order>" (set by build.py when the heading names a book).
@@ -14,7 +16,7 @@ export function applySpoilers(body: HTMLElement, level: number, bookTitle: (orde
     ph.className = 'spoil-ph';
     ph.innerHTML = `<b></b><span></span><button class="btn" type="button">Показать</button>`;
     ph.querySelector('b')!.textContent = heading.textContent;
-    ph.querySelector('span')!.textContent = `Скрыто: события главы ${bookTitle(book)}, которую вы ещё не прочитали.`;
+    ph.querySelector('span')!.textContent = `Скрыто: события ${SITE.spoilers.word.gen} ${bookTitle(book)}, которую вы ещё не прочитали.`;
     heading.before(ph);
     const items: HTMLElement[] = [];
     ph.querySelector('button')!.addEventListener('click', () => { items.forEach((x) => (x.hidden = false)); ph.remove(); });
@@ -38,6 +40,6 @@ export function applySpoilers(body: HTMLElement, level: number, bookTitle: (orde
 
   const note = document.createElement('p');
   note.className = 'spoil-note';
-  note.textContent = `Защита от спойлеров: ${hidden ? `${hidden} разд. о непрочитанных главах свёрнуто, ` : ''}общие разделы размыты. Нажмите на размытый текст, чтобы прочитать его.`;
+  note.textContent = `Защита от спойлеров: ${hidden ? `${hidden} разд. о непрочитанных ${SITE.spoilers.word.prepPl} свёрнуто, ` : ''}общие разделы размыты. Нажмите на размытый текст, чтобы прочитать его.`;
   body.prepend(note);
 }

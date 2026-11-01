@@ -1,5 +1,6 @@
-/* «Имперский архив»: холодная бумага, чернила ночного неба, имперская лазурь и сургуч.
-   Искра (--spark) — только для карты и шкалы времени. */
+/* Global styles: the site's tokens, then the engine's base styles, then the site's own rules.
+   (tokens.css and site.css come from the site folder.) */
 @import './styles/tokens.css';
 @import './styles/base.css';
 @import './styles/prose.css';
+@import './styles/site.css';

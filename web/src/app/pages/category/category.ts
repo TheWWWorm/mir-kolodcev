@@ -4,6 +4,7 @@ import { RouterLink } from '@angular/router';
 import { byTitle } from '../../core/format';
 import { ArticleMeta, ArticleType, TYPE_LABELS } from '../../core/models';
 import { norm } from '../../core/search';
+import { SITE, pageTitle } from '../../core/site';
 import { WikiData } from '../../core/wiki-data';
 import { ArticleCard } from '../../shared/article-card';
 import { HousesTable } from '../../shared/houses-table';
@@ -12,14 +13,7 @@ import { Roster } from './roster';
 import { Chronicle } from './chronicle';
 
 /** Regions from north to south, then the rest; catch-all groups go last. */
-const REGIONS = [
-  'Дангар',
-  'Олландия',
-  'Мергана',
-  'Каталия',
-  'Соланта',
-  'Реки и моря',
-];
+const REGIONS = SITE.regions;
 const weight = (xs: ArticleMeta[]) => xs.reduce((n, a) => n + a.backlinks.length, 0);
 const rank = (g: string) => (/^Проч/.test(g) ? 99 : REGIONS.includes(g) ? REGIONS.indexOf(g) : 50);
 
@@ -33,8 +27,11 @@ const rank = (g: string) => (/^Проч/.test(g) ? 99 : REGIONS.includes(g) ? RE
         <h1 class="page-title">{{ type() === 'event' ? 'Хронология' : l.many }}</h1>
         <p class="page-sub">{{ l.about }} Статей: {{ list().length }}.</p>
         @if (type() === 'house') {
-          <h2 class="section-title">Страны: сводная таблица</h2>
+          <h2 class="section-title">{{ site.houses.title }}</h2>
           <app-houses-table />
+          @if (site.features.families) {
+            <p class="ui"><a routerLink="/families">Родословные древа главных родов</a></p>
+          }
         }
         @if (type() !== 'character' && type() !== 'event') {
           <input
@@ -113,6 +110,7 @@ const rank = (g: string) => (/^Проч/.test(g) ? 99 : REGIONS.includes(g) ? RE
   `,
 })
 export class CategoryPage {
+  protected readonly site = SITE;
   readonly type = input.required<string>();
   private readonly data = inject(WikiData);
   protected readonly filter = signal('');
@@ -159,7 +157,7 @@ export class CategoryPage {
     const title = inject(Title);
     effect(() =>
       title.setTitle(
-        `${this.type() === 'event' ? 'Хронология' : (this.label()?.many ?? 'Раздел')} · Мир колодцев · Вики`,
+        pageTitle(this.type() === 'event' ? 'Хронология' : (this.label()?.many ?? 'Раздел')),
       ),
     );
   }

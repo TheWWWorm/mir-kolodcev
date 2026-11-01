@@ -1,6 +1,7 @@
 import { Component, inject, input } from '@angular/core';
 import { ALL_BOOKS, Spoilers } from '../core/spoilers';
 import { WikiData } from '../core/wiki-data';
+import { SITE, fmt } from '../core/site';
 
 /** Header control: which book the reader has finished. */
 @Component({
@@ -8,18 +9,18 @@ import { WikiData } from '../core/wiki-data';
   template: `
     <label
       [class.on]="spoilers.active()"
-      title="Скрывать события глав, которые вы ещё не прочитали"
+      [title]="'Скрывать события ' + site.spoilers.word.genPl + ', которые вы ещё не прочитали'"
     >
       <span class="lbl">Прочитано до</span>
       <select
         class="field"
         [class.expanded]="expanded()"
         (change)="spoilers.setLevel(+$any($event.target).value)"
-        aria-label="Прочитано до главы"
+        [attr.aria-label]="'Прочитано до ' + site.spoilers.word.gen"
       >
-        <option [value]="all" [selected]="spoilers.level() === all">весь роман</option>
+        <option [value]="all" [selected]="spoilers.level() === all">весь {{ site.work.acc }}</option>
         @for (b of spoilers.parts(); track b.order) {
-          <option [value]="b.order" [selected]="spoilers.level() === b.order">гл. {{ b.order }}. {{ b.title }}</option>
+          <option [value]="b.order" [selected]="spoilers.level() === b.order">{{ option(b) }}</option>
         }
       </select>
     </label>
@@ -54,6 +55,10 @@ import { WikiData } from '../core/wiki-data';
   `,
 })
 export class SpoilerSelect {
+  protected readonly site = SITE;
+  protected option(b: { order: number; title: string }): string {
+    return fmt(SITE.spoilers.option, { n: b.order, title: b.title });
+  }
   readonly expanded = input(false);
   protected readonly spoilers = inject(Spoilers);
   protected readonly data = inject(WikiData);

@@ -1,6 +1,7 @@
 import { Component, ElementRef, inject, signal, viewChild } from '@angular/core';
 import { NavigationEnd, Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { Meta } from '@angular/platform-browser';
+import { SITE } from '../core/site';
 import { Theme } from '../core/theme';
 import { WikiData } from '../core/wiki-data';
 import { SearchBox } from './search-box';
@@ -32,40 +33,8 @@ export class Shell {
     this.menuButton()?.nativeElement.focus();
   }
 
-  protected readonly nav = [
-    {
-      title: 'Энциклопедия',
-      links: [
-        ['/', 'Заглавная'],
-        ['/c/book', 'Книги'],
-        ['/c/character', 'Персонажи'],
-        ['/c/house', 'Страны и сообщества'],
-        ['/c/place', 'Места'],
-        ['/c/event', 'События'],
-        ['/c/concept', 'Понятия и мир'],
-      ],
-    },
-    {
-      title: 'Исследовать',
-      links: [
-        ['/map', 'Карта и время'],
-        ['/map3d', '3D-карта'],
-        ['/relations', 'Связи персонажей'],
-        ['/gallery', 'Иллюстрации'],
-        ['/ispytaniya', 'Испытания'],
-      ],
-    },
-    {
-      title: 'Справочники',
-      links: [
-        ['/all', 'Все статьи'],
-        ['/chronology', 'Хронология'],
-        ['/glossarij', 'Глоссарий'],
-        ['/tsitaty', 'Цитаты'],
-        ['/random', 'Случайная статья'],
-      ],
-    },
-  ];
+  protected readonly site = SITE;
+  protected readonly nav = SITE.nav;
   protected navIcon(path: string): string {
     if (path.includes('book'))
       return 'M12 5C8 2 3 3 2 4v16c4-2 7-1 10 1 3-2 6-3 10-1V4c-4-2-7-1-10 1Zm0 0v16';
@@ -79,6 +48,7 @@ export class Shell {
     if (path.includes('event') || path.includes('khron') || path.includes('chronology'))
       return 'M22 12a10 10 0 1 1-20 0 10 10 0 0 1 20 0ZM12 6v6l4 3';
     if (path.includes('ispytaniya')) return 'M22 12a10 10 0 1 1-20 0 10 10 0 0 1 20 0ZM9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3M12 17h.01';
+    if (path.includes('stratemy')) return 'M3 3h18v18H3ZM3 9h18M3 15h18M9 3v18M15 3v18';
     if (path === '/') return 'M3 10 12 3l9 7v11h-6v-7H9v7H3Z';
     return 'M4 4h16v16H4ZM8 8h8M8 12h8M8 16h5';
   }

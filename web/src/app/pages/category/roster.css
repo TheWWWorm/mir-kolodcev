@@ -86,7 +86,7 @@ figcaption {
   color: var(--ink-2);
 }
 .pale figcaption {
-  color: #5b3a37;
+  color: var(--pale-ink);
 }
 .feature-copy {
   display: flex;
@@ -100,7 +100,7 @@ figcaption {
   color: var(--ink-2);
 }
 .pale .affiliation {
-  color: #5b3a37;
+  color: var(--pale-ink);
 }
 .feature h2 {
   font-size: clamp(1.8rem, 2.6vw, 2.8rem);
@@ -118,7 +118,7 @@ figcaption {
   margin-bottom: 20px;
 }
 .pale .role {
-  color: #5b3a37;
+  color: var(--pale-ink);
 }
 .feature-action {
   margin-top: auto;

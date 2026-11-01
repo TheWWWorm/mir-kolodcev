@@ -3,6 +3,7 @@ import { RouterLink } from '@angular/router';
 import { ArticleMeta, TYPE_LABELS } from '../core/models';
 import { Spoilers } from '../core/spoilers';
 import { WikiData } from '../core/wiki-data';
+import { SITE } from '../core/site';
 
 @Component({
   selector: 'app-article-card',
@@ -19,10 +20,10 @@ import { WikiData } from '../core/wiki-data';
           <span class="ru">{{ a.ru }}</span>
         }
         @if (spoilers.hidden(a)) {
-          <span class="sum muted">Появляется в главе {{ spoilers.bookTitle(a.first) }}</span>
+          <span class="sum muted">Появляется в {{ site.spoilers.word.prep }} {{ spoilers.bookTitle(a.first) }}</span>
         } @else {
           <span class="sum">{{
-            spoilers.partly(a) ? 'Часть сведений скрыта с учётом выбранной книги.' : a.summary
+            spoilers.partly(a) ? 'Часть сведений скрыта с учётом выбранной ' + site.spoilers.word.gen + '.' : a.summary
           }}</span>
         }
         @if (showType()) {
@@ -34,6 +35,7 @@ import { WikiData } from '../core/wiki-data';
   styleUrl: './article-card.css',
 })
 export class ArticleCard {
+  protected readonly site = SITE;
   readonly article = input.required<ArticleMeta>();
   readonly showType = input(false);
   protected readonly spoilers = inject(Spoilers);

@@ -4,6 +4,7 @@ import { Chapter } from '../../core/models';
 import { Spoilers } from '../../core/spoilers';
 import { WikiData } from '../../core/wiki-data';
 import { Stop, byDate, chapterStops, keyStops } from './timeline';
+import { SITE } from '../../core/site';
 
 /** One stop of a hero's route: consecutive chapters in the same place are merged. */
 export interface RouteStep { key: string; items: { book: string; c: Chapter }[] }
@@ -51,9 +52,9 @@ export class TimelinePanel implements OnDestroy {
   });
   protected readonly ticks = computed(() => {
     const s = this.stops();
-    const marks = ['1005', '1010', '1015', '1020', '1025', '1030'];
+    const marks = SITE.timeline.marks;
     return marks.map((m) => ({ m, i: s.findIndex((x) => x.d >= m) })).filter((t) => t.i > 0)
-      .map((t) => ({ i: t.i, left: (t.i / Math.max(s.length - 1, 1)) * 100, label: 'гл. ' + (+t.m - 1000) }));
+      .map((t) => ({ i: t.i, left: (t.i / Math.max(s.length - 1, 1)) * 100, label: tickLabel(t.m) }));
   });
 
   /** Narrators with at least three mapped chapters among the books the reader has read. */
@@ -139,12 +140,13 @@ export class TimelinePanel implements OnDestroy {
   }
 }
 
-const FOLD_KEY = 'kolodcy.timeline.folded';
+const FOLD_KEY = `${SITE.key}.timeline.folded`;
 function readFolded(): boolean {
   try { return localStorage.getItem(FOLD_KEY) === '1'; } catch { return false; }
 }
 
 function tickLabel(m: string): string {
+  if (SITE.spoilers.unit === 'chapters') return 'гл. ' + (+m - 1000);
   const months = ['', 'янв.', 'фев.', 'март', 'апр.', 'май', 'июнь', 'июль', 'авг.', 'сен.', 'окт.', 'нояб.', 'дек.'];
   return m.length > 4 ? `${months[+m.slice(5)]} ${m.slice(0, 4)}` : `${m} г.`;
 }

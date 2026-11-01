@@ -1,6 +1,8 @@
 import { inject } from '@angular/core';
 import { Router, Routes } from '@angular/router';
 import { WikiData } from './core/wiki-data';
+import { SITE, pageTitle } from './core/site';
+import { SITE_ROUTES } from './site-routes';
 
 const randomArticle = () => {
   const all = inject(WikiData).articles();
@@ -10,43 +12,47 @@ const randomArticle = () => {
 export const routes: Routes = [
   {
     path: '',
-    title: 'Мир колодцев · Вики',
+    title: SITE.name,
     loadComponent: () => import('./pages/home/home').then((m) => m.HomePage),
   },
   { path: 'random', canActivate: [randomArticle], children: [] },
   {
     path: 'all',
-    title: 'Все статьи · Мир колодцев · Вики',
+    title: pageTitle('Все статьи'),
     loadComponent: () => import('./pages/all-articles/all-articles').then((m) => m.AllArticlesPage),
   },
   {
     path: 'map',
-    title: 'Карта · Мир колодцев · Вики',
+    title: pageTitle('Карта'),
     loadComponent: () => import('./pages/map/map-page').then((m) => m.MapPage),
   },
   {
     path: 'map3d',
-    title: '3D-карта · Мир колодцев · Вики',
+    title: pageTitle('3D-карта'),
     loadComponent: () => import('./pages/map3d/map3d-page').then((m) => m.Map3dPage),
   },
   {
     path: 'gallery',
-    title: 'Галерея · Мир колодцев · Вики',
+    title: pageTitle('Галерея'),
     loadComponent: () => import('./pages/gallery/gallery').then((m) => m.GalleryPage),
   },
-  {
-    path: 'families',
-    title: 'Родословные · Мир колодцев · Вики',
-    loadComponent: () => import('./pages/families/families').then((m) => m.FamiliesPage),
-  },
+  ...(SITE.features.families
+    ? [
+        {
+          path: 'families',
+          title: pageTitle('Родословные'),
+          loadComponent: () => import('./pages/families/families').then((m) => m.FamiliesPage),
+        },
+      ]
+    : []),
   {
     path: 'relations',
-    title: 'Связи персонажей · Мир колодцев · Вики',
+    title: pageTitle('Связи персонажей'),
     loadComponent: () => import('./pages/relations/relations').then((m) => m.RelationsPage),
   },
   {
     path: 'ispytaniya',
-    title: 'Испытания · Мир колодцев · Вики',
+    title: pageTitle('Испытания'),
     loadComponent: () => import('./pages/quiz/quiz-page').then((m) => m.QuizPage),
   },
   {
@@ -58,9 +64,11 @@ export const routes: Routes = [
     path: 'c/:type',
     loadComponent: () => import('./pages/category/category').then((m) => m.CategoryPage),
   },
+  // pages only one wiki has (src/app/site-routes.ts of the site)
+  ...SITE_ROUTES,
   {
     path: 'search/:q',
-    title: 'Поиск · Мир колодцев · Вики',
+    title: pageTitle('Поиск'),
     loadComponent: () => import('./pages/search/search-page').then((m) => m.SearchPage),
   },
   {

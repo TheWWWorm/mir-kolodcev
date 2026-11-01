@@ -4,9 +4,10 @@ import { MapPlace } from '../../core/models';
 import { WikiData } from '../../core/wiki-data';
 import { Stop } from './timeline';
 import { RouteStep, TimelinePanel } from './timeline-panel';
+import { SITE } from '../../core/site';
 
 /** Logical size of the map image: it is always drawn at this size, whatever the resolution of the file. */
-const W0 = 3200, H0 = 2400;
+const W0 = SITE.map.w, H0 = SITE.map.h;
 
 interface View { z: number; x: number; y: number; base: number; }
 
@@ -18,6 +19,7 @@ interface View { z: number; x: number; y: number; base: number; }
   host: { '(window:resize)': 'fit()' },
 })
 export class MapPage {
+  protected readonly site = SITE;
   /** ?p=<place key> opens the map centred on that place. */
   readonly p = input<string>();
   protected readonly data = inject(WikiData);

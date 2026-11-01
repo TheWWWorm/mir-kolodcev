@@ -1,0 +1,8 @@
+/* Site-specific global rules, loaded after the engine styles. */
+/* headings in the display face */
+h1,
+h2 {
+  font-family: var(--display);
+  font-weight: 600;
+  letter-spacing: 0;
+}

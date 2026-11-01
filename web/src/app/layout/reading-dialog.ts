@@ -1,16 +1,17 @@
 import { Component, ElementRef, effect, inject, viewChild } from '@angular/core';
 import { ALL_BOOKS, Spoilers } from '../core/spoilers';
 import { WikiData } from '../core/wiki-data';
+import { SITE } from '../core/site';
 
 /** First visit: ask which book the reader has finished, so spoilers are hidden from the start. */
 @Component({
   selector: 'app-reading-dialog',
   template: `
     <dialog #dlg aria-labelledby="reading-title" (cancel)="pick(all)">
-      <button type="button" class="x" (click)="pick(all)" aria-label="Закрыть — показывать весь роман" title="Закрыть">×</button>
-      <h2 id="reading-title">До какой главы вы прочитали «Следы на воде»?</h2>
-      <p>Вики скроет события и персонажей из глав, до которых вы ещё не добрались. Выбор можно изменить в любой момент в поле «Прочитано до» вверху страницы.</p>
-      <button type="button" class="all" (click)="pick(all)">Прочитал всё — показывать весь роман</button>
+      <button type="button" class="x" (click)="pick(all)" [attr.aria-label]="'Закрыть — показывать весь ' + site.work.acc" title="Закрыть">×</button>
+      <h2 id="reading-title">{{ site.spoilers.question }}</h2>
+      <p>Вики скроет события и персонажей из {{ site.spoilers.word.genPl }}, до которых вы ещё не добрались. Выбор можно изменить в любой момент в поле «Прочитано до» вверху страницы.</p>
+      <button type="button" class="all" (click)="pick(all)">Прочитал всё — показывать весь {{ site.work.acc }}</button>
       <ol>
         @for (b of spoilers.parts(); track b.order) {
           <li>
@@ -35,7 +36,7 @@ import { WikiData } from '../core/wiki-data';
       overflow-y: auto;
     }
     dialog::backdrop {
-      background: rgba(22, 8, 10, 0.72);
+      background: var(--backdrop);
     }
     h2 {
       margin: 0 0 8px;
@@ -150,6 +151,7 @@ import { WikiData } from '../core/wiki-data';
   `,
 })
 export class ReadingDialog {
+  protected readonly site = SITE;
   protected readonly data = inject(WikiData);
   private readonly spoilers = inject(Spoilers);
   protected readonly all = ALL_BOOKS;

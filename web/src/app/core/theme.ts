@@ -1,6 +1,7 @@
 import { Injectable, signal } from '@angular/core';
+import { SITE } from './site';
 
-const KEY = 'kolodcy.theme';
+const KEY = `${SITE.key}.theme`;
 
 @Injectable({ providedIn: 'root' })
 export class Theme {

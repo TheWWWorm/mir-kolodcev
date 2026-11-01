@@ -3,6 +3,7 @@ import { RouterLink } from '@angular/router';
 import { WikiImage } from '../../core/models';
 import { WikiData } from '../../core/wiki-data';
 import { Figure } from '../../shared/figure';
+import { SITE } from '../../core/site';
 
 const FAN = 'Читательский фан-арт';
 
@@ -23,7 +24,7 @@ const KINDS: [string, (im: WikiImage) => boolean][] = [
     <div class="page">
       <div class="crumbs"><a routerLink="/">Заглавная</a></div>
       <h1 class="page-title">Иллюстрации</h1>
-      <p class="page-sub">Карты, обложки и иллюстрации к роману. Нажмите на изображение, чтобы увеличить.</p>
+      <p class="page-sub">{{ site.gallery.sub }}</p>
       @for (g of groups(); track g.name) {
         <h2 class="section-title">{{ g.name }}</h2>
         @if (g.name === fan) {
@@ -41,6 +42,7 @@ const KINDS: [string, (im: WikiImage) => boolean][] = [
   `,
 })
 export class GalleryPage {
+  protected readonly site = SITE;
   private readonly data = inject(WikiData);
   protected readonly fan = FAN;
   protected readonly groups = computed(() => {

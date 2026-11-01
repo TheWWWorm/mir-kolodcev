@@ -15,20 +15,20 @@
     <button class="btn" [attr.aria-pressed]="!group()" (click)="group.set('')">Все</button
     ><button
       class="btn"
-      [attr.aria-pressed]="group() === 'Каталия'"
-      (click)="group.set('Каталия')"
+      [attr.aria-pressed]="group() === primary[0]"
+      (click)="group.set(primary[0])"
     >
-      Каталия</button
+      {{ primary[0] }}</button
     ><button
       class="btn"
-      [attr.aria-pressed]="group() === 'Олландия'"
-      (click)="group.set('Олландия')"
+      [attr.aria-pressed]="group() === primary[1]"
+      (click)="group.set(primary[1])"
     >
-      Олландия</button
+      {{ primary[1] }}</button
     ><select
       class="field"
       aria-label="Другие группы персонажей"
-      [value]="group() === 'Каталия' || group() === 'Олландия' ? '' : group()"
+      [value]="primary.includes(group()) ? '' : group()"
       (change)="group.set($any($event.target).value)"
     >
       <option value="">Другие разделы</option>

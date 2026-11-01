@@ -5,6 +5,7 @@ import { norm } from '../../core/search';
 import { Spoilers } from '../../core/spoilers';
 import { WikiData } from '../../core/wiki-data';
 import type { Group } from './views';
+import { SITE } from '../../core/site';
 
 @Component({
   selector: 'app-roster',
@@ -26,12 +27,14 @@ export class Roster {
     one.addEventListener('change', update);
     inject(DestroyRef).onDestroy(() => { two.removeEventListener('change', update); one.removeEventListener('change', update); });
   }
+  /** The two groups with their own buttons; the rest are in the select. */
+  protected readonly primary = SITE.roster.primary;
   protected readonly query = signal('');
   protected readonly group = signal('');
   protected readonly letter = signal('');
   protected readonly items = computed(() => this.groups().flatMap((g) => g.items));
   protected readonly features = computed(() =>
-    ['alvaro-da-silva', 'red']
+    SITE.roster.features
       .map((slug) => this.items().find((a) => a.slug === slug))
       .filter((a): a is ArticleMeta => !!a && !!this.data.imageSrc(a) && !this.spoilers.hidden(a)),
   );
@@ -41,7 +44,7 @@ export class Roster {
     ),
   );
   protected readonly otherGroups = computed(() =>
-    this.groups().filter((g) => !['Каталия', 'Олландия'].includes(g.name)),
+    this.groups().filter((g) => !this.primary.includes(g.name)),
   );
   protected readonly filtering = computed(
     () => !!(this.query().trim() || this.group() || this.letter()),
@@ -76,9 +79,9 @@ export class Roster {
   protected readonly count = computed(() => this.results().reduce((n, g) => n + g.items.length, 0));
   protected summary(a: ArticleMeta): string {
     return this.spoilers.hidden(a)
-      ? 'Появляется в поздних главах.'
+      ? `Появляется в поздних ${SITE.spoilers.word.prepPl}.`
       : this.spoilers.partly(a)
-        ? 'Часть сведений скрыта с учётом выбранной главы.'
+        ? `Часть сведений скрыта с учётом выбранной ${SITE.spoilers.word.gen}.`
         : a.summary.split(/[;.]/)[0];
   }
   protected credit(a: ArticleMeta): string {

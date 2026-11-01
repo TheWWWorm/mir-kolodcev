@@ -22,10 +22,10 @@ import { WikiData } from '../core/wiki-data';
     }
   `,
   styles: `
-    .veil { position: fixed; inset: 0; z-index: 100; display: grid; place-items: center; padding: 16px; background: rgba(20, 8, 10, .88); }
-    .inner { position: relative; max-width: min(1100px, 100%); text-align: center; color: #f2e8e3; font: var(--fs-ui)/1.4 var(--sans); }
+    .veil { position: fixed; inset: 0; z-index: 100; display: grid; place-items: center; padding: 16px; background: var(--veil); }
+    .inner { position: relative; max-width: min(1100px, 100%); text-align: center; color: var(--veil-ink); font: var(--fs-ui)/1.4 var(--sans); }
     img { max-height: calc(100vh - 150px); background: #fff; }
-    p { margin: 8px 0 0; } span { display: block; color: #c4ada6; font-style: italic; }
+    p { margin: 8px 0 0; } span { display: block; color: var(--veil-ink-2); font-style: italic; }
     .arts a { color: #9fd0f5; margin: 0 8px; }
     .x { position: absolute; top: -8px; right: -8px; width: 36px; height: 36px; border: 0; border-radius: 50%; background: rgba(255,255,255,.15); color: #fff; font-size: 22px; cursor: pointer; }
   `,

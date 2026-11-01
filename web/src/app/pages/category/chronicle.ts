@@ -5,6 +5,7 @@ import { norm } from '../../core/search';
 import { Spoilers } from '../../core/spoilers';
 import { WikiData } from '../../core/wiki-data';
 import { SpoilerSelect } from '../../layout/spoiler-select';
+import { SITE } from '../../core/site';
 
 const MONTHS = [
   'Январь',
@@ -84,6 +85,7 @@ const titleOf = (t: string) => {
   styleUrl: './chronicle.css',
 })
 export class Chronicle {
+  protected readonly site = SITE;
   readonly items = input.required<ArticleMeta[]>();
   protected readonly data = inject(WikiData);
   protected readonly spoilers = inject(Spoilers);
@@ -116,7 +118,7 @@ export class Chronicle {
         era: this.eraLabel(byArticle.get(a.slug)?.era),
         w: byArticle.get(a.slug)?.w,
         title: a.title,
-        summary: this.spoilers.partly(a) ? 'Часть сведений скрыта с учётом выбранной книги.' : a.summary,
+        summary: this.spoilers.partly(a) ? `Часть сведений скрыта с учётом выбранной ${SITE.spoilers.word.gen}.` : a.summary,
         group: a.group,
         article: a,
         open: a.slug,

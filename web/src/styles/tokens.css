@@ -38,6 +38,21 @@
   --radius-m: 5px;
   --measure: 68ch;
   color-scheme: light;
+  /* engine colours that differ between the wikis */
+  --header-top: 3px solid var(--azure);
+  --brand-font: 600 1.75rem/1 var(--display);
+  --backdrop: rgba(22, 8, 10, 0.72);
+  --popup-shadow: rgba(35, 10, 12, 0.18);
+  --pale-ink: #5b3a37;
+  --map-bg: #b9a89e;
+  --map-land: rgba(122, 28, 36, 0.9);
+  --map-muted: #7d6866;
+  --map-ink: #2a1416;
+  --map-tip-ink: #f6ece7;
+  --veil: rgba(20, 8, 10, 0.88);
+  --veil-ink: #f2e8e3;
+  --veil-ink-2: #c4ada6;
+  --boot-ink: #7d6866;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme='light']) {

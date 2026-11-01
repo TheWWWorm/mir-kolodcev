@@ -7,9 +7,12 @@ import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-const SITE = 'https://mirkolodcev.wwworm.com';
-const NAME = 'Мир колодцев · Вики';
-const OUT = join(dirname(fileURLToPath(import.meta.url)), '..', 'dist', 'web', 'browser');
+const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
+// names, sections and types of the wiki (src/site.json, the same config the app uses)
+const CONFIG = JSON.parse(readFileSync(join(ROOT, 'src', 'site.json'), 'utf8'));
+const SITE = CONFIG.url;
+const NAME = CONFIG.name;
+const OUT = join(ROOT, 'dist', 'web', 'browser');
 
 const shell = readFileSync(join(OUT, 'index.html'), 'utf8');
 const { articles, images } = JSON.parse(readFileSync(join(OUT, 'data', 'index.json'), 'utf8'));
@@ -17,23 +20,10 @@ const about = shell.match(/<meta\s+name="description"\s+content="([^"]*)"/)[1];
 
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
-const TYPES = {
-  book: ['Книги', 'Книги о мире колодцев.'],
-  character: ['Персонажи', 'Люди мира колодцев — от писателей и солдат до генералов и каторжников.'],
-  house: ['Страны и сообщества', 'Государства, армии, рода и сообщества мира колодцев.'],
-  place: ['Места', 'Страны, города, крепости и реки мира колодцев.'],
-  event: ['События', 'Войны, сражения, заговоры и поворотные моменты.'],
-  concept: ['Понятия и мир', 'Колодцы, эсферы, браслеты, техника, обычаи и устройство мира.'],
-};
+const TYPES = Object.fromEntries(Object.entries(CONFIG.types).map(([t, l]) => [t, [l.many, l.about]]));
 // sections of the app with fixed addresses (the titles match app.routes.ts)
 const SECTIONS = [
-  ['all', 'Все статьи', 'Алфавитный указатель всех статей вики.'],
-  ['map', 'Карта', 'Карта мира колодцев и шкала времени: где и когда происходили главные события романа «Следы на воде».'],
-  ['map3d', '3D-карта', 'Трёхмерная карта мира колодцев: горы, реки, леса, города и дороги.'],
-  ['gallery', 'Галерея', 'Карты и иллюстрации к роману «Следы на воде».'],
-  ['relations', 'Связи персонажей', 'Схема связей персонажей романа «Следы на воде».'],
-  ['ispytaniya', 'Испытания', 'Тесты на знание мира колодцев трёх уровней сложности.'],
-  ['chronology', 'Хронология', 'Хронология событий романа «Следы на воде».'],
+  ...CONFIG.sections,
   ...Object.entries(TYPES).map(([t, [many, text]]) => [`c/${t}`, many, text]),
 ];
 

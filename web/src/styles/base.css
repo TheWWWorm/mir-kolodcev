@@ -46,17 +46,11 @@ h4 {
   line-height: 1.2;
   letter-spacing: -0.015em;
 }
-h1,
-h2 {
-  font-family: var(--display);
-  font-weight: 600;
-  letter-spacing: 0;
-}
 
 .boot {
   padding: 30vh 20px;
   text-align: center;
-  color: #7d6866;
+  color: var(--boot-ink);
   font:
     1.2rem Georgia,
     serif;

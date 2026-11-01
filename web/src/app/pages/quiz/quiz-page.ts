@@ -3,6 +3,7 @@ import { Component, computed, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 import { WikiData } from '../../core/wiki-data';
+import { SITE } from '../../core/site';
 
 interface Question { q: string; options: string[]; answer: number; explain: string; slug: string }
 interface Grade { min: number; title: string; text: string }
@@ -11,7 +12,7 @@ interface Level { id: string; title: string; intro: string; questions: Question[
 interface Asked extends Question { picked: number | null }
 
 const PER_TEST = 15;
-const BEST_KEY = 'kolodcy.quiz-best';
+const BEST_KEY = `${SITE.key}.quiz-best`;
 
 function shuffle<T>(xs: T[]): T[] {
   const a = [...xs];
@@ -34,8 +35,8 @@ function readBest(): Record<string, number> {
       <div class="crumbs"><a routerLink="/">Заглавная</a></div>
       <h1 class="page-title">Испытания</h1>
       @if (!level()) {
-        <p class="page-sub">Проверьте, насколько хорошо вы знаете мир колодцев. В каждом испытании {{ perTest }} вопросов, выбранных наугад, и в конце — вердикт.</p>
-        <p class="warn ui">Вопросы касаются всего романа и могут раскрывать сюжет.</p>
+        <p class="page-sub">Проверьте, насколько хорошо вы знаете {{ site.quiz.subject }}. В каждом испытании {{ perTest }} вопросов, выбранных наугад, и в конце — вердикт.</p>
+        <p class="warn ui">Вопросы касаются всего {{ site.work.gen }} и могут раскрывать сюжет.</p>
         @if (levels().length) {
           <div class="levels">
             @for (l of levels(); track l.id; let i = $index) {
@@ -149,6 +150,7 @@ function readBest(): Record<string, number> {
   `,
 })
 export class QuizPage {
+  protected readonly site = SITE;
   private readonly data = inject(WikiData);
   private readonly quiz = toSignal(inject(HttpClient).get<{ levels: Level[] }>('data/quiz.json'));
   protected readonly levels = computed(() => this.quiz()?.levels ?? []);

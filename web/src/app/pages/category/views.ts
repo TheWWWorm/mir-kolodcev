@@ -2,6 +2,7 @@ import { Component, computed, inject, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { byTitle, plural } from '../../core/format';
 import { ArticleMeta } from '../../core/models';
+import { SITE } from '../../core/site';
 import { Spoilers } from '../../core/spoilers';
 import { WikiData } from '../../core/wiki-data';
 
@@ -41,7 +42,7 @@ const MONTHS_NOM = [
                 <a [routerLink]="'/' + a.slug">{{ a.title }}</a>
               </dt>
               <dd [class.spoil-soft]="spoilers.partly(a)">
-                {{ spoilers.hidden(a) ? 'Появляется в поздних книгах.' : a.summary }}
+                {{ spoilers.hidden(a) ? 'Появляется в поздних ' + site.spoilers.word.prepPl + '.' : a.summary }}
               </dd>
             }
           </dl>
@@ -110,6 +111,7 @@ const MONTHS_NOM = [
   `,
 })
 export class Atlas {
+  protected readonly site = SITE;
   readonly groups = input.required<Group[]>();
   protected readonly spoilers = inject(Spoilers);
   private readonly data = inject(WikiData);
@@ -195,6 +197,7 @@ export class Atlas {
   `,
 })
 export class Lexicon {
+  protected readonly site = SITE;
   readonly items = input.required<ArticleMeta[]>();
   protected readonly spoilers = inject(Spoilers);
   private readonly data = inject(WikiData);
@@ -237,9 +240,9 @@ export class Lexicon {
             <p>
               {{
                 spoilers.hidden(b.a)
-                  ? 'Появляется в поздних книгах.'
+                  ? 'Появляется в поздних ' + site.spoilers.word.prepPl + '.'
                   : spoilers.partly(b.a)
-                    ? 'Сведения о сюжете скрыты с учётом выбранной книги.'
+                    ? 'Сведения о сюжете скрыты с учётом выбранной ' + site.spoilers.word.gen + '.'
                     : b.a.summary
               }}
             </p>
@@ -347,6 +350,7 @@ export class Lexicon {
   `,
 })
 export class Shelf {
+  protected readonly site = SITE;
   protected readonly spoilers = inject(Spoilers);
   readonly items = input.required<ArticleMeta[]>();
   private readonly data = inject(WikiData);

@@ -1,8 +1,9 @@
 import { Component, computed, inject, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { SITE } from '../core/site';
 import { WikiData } from '../core/wiki-data';
 
-const W0 = 3200, H0 = 2410;
+const W0 = SITE.map.w, H0 = SITE.map.h;
 
 /** A crop of the world map framing the given places, with clickable pins. */
 @Component({
@@ -11,7 +12,7 @@ const W0 = 3200, H0 = 2410;
   template: `
     @if (box(); as b) {
       <div class="mm" [style.aspect-ratio]="b.ratio">
-        <img src="img/map.jpg" alt="" loading="lazy" [style.width.%]="10000 / b.w" [style.left.%]="(-b.x / b.w) * 100" [style.top.%]="(-b.y / b.h) * 100" />
+        <img [src]="mapImage" alt="" loading="lazy" [style.width.%]="10000 / b.w" [style.left.%]="(-b.x / b.w) * 100" [style.top.%]="(-b.y / b.h) * 100" />
         @for (p of pins(); track p.k) {
           <a class="pin" [class.on]="p.k === focus()" [class.land]="p.kind === 'land'" [routerLink]="'/' + p.k" [attr.aria-label]="p.title"
             [style.left.%]="((p.x - b.x) / b.w) * 100" [style.top.%]="((p.y - b.y) / b.h) * 100"><i></i>@if (labels()) {<span>{{ p.title }}</span>}</a>
@@ -21,18 +22,19 @@ const W0 = 3200, H0 = 2410;
   `,
   styles: `
     :host { display: block; }
-    .mm { position: relative; overflow: hidden; background: #b9a89e; }
+    .mm { position: relative; overflow: hidden; background: var(--map-bg); }
     img { position: absolute; max-width: none; height: auto; filter: saturate(.85); }
     .pin { position: absolute; transform: translate(-50%, -50%); display: flex; align-items: center; z-index: 1; }
     .pin i { width: 9px; height: 9px; border-radius: 50%; background: var(--wax); border: 2px solid #fff; box-shadow: 0 1px 3px rgba(0, 0, 0, .5); }
     .pin.land i { border-radius: 2px; background: #24527a; }
     .pin.on i { width: 14px; height: 14px; background: var(--spark); box-shadow: 0 0 0 5px var(--spark-glow); }
-    .pin span { position: absolute; left: 12px; padding: 0 5px; white-space: nowrap; background: rgba(248, 249, 245, .92); color: #2a1416; font: 500 11.5px/1.5 var(--sans); }
+    .pin span { position: absolute; left: 12px; padding: 0 5px; white-space: nowrap; background: rgba(248, 249, 245, .92); color: var(--map-ink); font: 500 11.5px/1.5 var(--sans); }
     .pin:hover { text-decoration: none; z-index: 2; }
     .pin:hover span { background: #fff; }
   `,
 })
 export class MiniMap {
+  protected readonly mapImage = SITE.map.image;
   /** Place keys (article slugs or map-only keys) to frame. */
   readonly keys = input.required<string[]>();
   readonly focus = input('');

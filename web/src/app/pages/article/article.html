@@ -9,8 +9,8 @@
       <div class="gate">
         <h1 class="page-title">{{ m.title }}</h1>
         <p>
-          Эта статья относится к главе {{ spoilers.bookTitle(m.first) }}, а вы отметили, что
-          прочитали роман только до главы {{ spoilers.bookTitle(spoilers.level()) }}.
+          Эта статья относится к {{ site.spoilers.word.prep }} {{ spoilers.bookTitle(m.first) }}, а вы отметили, что
+          прочитали {{ site.work.acc }} только до {{ spoilers.upTo(spoilers.level()) }}.
         </p>
         <button class="btn" (click)="spoilers.reveal(m.slug)">Показать статью со спойлерами</button>
       </div>
