@@ -15,6 +15,7 @@ import { byTitle, plural } from '../../core/format';
 import { TYPE_LABELS } from '../../core/models';
 import { Spoilers } from '../../core/spoilers';
 import { WikiData } from '../../core/wiki-data';
+import { ScrollMemory } from '../../core/scroll-memory';
 import { ChapterTable } from '../../shared/chapter-table';
 import { FamilyTree } from '../../shared/family-tree';
 import { Figure } from '../../shared/figure';
@@ -51,6 +52,7 @@ export class ArticlePage {
   protected readonly data = inject(WikiData);
   protected readonly spoilers = inject(Spoilers);
   private readonly titleSvc = inject(Title);
+  private readonly scrollMemory = inject(ScrollMemory);
   protected readonly types = TYPE_LABELS;
 
   protected readonly meta = computed(() => this.data.get(this.slug()));
@@ -173,7 +175,8 @@ export class ArticlePage {
       if (!b) return;
       const smooth = shown === slug;
       shown = slug;
-      if (!a) return;
+      // back/forward to a section returns to where the reader was, not to the section's heading
+      if (!a || this.scrollMemory.restoring) return;
       queueMicrotask(() => {
         const t = document.getElementById(a);
         const el = t?.closest('details:not([open])') ?? t;

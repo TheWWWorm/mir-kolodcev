@@ -1,9 +1,10 @@
 import { ApplicationConfig, inject, isDevMode, provideAppInitializer, provideBrowserGlobalErrorListeners } from '@angular/core';
 import { provideHttpClient, withFetch } from '@angular/common/http';
-import { NavigationEnd, Router, provideRouter, withComponentInputBinding, withNavigationErrorHandler } from '@angular/router';
+import { provideRouter, withComponentInputBinding, withNavigationErrorHandler } from '@angular/router';
 import { provideServiceWorker } from '@angular/service-worker';
 import { routes } from './app.routes';
 import { WikiData } from './core/wiki-data';
+import { ScrollMemory } from './core/scroll-memory';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -16,16 +17,7 @@ export const appConfig: ApplicationConfig = {
     provideAppInitializer(() => inject(WikiData).load()),
     // offline reading and installing as an app; a new deploy is picked up on the next visit
     provideServiceWorker('ngsw-worker.js', { enabled: !isDevMode(), registrationStrategy: 'registerWhenStable:30000' }),
-    // a new page starts at the top, except a link to a section (/slug/anchor): the article scrolls
-    // there itself, and a scroll to the top first would make the page jump up and back down
-    provideAppInitializer(() => {
-      const router = inject(Router);
-      router.events.subscribe((e) => {
-        if (!(e instanceof NavigationEnd)) return;
-        let r = router.routerState.snapshot.root;
-        while (r.firstChild) r = r.firstChild;
-        if (!r.paramMap.has('anchor')) window.scrollTo(0, 0);
-      });
-    }),
+    // back/forward return to the old scroll position; a new page starts at the top
+    provideAppInitializer(() => inject(ScrollMemory).init()),
   ],
 };

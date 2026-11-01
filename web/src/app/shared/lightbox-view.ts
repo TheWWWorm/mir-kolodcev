@@ -15,7 +15,7 @@ import { WikiData } from '../core/wiki-data';
           <img [src]="im.src" [alt]="im.caption" />
           <p><b>{{ im.caption }}</b>@if (im.credit) {<span>{{ im.credit }}</span>}</p>
           @if (im.slugs.length) {
-            <p class="arts">@for (s of im.slugs; track s) {<a [routerLink]="'/' + s" (click)="lightbox.close()">{{ data.title(s) }}</a>}</p>
+            <p class="arts">@for (s of im.slugs; track s) {<a [routerLink]="'/' + s" [replaceUrl]="true" (click)="follow($event, '/' + s)">{{ data.title(s) }}</a>}</p>
           }
         </div>
       </div>
@@ -33,5 +33,14 @@ import { WikiData } from '../core/wiki-data';
 export class LightboxView {
   protected readonly lightbox = inject(Lightbox);
   protected readonly data = inject(WikiData);
+  /**
+   * A link from the image replaces the image's history entry, so back from that page returns to the one
+   * underneath. A link to the page already on screen just closes the image.
+   */
+  protected follow(ev: MouseEvent, path: string): void {
+    if (ev.button || ev.metaKey || ev.ctrlKey || ev.shiftKey || ev.altKey) return;
+    if (location.pathname === path) this.lightbox.close();
+    else this.lightbox.current.set(null);
+  }
   protected readonly img = computed(() => { const i = this.lightbox.current(); return i == null ? null : this.data.images()[i]; });
 }

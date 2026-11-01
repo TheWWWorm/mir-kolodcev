@@ -139,7 +139,7 @@
           @if (bookView()) {
             <h2 class="section-title" id="h-about">О книге</h2>
           }
-          <div class="prose" #content></div>
+          <div class="prose" #content [attr.aria-busy]="body.isLoading() || null"></div>
 
           <div class="prose">
             @for (f of families(); track f.title) {
