@@ -30,6 +30,7 @@ export interface SiteConfig {
     revealedIn?: Record<string, number>;
   };
   types: Record<string, { one: string; many: string; about: string }>;
+  /** Links starting with http lead to another site (e.g. the sister wiki) and open as plain links. */
   nav: { title: string; links: [string, string][] }[];
   /** Fixed pages of the app for the prerender: [path, title, description]. */
   sections: [string, string, string][];

@@ -51,14 +51,21 @@
       <div class="group">
         <div class="group-title">{{ g.title }}</div>
         @for (l of g.links; track l[0]) {
-          <a
-            [routerLink]="l[0]"
-            routerLinkActive="on"
-            [routerLinkActiveOptions]="{ exact: true }"
-            ariaCurrentWhenActive="page"
-            ><svg viewBox="0 0 24 24" aria-hidden="true"><path [attr.d]="navIcon(l[0])" /></svg
-            ><span>{{ l[1] }}</span></a
-          >
+          @if (l[0].startsWith('http')) {
+            <a [href]="l[0]"
+              ><svg viewBox="0 0 24 24" aria-hidden="true"><path [attr.d]="navIcon(l[0])" /></svg
+              ><span>{{ l[1] }}</span></a
+            >
+          } @else {
+            <a
+              [routerLink]="l[0]"
+              routerLinkActive="on"
+              [routerLinkActiveOptions]="{ exact: true }"
+              ariaCurrentWhenActive="page"
+              ><svg viewBox="0 0 24 24" aria-hidden="true"><path [attr.d]="navIcon(l[0])" /></svg
+              ><span>{{ l[1] }}</span></a
+            >
+          }
         }
       </div>
     }

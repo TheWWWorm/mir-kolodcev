@@ -38,6 +38,8 @@ export class Shell {
   protected readonly site = SITE;
   protected readonly nav = SITE.nav;
   protected navIcon(path: string): string {
+    if (path.startsWith('http'))
+      return 'M22 12a10 10 0 1 1-20 0 10 10 0 0 1 20 0ZM2 12h20M12 2a15 15 0 0 1 0 20M12 2a15 15 0 0 0 0 20';
     if (path.includes('book'))
       return 'M12 5C8 2 3 3 2 4v16c4-2 7-1 10 1 3-2 6-3 10-1V4c-4-2-7-1-10 1Zm0 0v16';
     if (path.includes('character'))

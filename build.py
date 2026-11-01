@@ -67,6 +67,8 @@ def inline(text, links, slugs, missing):
         return f'<span class="wl-missing" title="No article yet">{label}</span>'
 
     text = re.sub(r'\[\[([^\]]+)\]\]', link, text)
+    # [text](https://…) or [text](/path): a plain link outside the wiki's own articles
+    text = re.sub(r'(?<!\[)\[([^\[\]]+)\]\(((?:https?://|/)[^\s)]+)\)', r'<a href="\2">\1</a>', text)
     text = re.sub(r'\*\*(.+?)\*\*', r'<strong>\1</strong>', text)
     text = re.sub(r'(?<![\w*])\*(?!\s)(.+?)(?<!\s)\*(?![\w*])', r'<em>\1</em>', text)
     text = re.sub(r'(?<!\w)_(?!\s)(.+?)(?<!\s)_(?!\w)', r'<em>\1</em>', text)
