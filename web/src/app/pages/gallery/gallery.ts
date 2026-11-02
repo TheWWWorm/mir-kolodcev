@@ -4,6 +4,7 @@ import { WikiImage } from '../../core/models';
 import { WikiData } from '../../core/wiki-data';
 import { Figure } from '../../shared/figure';
 import { SITE } from '../../core/site';
+import { Spoilers } from '../../core/spoilers';
 
 const FAN = 'Читательский фан-арт';
 
@@ -44,11 +45,12 @@ const KINDS: [string, (im: WikiImage) => boolean][] = [
 export class GalleryPage {
   protected readonly site = SITE;
   private readonly data = inject(WikiData);
+  private readonly spoilers = inject(Spoilers);
   protected readonly fan = FAN;
   protected readonly groups = computed(() => {
     const taken = new Set<number>();
     return KINDS.map(([name, test]) => {
-      const items = this.data.images().map((im, i) => ({ im, i })).filter(({ im, i }) => !taken.has(i) && test(im)).map(({ i }) => i);
+      const items = this.data.images().map((im, i) => ({ im, i })).filter(({ im, i }) => !taken.has(i) && this.spoilers.bookVisible(im.from ?? 0) && test(im)).map(({ i }) => i);
       items.forEach((i) => taken.add(i));
       return { name, items };
     }).filter((g) => g.items.length);

@@ -129,6 +129,11 @@ export class ArticlePage {
     return first === last ? first + ' год' : first + '–' + last + ' годы';
   });
   protected readonly lead = computed(() => this.meta()?.image ?? null);
+  protected readonly portraits = computed(() => {
+    const lead = this.lead();
+    const portraits = this.articleBody()?.portraits;
+    return portraits?.length ? portraits : lead === null ? [] : [lead];
+  });
   protected readonly bookChips = computed(() =>
     (this.meta()?.books ?? [])
       .filter((b) => b !== this.slug() && this.data.get(b))

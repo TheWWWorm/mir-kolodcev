@@ -200,7 +200,7 @@ def render(md, slugs, missing):
 
 
 def load_images():
-    """images.tsv: file, articles ("slug" or "slug:role", comma-separated), caption, credit."""
+    """images.tsv: file, articles, caption, credit, optional first book/chapter, optional period label."""
     path = os.path.join(ROOT, 'images.tsv')
     images, by_slug = [], {}
     if not os.path.exists(path):
@@ -208,12 +208,16 @@ def load_images():
     for line in open(path, encoding='utf-8'):
         if not line.strip() or line.startswith('#'):
             continue
-        cols = line.rstrip('\n').split('\t') + ['', '', '']
+        cols = line.rstrip('\n').split('\t') + ['', '', '', '', '']
         fn, arts, caption, credit = cols[:4]
         if not os.path.exists(os.path.join(ROOT, 'web', 'public', 'img', fn)):
             print(f'warning: images.tsv: missing file {fn}', file=sys.stderr)
             continue
         img = dict(src='img/' + fn, caption=caption, credit=credit, slugs=[])
+        if cols[4]:
+            img['from'] = int(cols[4])
+        if cols[5]:
+            img['period'] = cols[5]
         for a in arts.split(','):
             slug, _, role = a.strip().partition(':')
             if slug:
@@ -401,7 +405,10 @@ def main():
         refs = img_by_slug.get(slug, [])
         lead = next((i for r, i in refs if r != 'gallery'), None)
         d['image'] = lead
-        d['gallery'] = [i for r, i in refs if i != lead]
+        portraits = [i for r, i in refs if r == 'portrait']
+        if len(portraits) > 1:
+            d['portraits'] = portraits
+        d['gallery'] = [i for r, i in refs if i != lead and r != 'portrait']
     for slug in img_by_slug:
         if slug not in data:
             print(f'warning: images.tsv: unknown article {slug}', file=sys.stderr)
@@ -430,7 +437,7 @@ def main():
     for f in glob.glob(os.path.join(art_dir, '*.json')):
         if os.path.splitext(os.path.basename(f))[0] not in data:
             os.remove(f)
-    heavy = ('html', 'toc', 'infobox', 'links', 'gallery')
+    heavy = ('html', 'toc', 'infobox', 'links', 'gallery', 'portraits')
     dump = lambda o: json.dumps(o, ensure_ascii=False, separators=(',', ':'))
     for slug, d in data.items():
         with open(os.path.join(art_dir, slug + '.json'), 'w', encoding='utf-8') as fh:

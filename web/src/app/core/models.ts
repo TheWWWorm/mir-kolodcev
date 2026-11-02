@@ -33,6 +33,7 @@ export interface ArticleBody {
   infobox: [string, string][];
   links: string[];
   gallery: number[];
+  portraits?: number[];
 }
 
 export interface WikiImage {
@@ -40,6 +41,10 @@ export interface WikiImage {
   caption: string;
   credit: string;
   slugs: string[];
+  /** First book/chapter whose events this image may reveal. */
+  from?: number;
+  /** The period of the character's life shown in the portrait. */
+  period?: string;
 }
 
 export interface Chapter {

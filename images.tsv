@@ -1,4 +1,4 @@
-# file (web/public/img/)	articles (first = main; role per article: slug or slug:portrait / slug:cover / slug:emblem / slug:map)	caption	credit
+# file (web/public/img/)	articles (first = main; role per article: slug or slug:portrait / slug:cover / slug:emblem / slug:map)	caption	credit	first book/chapter (optional)	period (optional)
 map.jpg	mir-kolodtsev:map,kataliya,ollandiya,dangar,mergana,olandskaya-vojna	Авторская карта мира колодцев с пометками к первой книге: Дангар, Олландия, Мергана и Каталия	Карта: Алексей Сафин
 portrait-alvaro-da-silva-leyendecker.webp	alvaro-da-silva:portrait	Альваро да Силва — портрет по описанию в романе, в стиле Дж. К. Лейендекера	Автор: WWWorm
 portrait-fatima-leyendecker.webp	fatima:portrait	Фатима Ир-Рейя — портрет по описанию в романе, в стиле Дж. К. Лейендекера	Автор: WWWorm
@@ -6,8 +6,8 @@ portrait-fernan-gerejra-leyendecker.webp	fernan-gerejra:portrait	Фернан Г
 portrait-beatris-leyendecker.webp	beatris:portrait	Беатрис — портрет по описанию в романе, в стиле Дж. К. Лейендекера	Автор: WWWorm
 portrait-karlos-leyendecker.webp	karlos:portrait	Карлос эль Нинья — портрет по описанию в романе, в стиле Дж. К. Лейендекера	Автор: WWWorm
 portrait-ditrikh-leyendecker.webp	ditrikh:portrait	Дитрих фон Дорт — портрет по описанию в романе, в стиле Дж. К. Лейендекера	Автор: WWWorm
-portrait-red-leyendecker.webp	red:portrait	Рэд — портрет по описанию в романе, в стиле Дж. К. Лейендекера	Автор: WWWorm
-portrait-joriksen-leyendecker.webp	joriksen:portrait	Фритьоф Йориксен — портрет по описанию в романе, в стиле Дж. К. Лейендекера	Автор: WWWorm
+portrait-red-leyendecker.webp	red:portrait	Рэд — портрет по описанию в романе, в стиле Дж. К. Лейендекера	Автор: WWWorm	4	Дунквальд · начало неволи
+portrait-joriksen-leyendecker.webp	joriksen:portrait	Фритьоф Йориксен — портрет по описанию в романе, в стиле Дж. К. Лейендекера	Автор: WWWorm	4	Дунквальд · молодой фишмайстер
 portrait-landau-leyendecker.webp	landau:portrait	Ландау — портрет по описанию в романе, в стиле Дж. К. Лейендекера	Автор: WWWorm
 portrait-greta-leyendecker.webp	greta:portrait	Грета — портрет по описанию в романе, в стиле Дж. К. Лейендекера	Автор: WWWorm
 portrait-yakka-leyendecker.webp	yakka:portrait	Якка — портрет по описанию в романе, в стиле Дж. К. Лейендекера	Автор: WWWorm
@@ -17,7 +17,7 @@ portrait-lents-leyendecker.webp	lents:portrait	Владислав Ленц — �
 portrait-elza-leyendecker.webp	elza:portrait	Эльза фон Вальбрехт — портрет по описанию в романе, в стиле Дж. К. Лейендекера	Автор: WWWorm
 portrait-milosh-leyendecker.webp	milosh:portrait	Милош — портрет по описанию в романе, в стиле Дж. К. Лейендекера	Автор: WWWorm
 portrait-katrina-leyendecker.webp	katrina:portrait	Катрина фон Лурд — портрет по описанию в романе, в стиле Дж. К. Лейендекера	Автор: WWWorm
-portrait-sokol-leyendecker.webp	sokol:portrait	Чёрный сокол — портрет по описанию в романе, в стиле Дж. К. Лейендекера	Автор: WWWorm
+portrait-sokol-leyendecker.webp	klyajn:portrait	Чёрный сокол — ранний портрет Вольфганга фон Кляйна, в стиле Дж. К. Лейендекера	Автор: WWWorm	4	Дунквальд · лейтенант
 portrait-dezerej-leyendecker.webp	dezerej:portrait	Габриэль Дезерей — портрет по описанию в романе, в стиле Дж. К. Лейендекера	Автор: WWWorm
 portrait-liess-van-khalm-leyendecker.webp	liess-van-khalm:portrait	Лиесс ван Хальм — портрет по описанию в романе, в стиле Дж. К. Лейендекера	Автор: WWWorm
 portrait-mor-leyendecker.webp	mor:portrait	Мор — портрет по описанию в романе, в стиле Дж. К. Лейендекера	Автор: WWWorm
@@ -25,7 +25,7 @@ portrait-izabel-leyendecker.webp	izabel:portrait	Изабель эль Нинь�
 portrait-malysh-leyendecker.webp	malysh:portrait	Малыш — портрет по описанию в романе, в стиле Дж. К. Лейендекера	Автор: WWWorm
 portrait-filippe-leyendecker.webp	filippe:portrait	Филиппе ди Берро — портрет по описанию в романе, в стиле Дж. К. Лейендекера	Автор: WWWorm
 portrait-lyusil-leyendecker.webp	lyusil:portrait	Люсиль Герейра — портрет по описанию в романе, в стиле Дж. К. Лейендекера	Автор: WWWorm
-portrait-klyajn-leyendecker.webp	klyajn:portrait	Вольфганг фон Кляйн — портрет по описанию в романе, в стиле Дж. К. Лейендекера	Автор: WWWorm
+portrait-klyajn-leyendecker.webp	klyajn:portrait	Вольфганг фон Кляйн — майор за столом допроса, в стиле Дж. К. Лейендекера	Автор: WWWorm	6	Лацень · майор
 portrait-amir-sedoj-leyendecker.webp	amir-sedoj:portrait	Амир Седой — портрет по описанию в романе, в стиле Дж. К. Лейендекера	Автор: WWWorm
 portrait-salvador-leyendecker.webp	salvador:portrait	Сальвадор — портрет по описанию в романе, в стиле Дж. К. Лейендекера	Автор: WWWorm
 portrait-otto-leyendecker.webp	otto:portrait	Отто — портрет по описанию в романе, в стиле Дж. К. Лейендекера	Автор: WWWorm
@@ -74,3 +74,6 @@ portrait-zolotoj-dukat-leyendecker.webp	zolotoj-dukat:portrait	Золотой Д
 portrait-kara-leyendecker.webp	karmensita-estevos	Кара — как её вспоминает Рэд; портрет по описанию в романе, в стиле Дж. К. Лейендекера	Автор: WWWorm
 portrait-brojenshtoff-leyendecker.webp	brojenshtoff:portrait	Бройенштофф — портрет по описанию в романе, в стиле Дж. К. Лейендекера	Автор: WWWorm
 portrait-roman-surzhikov.jpg	roman-surzhikov:portrait	Роман Суржиков, рисованный портрет с подписью автора	Источник: «Миры Романа Суржикова вики» (Fandom)
+portrait-joriksen-later-leyendecker.webp	joriksen:portrait	Фритьоф Йориксен — мастер-рыбак первого ранга, в стиле Дж. К. Лейендекера	Автор: WWWorm	14	Хофштадт · мастер первого ранга
+portrait-red-later-leyendecker.webp	red:portrait	Рэд и Грета — признание о письме (гл. 33), в стиле Дж. К. Лейендекера	Автор: WWWorm	33	Дунквальд · признание Греты
+portrait-red-neubiy-leyendecker.webp	red:portrait	Рэд — Неубий на осмотре у Дитриха (гл. 2), в стиле Дж. К. Лейендекера	Автор: WWWorm	33	Олландия · Неубий во взводе фузилеров

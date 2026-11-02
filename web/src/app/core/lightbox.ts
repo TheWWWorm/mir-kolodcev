@@ -9,6 +9,7 @@ import { NavigationEnd, NavigationStart, Router } from '@angular/router';
 @Injectable({ providedIn: 'root' })
 export class Lightbox {
   readonly current = signal<number | null>(null);
+  readonly sequence = signal<number[]>([]);
   /** The router's id of the page on screen: a lightbox entry left from an earlier visit is not reopened. */
   private page: number | undefined;
 
@@ -20,14 +21,16 @@ export class Lightbox {
     // back from the image closes it; forward onto it shows it again
     addEventListener('popstate', (e) => {
       const st = e.state;
+      this.sequence.set(st?.lightboxImages ?? (st?.lightbox != null ? [st.lightbox] : []));
       this.current.set(st?.lightbox != null && st.navigationId === this.page ? st.lightbox : null);
     });
   }
 
-  open(i: number): void {
-    const st = { ...history.state, lightbox: i };
+  open(i: number, images: number[] = [i]): void {
+    const st = { ...history.state, lightbox: i, lightboxImages: images };
     if (history.state?.lightbox != null) history.replaceState(st, '');
     else history.pushState(st, '');
+    this.sequence.set(images);
     this.current.set(i);
   }
 
