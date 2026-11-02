@@ -125,10 +125,26 @@ def chapter_iso(n):
 
 def render(md, slugs, missing):
     links, out, toc = set(), [], []
-    para, lst, quote = [], None, []
+    para, lst, quote, table = [], None, [], []
+
+    def cells(row):
+        return [c.strip() for c in row.strip().strip('|').split('|')]
 
     def flush():
-        nonlocal para, lst, quote
+        nonlocal para, lst, quote, table
+        if table:
+            rows = [cells(r) for r in table]
+            # a |---|---| line under the first row makes it the header
+            head = None
+            if len(rows) > 1 and all(re.fullmatch(r':?-+:?', c) for c in rows[1]):
+                head = rows[0]
+                rows = rows[2:]
+            html = '<div class="table-wrap"><table class="table">'
+            if head:
+                html += '<thead><tr>' + ''.join(f'<th>{inline(c, links, slugs, missing)}</th>' for c in head) + '</tr></thead>'
+            html += '<tbody>' + ''.join('<tr>' + ''.join(f'<td>{inline(c, links, slugs, missing)}</td>' for c in r) + '</tr>' for r in rows) + '</tbody>'
+            out.append(html + '</table></div>')
+            table = []
         if para:
             out.append('<p>' + inline(' '.join(para), links, slugs, missing) + '</p>')
             para = []
@@ -147,6 +163,10 @@ def render(md, slugs, missing):
         ol = re.match(r'^\s*\d+[.)]\s+(.*)$', s)
         if not s.strip():
             flush()
+        elif s.lstrip().startswith('|'):
+            if para or lst or quote:
+                flush()
+            table.append(s)
         elif h:
             flush()
             lvl = len(h.group(1))
@@ -157,11 +177,11 @@ def render(md, slugs, missing):
             bk = heading_book(title)
             out.append(f'<h{lvl} id="{anchor}"{f" data-book={chr(34)}{bk}{chr(34)}" if bk else ""}>{inline(title, links, slugs, missing)}</h{lvl}>')
         elif s.startswith('>'):
-            if para or lst:
+            if para or lst or table:
                 flush()
             quote.append(s.lstrip('> '))
         elif ul or ol:
-            if para or quote:
+            if para or quote or table:
                 flush()
             tag = 'ul' if ul else 'ol'
             if lst and lst[0] != tag:
@@ -172,7 +192,7 @@ def render(md, slugs, missing):
         elif lst and line.startswith('  '):
             lst[1][-1] += ' ' + s.strip()
         else:
-            if lst or quote:
+            if lst or quote or table:
                 flush()
             para.append(s.strip())
     flush()
