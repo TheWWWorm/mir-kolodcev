@@ -434,6 +434,19 @@ def main():
                     print(f'warning: quiz.json: bad answer in «{q.get("q", "")[:40]}»', file=sys.stderr)
         with open(os.path.join(out_dir, 'quiz.json'), 'w', encoding='utf-8') as fh:
             fh.write(dump(quiz))
+    # data/persona.json: the /kto-ty test «which hero are you»; every answer gives points to heroes (articles)
+    pp = os.path.join(ROOT, 'data', 'persona.json')
+    if os.path.exists(pp):
+        persona = json.load(open(pp, encoding='utf-8'))
+        heroes = {r.get('slug') for r in persona.get('results', [])}
+        for slug in heroes - set(data):
+            print(f'warning: persona.json: unknown article {slug}', file=sys.stderr)
+        for q in persona.get('questions', []):
+            for o in q.get('options', []):
+                for slug in set(o.get('to', {})) - heroes:
+                    print(f'warning: persona.json: «{o.get("text", "")[:40]}» gives points to {slug}, not a result', file=sys.stderr)
+        with open(os.path.join(out_dir, 'persona.json'), 'w', encoding='utf-8') as fh:
+            fh.write(dump(persona))
     with open(os.path.join(out_dir, 'changes.json'), 'w', encoding='utf-8') as fh:
         fh.write(dump(track_changes(data)))
     mp = os.path.join(ROOT, 'data', 'map.json')

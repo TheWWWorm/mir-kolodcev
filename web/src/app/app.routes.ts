@@ -56,6 +56,11 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/quiz/quiz-page').then((m) => m.QuizPage),
   },
   {
+    path: 'kto-ty',
+    title: pageTitle('Кто вы из героев?'),
+    loadComponent: () => import('./pages/persona/persona-page').then((m) => m.PersonaPage),
+  },
+  {
     path: 'chronology',
     data: { type: 'event' },
     loadComponent: () => import('./pages/category/category').then((m) => m.CategoryPage),

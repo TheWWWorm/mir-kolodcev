@@ -37,6 +37,7 @@ function readBest(): Record<string, number> {
       @if (!level()) {
         <p class="page-sub">Проверьте, насколько хорошо вы знаете {{ site.quiz.subject }}. В каждом испытании {{ perTest }} вопросов, выбранных наугад, и в конце — вердикт.</p>
         <p class="warn ui">Вопросы касаются всего {{ site.work.gen }} и могут раскрывать сюжет.</p>
+        <p class="ui">А ещё можно узнать, <a routerLink="/kto-ty">кто вы из героев</a>.</p>
         @if (levels().length) {
           <div class="levels">
             @for (l of levels(); track l.id; let i = $index) {

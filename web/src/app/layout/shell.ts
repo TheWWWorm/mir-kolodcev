@@ -52,6 +52,7 @@ export class Shell {
     if (path.includes('event') || path.includes('khron') || path.includes('chronology'))
       return 'M22 12a10 10 0 1 1-20 0 10 10 0 0 1 20 0ZM12 6v6l4 3';
     if (path.includes('ispytaniya')) return 'M22 12a10 10 0 1 1-20 0 10 10 0 0 1 20 0ZM9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3M12 17h.01';
+    if (path.includes('kto-ty')) return 'M16 7a4 4 0 1 1-8 0 4 4 0 0 1 8 0ZM4 21v-3a8 8 0 0 1 11-7.4M19 14v4M19 22h.01';
     if (path.includes('stratemy')) return 'M3 3h18v18H3ZM3 9h18M3 15h18M9 3v18M15 3v18';
     if (path.includes('novoe')) return 'M12 2v4M12 18v4M2 12h4M18 12h4M5 5l2.5 2.5M16.5 16.5 19 19M5 19l2.5-2.5M16.5 7.5 19 5';
     if (path === '/') return 'M3 10 12 3l9 7v11h-6v-7H9v7H3Z';
