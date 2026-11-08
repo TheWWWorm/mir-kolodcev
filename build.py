@@ -405,9 +405,10 @@ def main():
             d['last'] = max(bo) if bo else 0
         # lead image (portrait/cover/emblem/map) goes to the infobox, the rest to the gallery
         refs = img_by_slug.get(slug, [])
-        lead = next((i for r, i in refs if r != 'gallery'), None)
+        # portraits run in reading order, so the first one (the lead) is the one a reader of the early books may see
+        portraits = sorted((i for r, i in refs if r == 'portrait'), key=lambda i: images[i].get('from', 0))
+        lead = next((i for r, i in refs if r not in ('gallery', 'portrait')), portraits[0] if portraits else None)
         d['image'] = lead
-        portraits = [i for r, i in refs if r == 'portrait']
         if len(portraits) > 1:
             d['portraits'] = portraits
         d['gallery'] = [i for r, i in refs if i != lead and r != 'portrait']
