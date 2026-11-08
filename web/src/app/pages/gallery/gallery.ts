@@ -8,8 +8,10 @@ import { Spoilers } from '../../core/spoilers';
 
 const FAN = 'Читательский фан-арт';
 
-const KINDS: [string, (im: WikiImage) => boolean][] = [
-  ['Портреты', (im) => /\/portrait-|-(melnikov|alfa|garnets|lamzina)\.jpg$/.test(im.src) && !/vomak|ervin|dzhemis/.test(im.src)],
+/** `character` tells whether an article is about a character. */
+const KINDS: [string, (im: WikiImage, character: (slug: string) => boolean) => boolean][] = [
+  // portraits drawn as such (Мир колодцев); fragments cut out of scenes stay out of the gallery page
+  ['Портреты', (im, character) => im.src.includes('/portrait-') && im.slugs.some(character)],
   ['Священные Предметы', (im) => im.src.includes('/po-')],
   ['Гербы', (im) => im.src.includes('/gerb')],
   ['Обложки', (im) => im.src.includes('/cover-')],
@@ -49,8 +51,9 @@ export class GalleryPage {
   protected readonly fan = FAN;
   protected readonly groups = computed(() => {
     const taken = new Set<number>();
+    const ch = (slug: string) => this.data.get(slug)?.type === 'character';
     return KINDS.map(([name, test]) => {
-      const items = this.data.images().map((im, i) => ({ im, i })).filter(({ im, i }) => !taken.has(i) && this.spoilers.bookVisible(im.from ?? 0) && test(im)).map(({ i }) => i);
+      const items = this.data.images().map((im, i) => ({ im, i })).filter(({ im, i }) => !taken.has(i) && !im.crop && this.spoilers.bookVisible(im.from ?? 0) && test(im, ch)).map(({ i }) => i);
       items.forEach((i) => taken.add(i));
       return { name, items };
     }).filter((g) => g.items.length);

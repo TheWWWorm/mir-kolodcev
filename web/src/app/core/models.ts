@@ -45,6 +45,8 @@ export interface WikiImage {
   from?: number;
   /** The period of the character's life shown in the portrait. */
   period?: string;
+  /** A fragment of another illustration (a character cut out of a scene): shown in profiles only. */
+  crop?: boolean;
 }
 
 export interface Chapter {

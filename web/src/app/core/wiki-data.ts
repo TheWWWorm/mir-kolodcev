@@ -3,6 +3,11 @@ import { Injectable, computed, inject, signal } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { ArticleBody, ArticleMeta, ArticleType, WikiExtra, WikiImage, WikiIndex } from './models';
 
+/** Set while a failed article load has reloaded the page, so it happens once. */
+const RELOADED = 'wiki.reloaded';
+const mark = (on: boolean) => { try { if (on) sessionStorage.setItem(RELOADED, '1'); else sessionStorage.removeItem(RELOADED); } catch { /* storage blocked */ } };
+const marked = () => { try { return !!sessionStorage.getItem(RELOADED); } catch { return true; } };
+
 /** Loads the wiki index once at startup, article bodies on demand, search snippets and hero routes right after. */
 @Injectable({ providedIn: 'root' })
 export class WikiData {
@@ -43,7 +48,17 @@ export class WikiData {
   body(slug: string): Promise<ArticleBody> {
     let p = this.bodies.get(slug);
     if (!p) {
-      p = firstValueFrom(this.http.get<ArticleBody>(`data/a/${slug}.json`));
+      p = firstValueFrom(this.http.get<ArticleBody>(`data/a/${slug}.json`)).catch((e) => {
+        this.bodies.delete(slug);
+        // a tab still on the previous build asks for an article file that a new deploy has changed:
+        // the service worker refuses it, and only a reload into the new build helps (once, so offline does not loop)
+        if (navigator.onLine && !marked()) {
+          mark(true);
+          location.reload();
+        }
+        throw e;
+      });
+      p.then(() => mark(false), () => {});
       this.bodies.set(slug, p);
     }
     return p;

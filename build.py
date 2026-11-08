@@ -214,6 +214,8 @@ def load_images():
             print(f'warning: images.tsv: missing file {fn}', file=sys.stderr)
             continue
         img = dict(src='img/' + fn, caption=caption, credit=credit, slugs=[])
+        if fn.startswith('crop-'):
+            img['crop'] = True  # a fragment of another illustration: shown in profiles, not again in the gallery page
         if cols[4]:
             img['from'] = int(cols[4])
         if cols[5]:
@@ -409,6 +411,9 @@ def main():
         if len(portraits) > 1:
             d['portraits'] = portraits
         d['gallery'] = [i for r, i in refs if i != lead and r != 'portrait']
+        # a character without a portrait of its own is shown by the first illustration they appear in
+        if lead is None and d['type'] == 'character' and d['gallery']:
+            d['image'] = d['gallery'].pop(0)
     for slug in img_by_slug:
         if slug not in data:
             print(f'warning: images.tsv: unknown article {slug}', file=sys.stderr)
