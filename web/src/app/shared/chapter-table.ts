@@ -1,3 +1,4 @@
+import { LOCALE, t } from '../core/locale';
 import { Component, computed, inject, input, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { plural } from '../core/format';
@@ -8,32 +9,33 @@ import { WikiData } from '../core/wiki-data';
   imports: [RouterLink],
   template: `
     @if (rows().length) {
-      <h2 id="h-glavy">Указатель глав</h2>
+      <h2 id="h-glavy">{{ t('Указатель глав', 'Chapter index') }}</h2>
+      @if (english) { <p class="muted ui">Chapter titles and summaries are currently in Russian.</p> }
       <p class="muted ui" role="status">
         {{
           filtered().length === rows().length
             ? rows().length
-            : filtered().length + ' из ' + rows().length
+            : filtered().length + t(' из ', ' of ') + rows().length
         }}
         {{ word() }}
       </p>
       <div class="filters ui">
         <label for="chapter-query"
-          >Найти главу<input
+          >{{ t('Найти главу', 'Find a chapter') }}<input
             id="chapter-query"
             class="field"
             type="search"
-            placeholder="Название, место или герой"
+            [placeholder]="t('Название, место или герой', 'Title, place or character')"
             [value]="query()"
             (input)="query.set($any($event.target).value)" /></label
         ><label for="chapter-narrator"
-          >Рассказчик<select
+          >{{ t('Рассказчик', 'Narrator') }}<select
             id="chapter-narrator"
             class="field"
             [value]="narrator()"
             (change)="narrator.set($any($event.target).value)"
           >
-            <option value="">Все рассказчики</option>
+            <option value="">{{ t('Все рассказчики', 'All narrators') }}</option>
             @for (p of narrators(); track p) {
               <option [value]="p">{{ data.title(p) }}</option>
             }
@@ -41,19 +43,19 @@ import { WikiData } from '../core/wiki-data';
         >
       </div>
       @if (!filtered().length) {
-        <p class="muted" role="status">Ничего не найдено. Измените запрос или рассказчика.</p>
+        <p class="muted" role="status">{{ t('Ничего не найдено. Измените запрос или рассказчика.', 'No matches. Try another search or narrator.') }}</p>
       }
       <div
         class="table-wrap desktop"
         tabindex="0"
-        aria-label="Указатель глав, доступна горизонтальная прокрутка"
+        [attr.aria-label]="t('Указатель глав, доступна горизонтальная прокрутка', 'Chapter index, scroll horizontally for more')"
       >
         <table class="table">
           <thead>
             <tr>
-              <th>Глава</th>
-              <th>Когда и где</th>
-              <th>Что происходит</th>
+              <th>{{ t('Глава', 'Chapter') }}</th>
+              <th>{{ t('Когда и где', 'When and where') }}</th>
+              <th>{{ t('Что происходит', 'What happens') }}</th>
             </tr>
           </thead>
           <tbody>
@@ -69,7 +71,7 @@ import { WikiData } from '../core/wiki-data';
                   {{ r.date }}<span class="sub" [innerHTML]="r.place"></span>
                   @if (r.key && data.extra().map.places[r.key]) {
                     <a class="sub" routerLink="/map" [queryParams]="{ p: r.key }"
-                      >Показать на карте</a
+                      >{{ t('Показать на карте', 'Show on map') }}</a
                     >
                   }
                 </td>
@@ -90,7 +92,7 @@ import { WikiData } from '../core/wiki-data';
               <p [innerHTML]="r.place"></p>
               <p [innerHTML]="r.sum"></p>
               @if (r.key && data.extra().map.places[r.key]) {
-                <a routerLink="/map" [queryParams]="{ p: r.key }">Показать на карте</a>
+                <a routerLink="/map" [queryParams]="{ p: r.key }">{{ t('Показать на карте', 'Show on map') }}</a>
               }
             </div>
           </details>
@@ -180,6 +182,8 @@ import { WikiData } from '../core/wiki-data';
   `,
 })
 export class ChapterTable {
+  protected readonly t = t;
+  protected readonly english = LOCALE === 'en';
   readonly book = input.required<string>();
   protected readonly data = inject(WikiData);
   protected readonly query = signal('');
@@ -203,5 +207,5 @@ export class ChapterTable {
             .includes(q)),
     );
   });
-  protected readonly word = computed(() => plural(this.rows().length, 'глава', 'главы', 'глав'));
+  protected readonly word = computed(() => t(plural(this.rows().length, 'глава', 'главы', 'глав'), this.rows().length === 1 ? 'chapter' : 'chapters'));
 }

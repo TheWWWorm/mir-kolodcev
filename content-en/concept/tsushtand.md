@@ -1,0 +1,35 @@
+---
+title: Zustand
+full: Zustand — a condition assigned to a slave; a method of digging a well
+type: concept
+group: World
+aliases: Zustands, tsushand, kein Zustand, a slave’s Zustand
+summary: The Dangarian word for a working condition announced to slave “stones” by scribes. For well diggers, a Zustand is a particular set of mandatory digging conditions tailored to an individual’s “essence.”
+chapters: 4, 8, 12, 15, 19, 21, 23, 27, 29, 33
+infobox:
+- What it is: an assigned condition of penal labor; for well diggers, the method of digging
+- Where: Dangar, [[dunkvald|Dunkwald]], and other slave settlements
+- Who assigns it: officers and fischmeisters ([[fishmajster]]); scribes record it
+- Special case: “kein Zustand” — no assigned condition
+- See also: [[kamni]], [[kolodets]]
+---
+“Zustand” is a Dangarian word that the Catalian [[red|Red]] first hears in ch. 4 and immediately experiences as a sentence. Its sound is close to the German word for “state” or “condition”; the book reveals its meaning through action. Slave “stones” ([[kamni]]) have their Zustand announced daily: exactly how they are to work. For slaves digging wells for the Fishermen’s Guild, a Zustand becomes the method of digging in which the fischmeisters believe the secret of a schönbrun lies ([[kolodets|schönbrun]]).
+
+## Announcing the Zustand (ch. 4)
+In the morning, a double shot summons the slaves before the authorities’ manor. An officer on the porch asks, “Zustand?” and each replies, “Fertig”—“ready.” Then the scribes announce names and conditions in turn, beginning each sentence with the word “Zustand.” Reactions vary: some stammer, some faint, some rejoice. In Red’s case, the scribe, a boy of about seventeen, cannot believe his own entry: he rereads it twice, runs to check with the authorities, and returns with a bewildered “kein Zustand.” A murmur rises from the crowd. Not knowing the language, Red decides that he has been sentenced to death on his very first day, and when he begins to dig a hole, takes it for his own grave. In fact (ch. 27), Master Joriksen, who devised the well experiment, has given him the gentlest possible Zustand.
+
+By ch. 8, Red understands that Zustands are assigned by the “bigwigs in the manor,” while scribes monitor compliance with them; the foreman has no such authority, since he too is a slave, merely higher in standing. The slaves envy Red precisely because his Zustand is easy. In ch. 12, Yakka says “Zustand” on the day when Red thinks the digging is finished and he is entitled to freedom. Red then realizes there will be no freedom: the fischmeister tossed him a “prize”—a night with an enslaved woman, a bath, and pies—like a bone to a dog, and a new assignment lies ahead. If a slave cannot work, as when red-haired Schultz suffers frostbite in his foot, he goes to receive a new Zustand; until then, he is given no food, because the law feeds only those who work.
+
+## A Zustand as a recipe for a well (ch. 15–19)
+When it emerges that Red has dug an ordinary well rather than a schönbrun, Joriksen promises him a “new Zustand.” Joriksen explains that Dangarians dig without hope and out of fear, and the Sower does not like cowards. The conditions are therefore tailored to the digger himself. For Red, they are these: dig at night, away from the settlement, beside a fire, singing in Catalian and in view of women; have no brand on the forearm; and work in surroundings that recall his homeland. Red deciphers the intention himself (ch. 15): the campfire means warmth and sunshine; singing means songs and dancing; night means the esfera of Shadow; solitude means the position of a foreigner; and the beautiful [[greta|Greta]] and a carved figurine stand for Catalian ladies. The scribe records the pit’s depth, the number of songs, and the number of coughing fits.
+
+In ch. 19, [[landau|Baron Landau]] shows Red other clearings in the forest, where hundreds of slaves dig wells under their own Zustands. One digs with bare hands while his fingers rot; another eats earth from every shovelful; a third places a hair on every shovelful. Some dig with a spoon or a shard of bottle glass; others cry over an onion, carry a baby, or read a book aloud. Red realizes that the entire settlement is a guild experiment in which not a single schönbrun has yet been dug.
+
+## A Zustand as a record and a condition (ch. 23, 27, 29)
+In ch. 23, Landau demands to know whether Joriksen has a “secret ingredient” beyond what is recorded in the ledger. Lieutenant [[klyajn|Klein]] confirms that the records are accurate. While restoring the collapsed well, Red insists that the Zustand be followed exactly, while Landau tries to speed up the work. Chapters 27 and 29 recall Dunkwald’s history: even before Red, [[joriksen|Joriksen]] tried tailoring a Zustand to each stone’s nature, and slaves dug wells by methods that were sometimes lethally dangerous.
+
+## The extreme Zustand (ch. 33)
+Later, Landau assigns Red a Zustand that, he announces, is intended to kill the soul. Red is chained to a post in a pit left by an earlier failed attempt to dig a well: the previous Zustand required a post. Now, at executions, he kills the condemned and picks out all the blood-soaked earth by hand, “down to the last ounce,” placing it in a tub; it is raised with hooks along with the body. Landau believes that a beast lies at the core of Red’s soul, so a Zustand suited to his nature is also a form of care for him.
+
+## The principle (ch. 33)
+In Dangar, a Zustand is not a punishment in itself, but an expression of a master’s “care” for a slave, tailored to that slave’s nature. Cruel Zustands serve the same principle. The Fishermen’s Guild spent half a century trying to find a Zustand under which digging would produce a schönbrun, and failed. See [[kolodets]], [[fishmajster]].

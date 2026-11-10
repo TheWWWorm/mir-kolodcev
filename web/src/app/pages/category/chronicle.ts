@@ -1,3 +1,4 @@
+import { t } from '../../core/locale';
 import { Component, computed, inject, input, linkedSignal, resource, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { ArticleMeta } from '../../core/models';
@@ -85,6 +86,7 @@ const titleOf = (t: string) => {
   styleUrl: './chronicle.css',
 })
 export class Chronicle {
+  protected readonly t = t;
   protected readonly site = SITE;
   readonly items = input.required<ArticleMeta[]>();
   protected readonly data = inject(WikiData);

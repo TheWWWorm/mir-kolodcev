@@ -3,6 +3,7 @@ import { RouterLink } from '@angular/router';
 import { byTitle, plural } from '../../core/format';
 import { ArticleMeta } from '../../core/models';
 import { SITE } from '../../core/site';
+import { t } from '../../core/locale';
 import { Spoilers } from '../../core/spoilers';
 import { WikiData } from '../../core/wiki-data';
 
@@ -42,13 +43,13 @@ const MONTHS_NOM = [
                 <a [routerLink]="'/' + a.slug">{{ a.title }}</a>
               </dt>
               <dd [class.spoil-soft]="spoilers.partly(a)">
-                {{ spoilers.hidden(a) ? 'Появляется в поздних ' + site.spoilers.word.prepPl + '.' : a.summary }}
+                {{ spoilers.hidden(a) ? t('Появляется в поздних ' + site.spoilers.word.prepPl + '.', 'Appears later in the story.') : a.summary }}
               </dd>
             }
           </dl>
         </div>
         @if (onMap(g).length) {
-          <a class="ui" routerLink="/map" [queryParams]="{ p: onMap(g)[0] }">Показать на карте</a>
+          <a class="ui" routerLink="/map" [queryParams]="{ p: onMap(g)[0] }">{{ t('Показать на карте', 'Show on map') }}</a>
         }
       </section>
     }
@@ -111,6 +112,7 @@ const MONTHS_NOM = [
   `,
 })
 export class Atlas {
+  protected readonly t = t;
   protected readonly site = SITE;
   readonly groups = input.required<Group[]>();
   protected readonly spoilers = inject(Spoilers);
@@ -234,15 +236,15 @@ export class Lexicon {
             <a class="t" [routerLink]="'/' + b.a.slug">{{ b.a.title }}</a>
             @if (b.span) {
               <span class="span"
-                >{{ b.span }} · {{ b.n }} {{ plural(b.n, 'глава', 'главы', 'глав') }}</span
+                >{{ b.span }} · {{ b.n }} {{ t(plural(b.n, 'глава', 'главы', 'глав'), b.n === 1 ? 'chapter' : 'chapters') }}</span
               >
             }
             <p>
               {{
                 spoilers.hidden(b.a)
-                  ? 'Появляется в поздних ' + site.spoilers.word.prepPl + '.'
+                  ? t('Появляется в поздних ' + site.spoilers.word.prepPl + '.', 'Appears later in the story.')
                   : spoilers.partly(b.a)
-                    ? 'Сведения о сюжете скрыты с учётом выбранной ' + site.spoilers.word.gen + '.'
+                    ? t('Сведения о сюжете скрыты с учётом выбранной ' + site.spoilers.word.gen + '.', 'The plot summary is hidden by your spoiler settings.')
                     : b.a.summary
               }}
             </p>
@@ -350,6 +352,7 @@ export class Lexicon {
   `,
 })
 export class Shelf {
+  protected readonly t = t;
   protected readonly site = SITE;
   protected readonly spoilers = inject(Spoilers);
   readonly items = input.required<ArticleMeta[]>();
@@ -373,7 +376,7 @@ export class Shelf {
         return {
           a,
           img: this.data.imageSrc(a),
-          novel: /Роман/.test(a.group),
+          novel: /^(?:Роман|Novel)(?:\s|$)/i.test(a.group),
           span,
           n: (this.data.extra().chapters[a.slug] ?? []).length,
         };

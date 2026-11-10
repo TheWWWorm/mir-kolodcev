@@ -1,15 +1,15 @@
 <div class="chronicle-tools">
-  <nav class="years" aria-label="Период событий">
+  <nav class="years" [attr.aria-label]="t('Период событий', 'Event period')">
     @for (y of years(); track y) {
       <button [attr.aria-pressed]="year() === y" (click)="chooseYear(y)">{{ y }}</button>
     }
   </nav>
   <label class="search"
-    ><span class="sr-only">Найти событие</span
+    ><span class="sr-only">{{ t('Найти событие', 'Find an event') }}</span
     ><input
       class="field"
       type="search"
-      placeholder="Найти событие"
+      [placeholder]="t('Найти событие', 'Find an event')"
       [value]="query()"
       (input)="query.set($any($event.target).value)"
   /></label>
@@ -20,8 +20,8 @@
   >
 </aside>
 @if (dated()) {
-  <nav class="months" aria-label="Месяц событий">
-    <button [attr.aria-pressed]="!month()" (click)="month.set('')">Весь год</button>
+  <nav class="months" [attr.aria-label]="t('Месяц событий', 'Event month')">
+    <button [attr.aria-pressed]="!month()" (click)="month.set('')">{{ t('Весь год', 'Full year') }}</button>
     @for (m of months; track m; let i = $index) {
       <button
         [class.has-events]="hasMonth(i)"
@@ -34,13 +34,13 @@
   </nav>
 }
 <div class="stage">
-  <section class="timeline" aria-label="События выбранного периода">
+  <section class="timeline" [attr.aria-label]="t('События выбранного периода', 'Events in the selected period')">
     <h2>
       {{ monthTitle() }} <span>{{ year() }}</span>
     </h2>
-    <p class="sr-only" role="status">Найдено событий: {{ visible().length }}</p>
+    <p class="sr-only" role="status">{{ t('Найдено событий:', 'Events found:') }} {{ visible().length }}</p>
     @if (periodStories().length) {
-      <section class="stories" aria-label="Истории этого периода">
+      <section class="stories" [attr.aria-label]="t('Истории этого периода', 'Stories in this period')">
         <h3>{{ month() ? 'Истории этого месяца' : 'Истории этого года' }}</h3>
         <ul>
           @for (s of periodStories(); track s.id) {
@@ -89,21 +89,21 @@
         <p>
           За выбранный период событий не найдено. Проверьте фильтр и последнюю прочитанную {{ site.spoilers.word.acc }}.
         </p>
-        <button class="btn" (click)="month.set(''); query.set('')">Показать весь год</button>
+        <button class="btn" (click)="month.set(''); query.set('')">{{ t('Показать весь год', 'Show the full year') }}</button>
       </div>
     }
     @if (dated()) {
-      <nav class="period-nav" aria-label="Перейти к другому месяцу">
+      <nav class="period-nav" [attr.aria-label]="t('Перейти к другому месяцу', 'Go to another month')">
         <button class="btn" [disabled]="!canMove(-1)" (click)="moveMonth(-1)">
-          ← Предыдущий месяц</button
+          {{ t('← Предыдущий месяц', '← Previous month') }}</button
         ><button class="btn" [disabled]="!canMove(1)" (click)="moveMonth(1)">
-          Следующий месяц →
+          {{ t('Следующий месяц →', 'Next month →') }}
         </button>
       </nav>
     }
   </section>
   @if (selected(); as a) {
-    <aside class="inspector" aria-label="Выбранное событие">
+    <aside class="inspector" [attr.aria-label]="t('Выбранное событие', 'Selected event')">
       <h2>{{ a.title }}</h2>
       <p class="event-date">{{ a.when }}</p>
       <p class="event-type">{{ a.group }}</p>
@@ -111,10 +111,10 @@
         <p class="inspector-summary">{{ a.summary }}</p>
       }
       @if (info.isLoading()) {
-        <p class="muted ui" role="status">Загрузка сведений…</p>
+        <p class="muted ui" role="status">{{ t('Загрузка сведений…', 'Loading details…') }}</p>
       }
       @if (info.error()) {
-        <p class="muted ui">Подробные сведения доступны в статье.</p>
+        <p class="muted ui">{{ t('Подробные сведения доступны в статье.', 'See the article for more details.') }}</p>
       }
       <dl>
         @for (f of facts(); track f[0]) {
@@ -124,11 +124,11 @@
       </dl>
       @if (a.article) {
         <a class="btn primary" [routerLink]="'/' + a.open"
-          >Открыть статью <span aria-hidden="true">→</span></a
+          >{{ t('Открыть статью', 'Read article') }} <span aria-hidden="true">→</span></a
         >
       } @else if (a.links.length) {
         <section class="related">
-          <h3>Подробнее в статьях</h3>
+          <h3>{{ t('Подробнее в статьях', 'Further reading') }}</h3>
           @for (l of a.links; track l) {
             <a [routerLink]="'/' + l">{{ data.title(l) }}</a>
           }
@@ -136,7 +136,7 @@
       }
       @if (related().length) {
         <section class="related">
-          <h3>Связанные события</h3>
+          <h3>{{ t('Связанные события', 'Related events') }}</h3>
           @for (r of related(); track r.id) {
             <a [routerLink]="'/' + r.open"
               >{{ r.title }}<small>{{ r.when }}</small></a
@@ -148,5 +148,5 @@
   }
 </div>
 <p class="full-chronology ui">
-  <a [routerLink]="site.chronology.full">Подробная хронология по тексту книг</a>
+  <a [routerLink]="site.chronology.full">{{ t('Подробная хронология по тексту книг', 'Full timeline based on the books') }}</a>
 </p>

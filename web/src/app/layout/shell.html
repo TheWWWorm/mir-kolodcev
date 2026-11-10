@@ -1,11 +1,11 @@
-<a class="skip-link" href="#main-content" (click)="skipToContent($event)">К содержанию</a>
+<a class="skip-link" href="#main-content" (click)="skipToContent($event)">{{ t('К содержанию', 'Skip to content') }}</a>
 <header class="bar">
   <button
     #menuButton
     class="icon menu"
     (click)="navOpen.set(!navOpen())"
     [attr.aria-expanded]="navOpen()"
-    aria-label="Меню"
+    [attr.aria-label]="t('Меню', 'Menu')"
     aria-controls="wiki-navigation"
   >
     <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
@@ -31,7 +31,10 @@
   </a>
   <app-search-box class="search" />
   <app-spoiler-select class="spoil" />
-  <button class="icon" (click)="theme.toggle()" aria-label="Сменить тему" title="Сменить тему">
+  <a class="icon language" [href]="languageLink()" [attr.hreflang]="otherLocale" [attr.lang]="otherLocale"
+     [attr.aria-label]="t('Read in English', 'Читать по-русски')" [title]="t('Read in English', 'Читать по-русски')"
+     (click)="rememberLanguage()">{{ otherLocale.toUpperCase() }}</a>
+  <button class="icon" (click)="theme.toggle()" [attr.aria-label]="t('Сменить тему', 'Change theme')" [title]="t('Сменить тему', 'Change theme')">
     <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
       <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" fill="currentColor" />
     </svg>
@@ -44,9 +47,9 @@
     [class.open]="navOpen()"
     [attr.tabindex]="navOpen() ? 0 : -1"
     (click)="navOpen.set(false)"
-    aria-label="Закрыть меню"
+    [attr.aria-label]="t('Закрыть меню', 'Close menu')"
   ></button>
-  <nav id="wiki-navigation" class="side" aria-label="Разделы вики">
+  <nav id="wiki-navigation" class="side" [attr.aria-label]="t('Разделы вики', 'Wiki sections')">
     @for (g of nav; track g.title) {
       <div class="group">
         <div class="group-title">{{ g.title }}</div>
@@ -74,8 +77,16 @@
     <p class="about">
       {{ site.about }}
     </p>
+    @if (site.translationNote) {
+      <p class="about">{{ site.translationNote }}</p>
+    }
   </nav>
-  <main class="main" id="main-content" tabindex="-1"><router-outlet /></main>
+  <main class="main" id="main-content" tabindex="-1">
+    @if (supplementaryNotice(); as notice) {
+      <p class="supplementary-note">{{ notice }}</p>
+    }
+    <router-outlet />
+  </main>
 </div>
 <app-lightbox-view />
 <app-reading-dialog />

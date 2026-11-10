@@ -1,12 +1,21 @@
 import { inject } from '@angular/core';
-import { Router, Routes } from '@angular/router';
+import { CanActivateFn, RedirectCommand, Router, Routes } from '@angular/router';
 import { WikiData } from './core/wiki-data';
-import { SITE, pageTitle } from './core/site';
+import { SITE, pageTitle, sectionTitle } from './core/site';
+import { t } from './core/locale';
 import { SITE_ROUTES } from './site-routes';
 
 const randomArticle = () => {
   const all = inject(WikiData).articles();
   return inject(Router).parseUrl('/' + all[Math.floor(Math.random() * all.length)].slug);
+};
+
+const articleAlias: CanActivateFn = (route, state) => {
+  const aliases = inject(WikiData).aliases();
+  const slug = route.paramMap.get('slug')!;
+  if (!Object.hasOwn(aliases, slug)) return true;
+  const target = state.url.replace(/^\/[^/?#]+/, '/' + aliases[slug]);
+  return new RedirectCommand(inject(Router).parseUrl(target), { replaceUrl: true });
 };
 
 export const routes: Routes = [
@@ -18,46 +27,46 @@ export const routes: Routes = [
   { path: 'random', canActivate: [randomArticle], children: [] },
   {
     path: 'all',
-    title: pageTitle('Все статьи'),
+    title: sectionTitle('all'),
     loadComponent: () => import('./pages/all-articles/all-articles').then((m) => m.AllArticlesPage),
   },
   {
     path: 'map',
-    title: pageTitle('Карта'),
+    title: sectionTitle('map'),
     loadComponent: () => import('./pages/map/map-page').then((m) => m.MapPage),
   },
   {
     path: 'map3d',
-    title: pageTitle('3D-карта'),
+    title: sectionTitle('map3d'),
     loadComponent: () => import('./pages/map3d/map3d-page').then((m) => m.Map3dPage),
   },
   {
     path: 'gallery',
-    title: pageTitle('Галерея'),
+    title: sectionTitle('gallery'),
     loadComponent: () => import('./pages/gallery/gallery').then((m) => m.GalleryPage),
   },
   ...(SITE.features.families
     ? [
         {
           path: 'families',
-          title: pageTitle('Родословные'),
+          title: sectionTitle('families'),
           loadComponent: () => import('./pages/families/families').then((m) => m.FamiliesPage),
         },
       ]
     : []),
   {
     path: 'relations',
-    title: pageTitle('Связи персонажей'),
+    title: sectionTitle('relations'),
     loadComponent: () => import('./pages/relations/relations').then((m) => m.RelationsPage),
   },
   {
     path: 'ispytaniya',
-    title: pageTitle('Испытания'),
+    title: sectionTitle('ispytaniya'),
     loadComponent: () => import('./pages/quiz/quiz-page').then((m) => m.QuizPage),
   },
   {
     path: 'kto-ty',
-    title: pageTitle('Кто вы из героев?'),
+    title: sectionTitle('kto-ty'),
     loadComponent: () => import('./pages/persona/persona-page').then((m) => m.PersonaPage),
   },
   {
@@ -67,7 +76,7 @@ export const routes: Routes = [
   },
   {
     path: 'novoe',
-    title: pageTitle('Что нового'),
+    title: sectionTitle('novoe'),
     loadComponent: () => import('./pages/changes/changes').then((m) => m.ChangesPage),
   },
   {
@@ -78,15 +87,17 @@ export const routes: Routes = [
   ...SITE_ROUTES,
   {
     path: 'search/:q',
-    title: pageTitle('Поиск'),
+    title: pageTitle(t('Поиск', 'Search')),
     loadComponent: () => import('./pages/search/search-page').then((m) => m.SearchPage),
   },
   {
     path: ':slug',
+    canActivate: [articleAlias],
     loadComponent: () => import('./pages/article/article').then((m) => m.ArticlePage),
   },
   {
     path: ':slug/:anchor',
+    canActivate: [articleAlias],
     loadComponent: () => import('./pages/article/article').then((m) => m.ArticlePage),
   },
 ];

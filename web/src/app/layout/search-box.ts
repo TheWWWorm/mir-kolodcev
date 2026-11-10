@@ -1,3 +1,4 @@
+import { localized, t } from '../core/locale';
 import { Component, ElementRef, computed, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { TYPE_LABELS } from '../core/models';
@@ -9,22 +10,24 @@ import { Search } from '../core/search';
   template: `
     <div class="box">
       <svg viewBox="0 0 24 24" width="17" height="17" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2" /><path d="M20 20l-4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" /></svg>
-      <input #q type="search" placeholder="Поиск: имя, прозвище, место" autocomplete="off" aria-label="Поиск по вики"
+      <input #q type="search" [placeholder]="t('Поиск: имя, прозвище, место', 'Search: name, alias, place')" autocomplete="off" [attr.aria-label]="t('Поиск по вики', 'Search the wiki')"
         [value]="query()" (input)="query.set(q.value); open.set(true); active.set(-1)" (focus)="open.set(true)" (keydown)="key($event)" />
     </div>
     @if (open() && query().trim()) {
       <ul class="suggest" role="listbox">
         @for (r of results(); track r.slug; let i = $index) {
-          <li [class.on]="i === active()"><a [href]="'/' + r.slug" (click)="open.set(false)"><b>{{ r.title }}</b><span>{{ types[r.type].one }}</span></a></li>
+          <li [class.on]="i === active()"><a [href]="localized('/' + r.slug)" (click)="open.set(false)"><b>{{ r.title }}</b><span>{{ types[r.type].one }}</span></a></li>
         }
-        <li class="all" [class.on]="active() === results().length"><a [href]="'/search/' + enc(query().trim())" (click)="open.set(false)">
-          {{ results().length ? 'Все результаты' : 'Искать в тексте статей' }}: «{{ query().trim() }}»</a></li>
+        <li class="all" [class.on]="active() === results().length"><a [href]="localized('/search/' + enc(query().trim()))" (click)="open.set(false)">
+          {{ results().length ? t('Все результаты', 'All results') : t('Искать в тексте статей', 'Search article text') }}: «{{ query().trim() }}»</a></li>
       </ul>
     }
   `,
   styleUrl: './search-box.css',
 })
 export class SearchBox {
+  protected readonly t = t;
+  protected readonly localized = localized;
   private readonly search = inject(Search);
   private readonly router = inject(Router);
   private readonly el = inject(ElementRef<HTMLElement>);

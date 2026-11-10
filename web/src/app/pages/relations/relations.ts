@@ -1,3 +1,4 @@
+import { t } from '../../core/locale';
 import { Component, DestroyRef, ElementRef, afterNextRender, computed, effect, inject, input, signal, untracked, viewChild } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Relation } from '../../core/models';
@@ -31,6 +32,7 @@ type View = [number, number, number, number];
   styleUrl: './relations.css',
 })
 export class RelationsPage {
+  protected readonly t = t;
   readonly id = input<string>();
   protected readonly data = inject(WikiData);
   private readonly spoilers = inject(Spoilers);

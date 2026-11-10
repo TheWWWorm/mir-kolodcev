@@ -30,7 +30,7 @@ export class Search {
   private readonly index = computed<Entry[]>(() => {
     const texts = this.data.texts();
     return this.data.articles().map((a) => {
-      const names = [a.title, a.ru, ...a.aliases].filter(Boolean).map(norm);
+      const names = [a.title, a.ru, ...a.aliases, ...(a.searchAliases ?? [])].filter(Boolean).map(norm);
       return { a, names, words: names.flatMap((n) => n.split(/[\s\-«»"(),]+/).filter((w) => w.length > 2)), sum: norm(a.summary), text: norm(texts[a.slug] ?? '') };
     });
   });

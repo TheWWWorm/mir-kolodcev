@@ -67,7 +67,7 @@ export class ScrollMemory {
   private hasAnchor(): boolean {
     let r = this.router.routerState.snapshot.root;
     while (r.firstChild) r = r.firstChild;
-    return r.paramMap.has('anchor');
+    return r.paramMap.has('anchor') || !!r.fragment;
   }
 
   private restore(y: number): void {

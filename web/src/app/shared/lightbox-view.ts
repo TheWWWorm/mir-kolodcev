@@ -3,6 +3,7 @@ import { RouterLink } from '@angular/router';
 import { Lightbox } from '../core/lightbox';
 import { WikiData } from '../core/wiki-data';
 import { Spoilers } from '../core/spoilers';
+import { unlocalized } from '../core/locale';
 
 @Component({
   selector: 'app-lightbox-view',
@@ -110,7 +111,7 @@ export class LightboxView {
    */
   protected follow(ev: MouseEvent, path: string): void {
     if (ev.button || ev.metaKey || ev.ctrlKey || ev.shiftKey || ev.altKey) return;
-    if (location.pathname === path) this.lightbox.close();
+    if (unlocalized(location.pathname) === path) this.lightbox.close();
     else this.lightbox.current.set(null);
   }
   protected readonly img = computed(() => { const i = this.lightbox.current(); return i == null || !this.indices().includes(i) ? null : this.data.images()[i]; });

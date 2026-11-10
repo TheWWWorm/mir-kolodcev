@@ -1,3 +1,4 @@
+import { LOCALE, t } from '../../core/locale';
 import { Component, computed, effect, inject, input, signal } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { RouterLink } from '@angular/router';
@@ -23,22 +24,22 @@ const rank = (g: string) => (/^Проч/.test(g) ? 99 : REGIONS.includes(g) ? RE
   template: `
     @if (label(); as l) {
       <div class="page" [class.directory-page]="type() === 'character' || type() === 'event'">
-        <div class="crumbs"><a routerLink="/">Заглавная</a></div>
-        <h1 class="page-title">{{ type() === 'event' ? 'Хронология' : l.many }}</h1>
-        <p class="page-sub">{{ l.about }} Статей: {{ list().length }}.</p>
+        <div class="crumbs"><a routerLink="/">{{ t('Заглавная', 'Home') }}</a></div>
+        <h1 class="page-title">{{ type() === 'event' ? t('Хронология', 'Timeline') : l.many }}</h1>
+        <p class="page-sub">{{ l.about }} {{ t('Статей:', 'Articles:') }} {{ list().length }}.</p>
         @if (type() === 'house') {
           <h2 class="section-title">{{ site.houses.title }}</h2>
           <app-houses-table />
           @if (site.features.families) {
-            <p class="ui"><a routerLink="/families">Родословные древа главных родов</a></p>
+            <p class="ui"><a routerLink="/families">{{ t('Родословные древа главных родов', 'Family trees of the Great Houses') }}</a></p>
           }
         }
         @if (type() !== 'character' && type() !== 'event') {
           <input
             class="field filter"
             type="search"
-            placeholder="Отфильтровать по имени"
-            aria-label="Фильтр"
+            [placeholder]="t('Отфильтровать по имени', 'Filter by name')"
+            [attr.aria-label]="t('Фильтр', 'Filter')"
             (input)="filter.set($any($event.target).value)"
           />
         }
@@ -74,13 +75,13 @@ const rank = (g: string) => (/^Проч/.test(g) ? 99 : REGIONS.includes(g) ? RE
           }
         }
         @if (!flat().length) {
-          <p class="muted">Ничего не найдено — сократите запрос.</p>
+          <p class="muted">{{ t('Ничего не найдено — сократите запрос.', 'No results. Try a shorter search.') }}</p>
         }
       </div>
     } @else {
       <div class="page">
-        <h1 class="page-title">Раздела нет</h1>
-        <p><a routerLink="/">На заглавную</a></p>
+        <h1 class="page-title">{{ t('Раздела нет', 'Section not found') }}</h1>
+        <p><a routerLink="/">{{ t('На заглавную', 'Back to home') }}</a></p>
       </div>
     }
   `,
@@ -110,6 +111,7 @@ const rank = (g: string) => (/^Проч/.test(g) ? 99 : REGIONS.includes(g) ? RE
   `,
 })
 export class CategoryPage {
+  protected readonly t = t;
   protected readonly site = SITE;
   readonly type = input.required<string>();
   private readonly data = inject(WikiData);
@@ -127,10 +129,10 @@ export class CategoryPage {
   protected readonly groups = computed(() => {
     const items = [...this.flat()];
     if (this.type() === 'book')
-      return [{ name: 'Книги', items: items.sort((a, b) => a.order - b.order) }];
+      return [{ name: TYPE_LABELS.book.many, items: items.sort((a, b) => a.order - b.order) }];
     const map = new Map<string, ArticleMeta[]>();
     for (const a of items)
-      map.set(a.group || 'Прочее', [...(map.get(a.group || 'Прочее') ?? []), a]);
+      map.set(a.group || t('Прочее', 'Other'), [...(map.get(a.group || t('Прочее', 'Other')) ?? []), a]);
     return (
       [...map.entries()]
         .sort(
@@ -139,7 +141,7 @@ export class CategoryPage {
               ? rank(a[0]) - rank(b[0])
               : (/^Проч/.test(a[0]) ? 1 : 0) - (/^Проч/.test(b[0]) ? 1 : 0)) ||
             weight(b[1]) - weight(a[1]) ||
-            a[0].localeCompare(b[0], 'ru'),
+            a[0].localeCompare(b[0], LOCALE),
         )
         // characters: the most referenced first; everything else alphabetically
         .map(([name, xs]) => ({
@@ -157,7 +159,7 @@ export class CategoryPage {
     const title = inject(Title);
     effect(() =>
       title.setTitle(
-        pageTitle(this.type() === 'event' ? 'Хронология' : (this.label()?.many ?? 'Раздел')),
+        pageTitle(this.type() === 'event' ? t('Хронология', 'Timeline') : (this.label()?.many ?? 'Раздел')),
       ),
     );
   }

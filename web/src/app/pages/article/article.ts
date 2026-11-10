@@ -10,7 +10,8 @@ import {
   viewChild,
 } from '@angular/core';
 import { Title } from '@angular/platform-browser';
-import { RouterLink } from '@angular/router';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { byTitle, plural } from '../../core/format';
 import { TYPE_LABELS } from '../../core/models';
 import { Spoilers } from '../../core/spoilers';
@@ -24,6 +25,7 @@ import { SpoilerSelect } from '../../layout/spoiler-select';
 import { MiniMap } from '../../shared/mini-map';
 import { applySpoilers } from './spoiler-dom';
 import { SITE, pageTitle } from '../../core/site';
+import { LOCALE, localized, t } from '../../core/locale';
 
 /** Infobox fields that hold stable facts rather than plot outcomes. */
 const SAFE_ROW = /^(полное имя|имя|дом|род|род \(праматерь\)|родители|отец|мать|первое появление|тип|вид|что это|расположение|место|место действия|климат|экономика|столица|крупнейшие города|население|герб|девиз|цвета|народ|святыни|достопримечательности|дороги|соседи|внешность|возраст|номер в цикле|предыдущая книга|следующая книга|главные герои|дата|действие|хронология)$/i;
@@ -35,8 +37,8 @@ function addReportButtons(body: HTMLElement): void {
     const b = document.createElement('button');
     b.type = 'button';
     b.className = 'report';
-    b.title = 'Сообщить об ошибке в этом разделе';
-    b.setAttribute('aria-label', `Сообщить об ошибке в разделе «${h.textContent?.trim()}»`);
+    b.title = t('Сообщить об ошибке в этом разделе', 'Report an error in this section');
+    b.setAttribute('aria-label', `${b.title}: ${h.textContent?.trim()}`);
     h.append(b);
   }
 }
@@ -62,6 +64,7 @@ const DATED = /(?:(январ|феврал|март|апрел|ма[йяе]|ию
   styleUrl: './article.css',
 })
 export class ArticlePage {
+  protected readonly t = t;
   protected readonly site = SITE;
   protected readonly compact = signal(matchMedia('(max-width: 700px)').matches);
   protected updateCompact(): void {
@@ -69,6 +72,7 @@ export class ArticlePage {
   }
   readonly slug = input.required<string>();
   readonly anchor = input<string>();
+  private readonly fragment = toSignal(inject(ActivatedRoute).fragment);
 
   protected readonly data = inject(WikiData);
   protected readonly spoilers = inject(Spoilers);
@@ -88,7 +92,7 @@ export class ArticlePage {
   /** A book with a chapter table gets the book layout; one without (a special edition) reads as a plain article. */
   protected readonly bookView = computed(() => this.meta()?.type === 'book' && this.chapters().length > 0);
   protected readonly chapterCount = computed(
-    () => this.chapters().length + ' ' + plural(this.chapters().length, 'глава', 'главы', 'глав'),
+    () => this.chapters().length + ' ' + t(plural(this.chapters().length, 'глава', 'главы', 'глав'), this.chapters().length === 1 ? 'chapter' : 'chapters'),
   );
   protected readonly nextBook = computed(() => {
     const books = this.data.books(),
@@ -126,7 +130,7 @@ export class ArticlePage {
     if (!dates.length) return '';
     const first = dates[0].slice(0, 4),
       last = dates.at(-1)!.slice(0, 4);
-    return first === last ? first + ' год' : first + '–' + last + ' годы';
+    return first === last ? first + t(' год', '') : first + '–' + last + t(' годы', '');
   });
   protected readonly lead = computed(() => this.meta()?.image ?? null);
   protected readonly portraits = computed(() => {
@@ -168,8 +172,8 @@ export class ArticlePage {
   );
   protected readonly toc = computed(() => {
     const t = [...(this.articleBody()?.toc ?? [])];
-    if (this.data.extra().chapters[this.slug()]?.length) t.push(['h-glavy', 'Главы']);
-    if (this.families().length) t.push(['h-rod', 'Родословное древо']);
+    if (this.data.extra().chapters[this.slug()]?.length) t.push(['h-glavy', this.t('Главы', 'Chapters')]);
+    if (this.families().length) t.push(['h-rod', this.t('Родословное древо', 'Family tree')]);
     return t;
   });
 
@@ -178,7 +182,7 @@ export class ArticlePage {
   constructor() {
     effect(() => {
       const m = this.meta();
-      this.titleSvc.setTitle(pageTitle(m ? m.title : 'Статья не найдена'));
+      this.titleSvc.setTitle(pageTitle(m ? m.title : t('Статья не найдена', 'Article not found')));
     });
     // The body HTML is produced by build.py from our own markdown, so it is inserted as-is and then
     // post-processed: sections about unread books are folded, general sections are blurred.
@@ -197,7 +201,7 @@ export class ArticlePage {
     let shown = '';
     let fallback: ReturnType<typeof setTimeout> | undefined;
     effect(() => {
-      const a = this.anchor(), b = this.articleBody(), slug = this.slug();
+      const a = this.anchor() ?? this.fragment(), b = this.articleBody(), slug = this.slug();
       this.spoilers.level();
       if (!b) return;
       const smooth = shown === slug;
@@ -205,8 +209,11 @@ export class ArticlePage {
       // back/forward to a section returns to where the reader was, not to the section's heading
       if (!a || this.scrollMemory.restoring) return;
       queueMicrotask(() => {
-        const t = document.getElementById(a);
-        const el = t?.closest('details:not([open])') ?? t;
+        const target = document.getElementById(a);
+        let el = target?.closest('details:not([open])') ?? target;
+        if (target?.hidden) {
+          while (el && !el.classList.contains('spoil-ph')) el = el.previousElementSibling;
+        }
         if (!el) return;
         clearTimeout(fallback);
         const y0 = scrollY;
@@ -228,6 +235,8 @@ export class ArticlePage {
    */
   protected blurInfo(key: string, value = ''): boolean {
     if (!this.spoilers.partly(this.meta())) return false;
+    // The Russian date and fate heuristics cannot safely classify translated infobox rows.
+    if (LOCALE === 'en' && !this.meta()?.language) return true;
     if (!SAFE_ROW.test(key.trim())) return true;
     const text = key + ' ' + value.replace(/<[^>]+>/g, '');
     if (FATE.test(text)) return true;
@@ -281,7 +290,7 @@ export class ArticlePage {
     if (getSelection()?.toString().trim()) this.noteSelection();
     heading ??= this.selectedIn ? sectionOf(this.selectedIn) : null;
     const section = heading ? headingText(heading) : '';
-    const url = SITE.url + '/' + m.slug + (heading?.id ? '/' + heading.id : '');
+    const url = SITE.url + localized('/' + m.slug + (heading?.id ? '/' + heading.id : ''));
     const quote = this.selected.length > 600 ? this.selected.slice(0, 600) + '…' : this.selected;
     const body = [
       `**Статья:** [${m.title}](${url})`,

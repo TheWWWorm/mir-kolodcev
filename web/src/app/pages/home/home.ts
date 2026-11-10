@@ -1,3 +1,4 @@
+import { t } from '../../core/locale';
 import { Component, computed, inject } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { WikiData } from '../../core/wiki-data';
@@ -12,6 +13,7 @@ import { SITE } from '../../core/site';
   styleUrl: './home.css',
 })
 export class HomePage {
+  protected readonly t = t;
   protected readonly site = SITE;
   protected readonly home = SITE.home;
   protected readonly data = inject(WikiData);
@@ -20,7 +22,7 @@ export class HomePage {
   protected readonly novels = computed(() =>
     this.data
       .books()
-      .filter((b) => /Роман/.test(b.group))
+      .filter((b) => /^(?:Роман|Novel)(?:\s|$)/i.test(b.group))
       .slice(0, SITE.home.novels),
   );
   /** The box beside the novels: books of a group (interludes) or fixed links to articles. */

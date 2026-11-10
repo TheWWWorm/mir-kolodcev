@@ -1,6 +1,7 @@
 import { Injectable, computed, inject, signal } from '@angular/core';
 import { ArticleMeta, MapEvent } from './models';
 import { SITE } from './site';
+import { LOCALE } from './locale';
 import { WikiData } from './wiki-data';
 
 const KEY = `${SITE.key}.read-up-to`;
@@ -54,13 +55,14 @@ export class Spoilers {
   /** A part as the texts name it: «Title», or «Title» (гл. N) for a chapter. */
   bookTitle(order: number): string {
     const c = this.parts().find((p) => p.order === order);
+    if (BY_CHAPTER && LOCALE === 'en') return c ? `Chapter ${order}: ${c.title}` : `Chapter ${order}`;
     if (BY_CHAPTER) return c ? `«${c.title}» (гл. ${order})` : `гл. ${order}`;
     return `«${c?.title ?? order}»`;
   }
 
   /** «до главы «Title» (гл. N)» / «до «Title»»: how far the reader got. */
   upTo(order: number): string {
-    return (BY_CHAPTER ? SITE.spoilers.word.gen + ' ' : '') + this.bookTitle(order);
+    return (BY_CHAPTER && LOCALE === 'ru' ? SITE.spoilers.word.gen + ' ' : '') + this.bookTitle(order);
   }
 
   /** Latest in-world date the reader has reached. */

@@ -9,6 +9,8 @@ export interface ArticleMeta {
   title: string;
   ru: string;
   aliases: string[];
+  /** Original names used to keep Russian queries working in the English wiki. */
+  searchAliases?: string[];
   summary: string;
   books: string[];
   order: number;
@@ -19,6 +21,8 @@ export interface ArticleMeta {
   first: number;
   last: number;
   image: number | null;
+  /** Set on a Russian fallback in the English index. */
+  language?: 'ru';
   /** Free-form date from the infobox («2 декабря 1775 г.») and its sortable start, when the article has one. */
   when?: string;
   iso?: string;
@@ -133,6 +137,7 @@ export interface WikiIndex {
   articles: ArticleMeta[];
   images: WikiImage[];
   data: WikiExtra;
+  aliases?: Record<string, string>;
 }
 
 export const TYPE_LABELS = SITE.types as Record<ArticleType, { one: string; many: string; about: string }>;

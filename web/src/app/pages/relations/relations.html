@@ -1,7 +1,7 @@
 <div class="page wide">
-  <div class="crumbs"><a routerLink="/">Заглавная</a></div>
-  <h1 class="page-title">Связи персонажей</h1>
-  <p class="page-sub">Кто кому родня, союзник, враг или возлюбленный. Нажмите на персонажа, чтобы выделить его связи. Колесо мыши или два пальца меняют масштаб, перетаскивание двигает схему.</p>
+  <div class="crumbs"><a routerLink="/">{{ t('Заглавная', 'Home') }}</a></div>
+  <h1 class="page-title">{{ t('Связи персонажей', 'Character relationships') }}</h1>
+  <p class="page-sub">{{ t('Кто кому родня, союзник, враг или возлюбленный. Нажмите на персонажа, чтобы выделить его связи. Колесо мыши или два пальца меняют масштаб, перетаскивание двигает схему.', 'Select a character to highlight their relationships. Scroll or pinch to zoom, and drag to move the graph.') }}</p>
 
   <div class="tools ui">
     <div class="legend">
@@ -11,7 +11,7 @@
         </button>
       }
     </div>
-    <input class="field find" type="search" placeholder="Найти персонажа" aria-label="Найти персонажа" (input)="find($any($event.target).value)" />
+    <input class="field find" type="search" [placeholder]="t('Найти персонажа', 'Find a character')" [attr.aria-label]="t('Найти персонажа', 'Find a character')" (input)="find($any($event.target).value)" />
   </div>
 
   <div class="stage">

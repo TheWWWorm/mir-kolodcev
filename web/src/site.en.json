@@ -1,0 +1,343 @@
+{
+  "name": "World of Wells Wiki",
+  "brand": "World of Wells",
+  "about": "An encyclopedia of the world of Roman Surzhikov’s novel Traces on the Water.",
+  "work": {
+    "acc": "novel",
+    "gen": "novel"
+  },
+  "spoilers": {
+    "unit": "chapters",
+    "word": {
+      "gen": "chapter",
+      "prep": "chapter",
+      "genPl": "chapters",
+      "prepPl": "chapters",
+      "acc": "chapter"
+    },
+    "question": "How far have you read in Traces on the Water?",
+    "option": "Ch. {n}: {title}"
+  },
+  "types": {
+    "book": {
+      "one": "Book",
+      "many": "Books",
+      "about": "Books and interludes in reading order."
+    },
+    "character": {
+      "one": "Character",
+      "many": "Characters",
+      "about": "People in the stories."
+    },
+    "house": {
+      "one": "Country",
+      "many": "Countries and communities",
+      "about": "Countries, armies, families and communities."
+    },
+    "place": {
+      "one": "Place",
+      "many": "Places",
+      "about": "Lands, cities, castles and rivers."
+    },
+    "event": {
+      "one": "Event",
+      "many": "Events",
+      "about": "Wars, battles, conspiracies and turning points."
+    },
+    "concept": {
+      "one": "Concept",
+      "many": "Concepts and lore",
+      "about": "Beliefs, customs and the workings of the world."
+    }
+  },
+  "nav": [
+    {
+      "title": "Encyclopedia",
+      "links": [
+        [
+          "/",
+          "Home"
+        ],
+        [
+          "/c/book",
+          "Books"
+        ],
+        [
+          "/c/character",
+          "Characters"
+        ],
+        [
+          "/c/house",
+          "Countries and communities"
+        ],
+        [
+          "/c/place",
+          "Places"
+        ],
+        [
+          "/c/event",
+          "Events"
+        ],
+        [
+          "/c/concept",
+          "Concepts and lore"
+        ]
+      ]
+    },
+    {
+      "title": "Explore",
+      "links": [
+        [
+          "/map",
+          "Map and timeline"
+        ],
+        [
+          "/map3d",
+          "3D map"
+        ],
+        [
+          "/relations",
+          "Character relationships"
+        ],
+        [
+          "/gallery",
+          "Gallery"
+        ],
+        [
+          "/ispytaniya",
+          "Quizzes"
+        ],
+        [
+          "/kto-ty",
+          "Which character are you?"
+        ]
+      ]
+    },
+    {
+      "title": "Reference",
+      "links": [
+        [
+          "/all",
+          "All articles"
+        ],
+        [
+          "/chronology",
+          "Timeline"
+        ],
+        [
+          "/glossarij",
+          "Glossary"
+        ],
+        [
+          "/tsitaty",
+          "Quotations"
+        ],
+        [
+          "/novoe",
+          "What’s new"
+        ],
+        [
+          "/random",
+          "Random article"
+        ]
+      ]
+    },
+    {
+      "title": "Other worlds by Roman Surzhikov",
+      "links": [
+        [
+          "https://polari.wwworm.com/en/",
+          "Polari Wiki"
+        ]
+      ]
+    }
+  ],
+  "sections": [
+    [
+      "all",
+      "All articles",
+      "An alphabetical index of every article."
+    ],
+    [
+      "map",
+      "Map",
+      "Explore the world and follow events on a timeline."
+    ],
+    [
+      "map3d",
+      "3D map",
+      "Explore the world in three dimensions."
+    ],
+    [
+      "gallery",
+      "Gallery",
+      "Maps, illustrations and portraits."
+    ],
+    [
+      "relations",
+      "Character relationships",
+      "Explore how the characters are connected."
+    ],
+    [
+      "ispytaniya",
+      "Quizzes",
+      "Test your knowledge of the world."
+    ],
+    [
+      "kto-ty",
+      "Which character are you?",
+      "Take a quiz to find your match."
+    ],
+    [
+      "chronology",
+      "Timeline",
+      "Key events in reading and historical order."
+    ],
+    [
+      "novoe",
+      "What’s new",
+      "New and expanded wiki articles."
+    ]
+  ],
+  "home": {
+    "title": "World of Wells",
+    "byline": "An encyclopedia of Roman Surzhikov’s Traces on the Water",
+    "tagline": "The people, countries and wars of the World of Wells.",
+    "description": "Find a character, explore the world, or revisit the story at your own pace.",
+    "mapImage": {
+      "src": "img/map-small.jpg",
+      "w": 1400,
+      "h": 1050,
+      "alt": "Map of the World of Wells",
+      "label": "Map of the World of Wells",
+      "aria": "Open the map"
+    },
+    "readingHint": "Choose the last chapter you finished. The wiki will hide later events.",
+    "booksTitle": "The book",
+    "booksLink": [
+      "/sledy-na-vode",
+      "All chapters"
+    ],
+    "novels": 1,
+    "side": {
+      "title": "The world",
+      "links": [
+        [
+          "kolodets",
+          "Wells"
+        ],
+        [
+          "esfera",
+          "Esferas"
+        ],
+        [
+          "braslet",
+          "Bracelets"
+        ],
+        [
+          "svitok",
+          "The Scroll"
+        ]
+      ],
+      "all": [
+        "/c/concept",
+        "All concepts"
+      ]
+    },
+    "houses": [
+      "Countries and communities",
+      "Countries, armies, families and communities."
+    ],
+    "chronology": "Key events, wars and eras.",
+    "references": [
+      [
+        "/relations",
+        "Character relationships"
+      ],
+      [
+        "/c/place",
+        "Places"
+      ],
+      [
+        "/ispytaniya",
+        "Quizzes"
+      ],
+      [
+        "/glossarij",
+        "Glossary"
+      ],
+      [
+        "/gallery",
+        "Gallery"
+      ],
+      [
+        "/all",
+        "All articles"
+      ]
+    ]
+  },
+  "regions": [
+    "Dangar",
+    "Ollandia",
+    "Mergana",
+    "Catalia",
+    "Solanta",
+    "Rivers and Seas"
+  ],
+  "roster": {
+    "features": [
+      "alvaro-da-silva",
+      "red"
+    ],
+    "primary": [
+      "Catalia",
+      "Ollandia"
+    ]
+  },
+  "houses": {
+    "title": "Countries at a glance",
+    "aria": "Compare countries",
+    "first": "Country",
+    "cols": [
+      {
+        "h": "Capital and cities",
+        "k": "capital"
+      },
+      {
+        "h": "Government",
+        "k": "government"
+      },
+      {
+        "h": "Army and commanders",
+        "k": "army"
+      },
+      {
+        "h": "At the end of the novel",
+        "k": "ending",
+        "spoil": true
+      },
+      {
+        "h": "Society",
+        "k": "society"
+      },
+      {
+        "h": "On the map",
+        "k": "color"
+      }
+    ]
+  },
+  "map": {
+    "title": "Map of the World of Wells",
+    "sub": "Select a marker to read about a place. Use the timeline to explore events or follow a character’s route.",
+    "image": "img/map.jpg",
+    "w": 3200,
+    "h": 2400,
+    "alt": "Map of the World of Wells"
+  },
+  "gallery": {
+    "sub": "Browse maps, illustrations and portraits. Select an image to enlarge it."
+  },
+  "quiz": {
+    "subject": "World of Wells"
+  }
+}

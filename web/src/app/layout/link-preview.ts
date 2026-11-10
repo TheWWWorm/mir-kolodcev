@@ -4,6 +4,7 @@ import { ArticleMeta, TYPE_LABELS } from '../core/models';
 import { SITE } from '../core/site';
 import { Spoilers } from '../core/spoilers';
 import { WikiData } from '../core/wiki-data';
+import { unlocalized, t } from '../core/locale';
 
 /** Links that get a preview: wiki links in article text and infoboxes, the article's backlinks. */
 const LINKS = '.prose a[href^="/"], .infobox a[href^="/"], .back a[href^="/"]';
@@ -46,7 +47,7 @@ const GUTTER = 16;
       >
         @if (spoilers.hidden(a)) {
           <a class="t" [routerLink]="'/' + a.slug" tabindex="-1">{{ a.title }}</a>
-          <p class="sum muted">Появляется в {{ site.spoilers.word.prep }} {{ spoilers.bookTitle(a.first) }}.</p>
+          <p class="sum muted">{{ t('Появляется в', 'Appears in') }} {{ site.spoilers.word.prep }} {{ spoilers.bookTitle(a.first) }}.</p>
         } @else {
           <div class="row">
             @if (img(); as src) {
@@ -95,6 +96,7 @@ const GUTTER = 16;
   `,
 })
 export class LinkPreview {
+  protected readonly t = t;
   protected readonly site = SITE;
   protected readonly types = TYPE_LABELS;
   protected readonly spoilers = inject(Spoilers);
@@ -161,9 +163,9 @@ export class LinkPreview {
 
   /** The article a link leads to, unless it is the article on screen (its own sections, say). */
   private target(a: Element): ArticleMeta | undefined {
-    const path = (a.getAttribute('href') ?? '').split(/[?#]/)[0];
+    const path = unlocalized((a.getAttribute('href') ?? '').split(/[?#]/)[0]);
     const slug = path.split('/')[1];
-    if (!slug || location.pathname.split('/')[1] === slug) return undefined;
+    if (!slug || unlocalized(location.pathname).split('/')[1] === slug) return undefined;
     return this.data.get(slug);
   }
 

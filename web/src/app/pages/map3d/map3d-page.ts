@@ -1,5 +1,6 @@
+import { localized } from '../../core/locale';
 import { Component, ElementRef, OnDestroy, afterNextRender, effect, inject, signal, viewChild } from '@angular/core';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import * as THREE from 'three';
 import { MapControls } from 'three/examples/jsm/controls/MapControls.js';
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
@@ -47,7 +48,6 @@ function inside(pts: [number, number][], x: number, z: number): boolean {
 })
 export class Map3dPage implements OnDestroy {
   private readonly data = inject(WikiData);
-  private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
   private readonly canvas = viewChild.required<ElementRef<HTMLCanvasElement>>('canvas');
   private readonly stage = viewChild.required<ElementRef<HTMLDivElement>>('stage');
@@ -334,8 +334,7 @@ export class Map3dPage implements OnDestroy {
       el.className = 't-' + type;
       el.draggable = false;
       if (link) {
-        el.href = '/' + link;
-        el.addEventListener('click', (e) => { e.preventDefault(); this.router.navigateByUrl('/' + link); });
+        el.href = localized('/' + link);
       }
       layer.appendChild(el);
       const cfg = LABEL[type] ?? DEFAULT_LABEL;

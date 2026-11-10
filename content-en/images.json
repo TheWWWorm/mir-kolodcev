@@ -1,0 +1,321 @@
+{
+  "map.jpg": {
+    "caption": "Author’s map of the World of Wells, annotated for the first book: Dangar, Ollandia, Mergana, and Catalia. Labels in the original image remain in Russian.",
+    "credit": "Map: Alexey Safin"
+  },
+  "portrait-alvaro-da-silva-leyendecker.webp": {
+    "caption": "Alvaro da Silva — a portrait based on the novel’s description, in the style of J. C. Leyendecker.",
+    "credit": "Artist: WWWorm"
+  },
+  "portrait-fatima-leyendecker.webp": {
+    "caption": "Fatima Ir-Reya — a portrait based on the novel’s description, in the style of J. C. Leyendecker.",
+    "credit": "Artist: WWWorm"
+  },
+  "portrait-fernan-gerejra-leyendecker.webp": {
+    "caption": "Fernan Gereira — a portrait based on the novel’s description, in the style of J. C. Leyendecker.",
+    "credit": "Artist: WWWorm"
+  },
+  "portrait-beatris-leyendecker.webp": {
+    "caption": "Beatriz — a portrait based on the novel’s description, in the style of J. C. Leyendecker.",
+    "credit": "Artist: WWWorm"
+  },
+  "portrait-karlos-leyendecker.webp": {
+    "caption": "Carlos el Niña — a portrait based on the novel’s description, in the style of J. C. Leyendecker.",
+    "credit": "Artist: WWWorm"
+  },
+  "portrait-ditrikh-leyendecker.webp": {
+    "caption": "Dietrich von Dort — a portrait based on the novel’s description, in the style of J. C. Leyendecker.",
+    "credit": "Artist: WWWorm"
+  },
+  "portrait-red-leyendecker.webp": {
+    "caption": "Red — a portrait based on the novel’s description, in the style of J. C. Leyendecker.",
+    "credit": "Artist: WWWorm",
+    "period": "Dunkwald · beginning of captivity"
+  },
+  "portrait-joriksen-leyendecker.webp": {
+    "caption": "Fritjof Joriksen — a portrait based on the novel’s description, in the style of J. C. Leyendecker.",
+    "credit": "Artist: WWWorm",
+    "period": "Dunkwald · young fischmeister"
+  },
+  "portrait-landau-leyendecker.webp": {
+    "caption": "Landau — a portrait based on the novel’s description, in the style of J. C. Leyendecker.",
+    "credit": "Artist: WWWorm"
+  },
+  "portrait-greta-leyendecker.webp": {
+    "caption": "Greta — a portrait based on the novel’s description, in the style of J. C. Leyendecker.",
+    "credit": "Artist: WWWorm"
+  },
+  "portrait-yakka-leyendecker.webp": {
+    "caption": "Yakka — a portrait based on the novel’s description, in the style of J. C. Leyendecker.",
+    "credit": "Artist: WWWorm"
+  },
+  "portrait-olkha-leyendecker.webp": {
+    "caption": "Olkha Lenz — a portrait based on the novel’s description, in the style of J. C. Leyendecker.",
+    "credit": "Artist: WWWorm"
+  },
+  "portrait-lurd-leyendecker.webp": {
+    "caption": "Ludwig von Lurd — a portrait based on the novel’s description, in the style of J. C. Leyendecker.",
+    "credit": "Artist: WWWorm"
+  },
+  "portrait-lents-leyendecker.webp": {
+    "caption": "Wladyslaw Lenz — a portrait based on the novel’s description, in the style of J. C. Leyendecker.",
+    "credit": "Artist: WWWorm"
+  },
+  "portrait-elza-leyendecker.webp": {
+    "caption": "Elsa von Walbrecht — a portrait based on the novel’s description, in the style of J. C. Leyendecker.",
+    "credit": "Artist: WWWorm"
+  },
+  "portrait-milosh-leyendecker.webp": {
+    "caption": "Milosh — a portrait based on the novel’s description, in the style of J. C. Leyendecker.",
+    "credit": "Artist: WWWorm"
+  },
+  "portrait-katrina-leyendecker.webp": {
+    "caption": "Katrina von Lurd — a portrait based on the novel’s description, in the style of J. C. Leyendecker.",
+    "credit": "Artist: WWWorm"
+  },
+  "portrait-sokol-leyendecker.webp": {
+    "caption": "Black Falcon — an early portrait of Wolfgang von Klein, in the style of J. C. Leyendecker.",
+    "credit": "Artist: WWWorm",
+    "period": "Dunkwald · lieutenant"
+  },
+  "portrait-dezerej-leyendecker.webp": {
+    "caption": "Gabriel Deserey — a portrait based on the novel’s description, in the style of J. C. Leyendecker.",
+    "credit": "Artist: WWWorm"
+  },
+  "portrait-liess-van-khalm-leyendecker.webp": {
+    "caption": "Liess van Halm — a portrait based on the novel’s description, in the style of J. C. Leyendecker.",
+    "credit": "Artist: WWWorm"
+  },
+  "portrait-mor-leyendecker.webp": {
+    "caption": "Mor — a portrait based on the novel’s description, in the style of J. C. Leyendecker.",
+    "credit": "Artist: WWWorm"
+  },
+  "portrait-izabel-leyendecker.webp": {
+    "caption": "Isabel el Niña — a portrait based on the novel’s description, in the style of J. C. Leyendecker.",
+    "credit": "Artist: WWWorm"
+  },
+  "portrait-malysh-leyendecker.webp": {
+    "caption": "Little One — a portrait based on the novel’s description, in the style of J. C. Leyendecker.",
+    "credit": "Artist: WWWorm"
+  },
+  "portrait-filippe-leyendecker.webp": {
+    "caption": "Filippe di Berro — a portrait based on the novel’s description, in the style of J. C. Leyendecker.",
+    "credit": "Artist: WWWorm"
+  },
+  "portrait-lyusil-leyendecker.webp": {
+    "caption": "Lucille Gereira — a portrait based on the novel’s description, in the style of J. C. Leyendecker.",
+    "credit": "Artist: WWWorm"
+  },
+  "portrait-klyajn-leyendecker.webp": {
+    "caption": "Wolfgang von Klein — the major at the interrogation table, in the style of J. C. Leyendecker.",
+    "credit": "Artist: WWWorm",
+    "period": "Latsen · major"
+  },
+  "portrait-amir-sedoj-leyendecker.webp": {
+    "caption": "Amir the Grey — a portrait based on the novel’s description, in the style of J. C. Leyendecker.",
+    "credit": "Artist: WWWorm"
+  },
+  "portrait-salvador-leyendecker.webp": {
+    "caption": "Salvador — a portrait based on the novel’s description, in the style of J. C. Leyendecker.",
+    "credit": "Artist: WWWorm"
+  },
+  "portrait-otto-leyendecker.webp": {
+    "caption": "Otto — a portrait based on the novel’s description, in the style of J. C. Leyendecker.",
+    "credit": "Artist: WWWorm"
+  },
+  "portrait-khuanes-leyendecker.webp": {
+    "caption": "Garcia Juanes — a portrait based on the novel’s description, in the style of J. C. Leyendecker.",
+    "credit": "Artist: WWWorm"
+  },
+  "portrait-brigadir-leyendecker.webp": {
+    "caption": "Foreman — a portrait based on the novel’s description, in the style of J. C. Leyendecker.",
+    "credit": "Artist: WWWorm"
+  },
+  "portrait-spasenie-leyendecker.webp": {
+    "caption": "Salvation — a portrait based on the novel’s description, in the style of J. C. Leyendecker.",
+    "credit": "Artist: WWWorm"
+  },
+  "portrait-lid-anteodor-leyendecker.webp": {
+    "caption": "Lid Anteodor — a portrait inspired by the novel, in the style of J. C. Leyendecker.",
+    "credit": "Artist: WWWorm"
+  },
+  "portrait-vtoroj-ubijtsa-leyendecker.webp": {
+    "caption": "Second Killer — a portrait inspired by the novel, in the style of J. C. Leyendecker.",
+    "credit": "Artist: WWWorm"
+  },
+  "portrait-kristobal-maduro-leyendecker.webp": {
+    "caption": "Cristobal Maduro — a portrait inspired by the novel, in the style of J. C. Leyendecker.",
+    "credit": "Artist: WWWorm"
+  },
+  "portrait-emil-leyendecker.webp": {
+    "caption": "Emil Diale — a portrait based on the novel’s description, in the style of J. C. Leyendecker.",
+    "credit": "Artist: WWWorm"
+  },
+  "portrait-osa-leyendecker.webp": {
+    "caption": "Wasp — a portrait based on the novel’s description, in the style of J. C. Leyendecker.",
+    "credit": "Artist: WWWorm"
+  },
+  "portrait-mari-leyendecker.webp": {
+    "caption": "Mari von Dort — a portrait inspired by the novel, in the style of J. C. Leyendecker.",
+    "credit": "Artist: WWWorm"
+  },
+  "portrait-malena-leyendecker.webp": {
+    "caption": "Malena — a portrait inspired by the novel, in the style of J. C. Leyendecker.",
+    "credit": "Artist: WWWorm"
+  },
+  "portrait-gelb-leyendecker.webp": {
+    "caption": "Gelb — a portrait inspired by the novel, in the style of J. C. Leyendecker.",
+    "credit": "Artist: WWWorm"
+  },
+  "portrait-gizeke-leyendecker.webp": {
+    "caption": "Frau Gieseke — a portrait inspired by the novel, in the style of J. C. Leyendecker.",
+    "credit": "Artist: WWWorm"
+  },
+  "portrait-pisarenok-leyendecker.webp": {
+    "caption": "Young Scribe — a portrait inspired by the novel, in the style of J. C. Leyendecker.",
+    "credit": "Artist: WWWorm"
+  },
+  "portrait-vinsente-ramires-leyendecker.webp": {
+    "caption": "Vincente Ramires da Rimini — a portrait inspired by the novel, in the style of J. C. Leyendecker.",
+    "credit": "Artist: WWWorm"
+  },
+  "portrait-balboa-leyendecker.webp": {
+    "caption": "Balboa — a portrait based on the novel’s description, in the style of J. C. Leyendecker.",
+    "credit": "Artist: WWWorm"
+  },
+  "portrait-boroda-lopatoj-leyendecker.webp": {
+    "caption": "Spadebeard — a portrait based on the novel’s description, in the style of J. C. Leyendecker.",
+    "credit": "Artist: WWWorm"
+  },
+  "portrait-diego-ingres-leyendecker.webp": {
+    "caption": "Diego Ingres — a portrait based on the novel’s description, in the style of J. C. Leyendecker.",
+    "credit": "Artist: WWWorm"
+  },
+  "portrait-farmiga-leyendecker.webp": {
+    "caption": "Farmiga — a portrait based on the novel’s description, in the style of J. C. Leyendecker.",
+    "credit": "Artist: WWWorm"
+  },
+  "portrait-flammel-leyendecker.webp": {
+    "caption": "Flammel — a portrait based on the novel’s description, in the style of J. C. Leyendecker.",
+    "credit": "Artist: WWWorm"
+  },
+  "portrait-frafra-leyendecker.webp": {
+    "caption": "Franz Freiber — a portrait based on the novel’s description, in the style of J. C. Leyendecker.",
+    "credit": "Artist: WWWorm"
+  },
+  "portrait-frej-leyendecker.webp": {
+    "caption": "Frey — a portrait based on the novel’s description, in the style of J. C. Leyendecker.",
+    "credit": "Artist: WWWorm"
+  },
+  "portrait-kajzer-leyendecker.webp": {
+    "caption": "The Kaiser — a portrait based on the novel’s description, in the style of J. C. Leyendecker.",
+    "credit": "Artist: WWWorm"
+  },
+  "portrait-karmensita-estevos-leyendecker.webp": {
+    "caption": "Carmensita Estevos — a portrait based on the novel’s description, in the style of J. C. Leyendecker.",
+    "credit": "Artist: WWWorm"
+  },
+  "portrait-khajnts-leyendecker.webp": {
+    "caption": "Heinz von Dort — a portrait based on the novel’s description, in the style of J. C. Leyendecker.",
+    "credit": "Artist: WWWorm"
+  },
+  "portrait-khavyer-salam-leyendecker.webp": {
+    "caption": "Javier Salam — a portrait based on the novel’s description, in the style of J. C. Leyendecker.",
+    "credit": "Artist: WWWorm"
+  },
+  "portrait-khofmajer-leyendecker.webp": {
+    "caption": "Hofmeyer — a portrait based on the novel’s description, in the style of J. C. Leyendecker.",
+    "credit": "Artist: WWWorm"
+  },
+  "portrait-khose-flarbo-leyendecker.webp": {
+    "caption": "Jose Flarbo — a portrait based on the novel’s description, in the style of J. C. Leyendecker.",
+    "credit": "Artist: WWWorm"
+  },
+  "portrait-kurtsleben-leyendecker.webp": {
+    "caption": "Kurtzleben — a portrait based on the novel’s description, in the style of J. C. Leyendecker.",
+    "credit": "Artist: WWWorm"
+  },
+  "portrait-markes-leyendecker.webp": {
+    "caption": "Senora Marques — a portrait based on the novel’s description, in the style of J. C. Leyendecker.",
+    "credit": "Artist: WWWorm"
+  },
+  "portrait-nivendej-leyendecker.webp": {
+    "caption": "Nivendey — a portrait based on the novel’s description, in the style of J. C. Leyendecker.",
+    "credit": "Artist: WWWorm"
+  },
+  "portrait-rajniger-leyendecker.webp": {
+    "caption": "Reiniger — a portrait based on the novel’s description, in the style of J. C. Leyendecker.",
+    "credit": "Artist: WWWorm"
+  },
+  "portrait-rikardo-flores-leyendecker.webp": {
+    "caption": "Ricardo Flores — a portrait based on the novel’s description, in the style of J. C. Leyendecker.",
+    "credit": "Artist: WWWorm"
+  },
+  "portrait-shpeer-leyendecker.webp": {
+    "caption": "Speer — a portrait based on the novel’s description, in the style of J. C. Leyendecker.",
+    "credit": "Artist: WWWorm"
+  },
+  "portrait-shults-leyendecker.webp": {
+    "caption": "Schultz — a portrait based on the novel’s description, in the style of J. C. Leyendecker.",
+    "credit": "Artist: WWWorm"
+  },
+  "portrait-siplyj-leyendecker.webp": {
+    "caption": "Hoarse — a portrait based on the novel’s description, in the style of J. C. Leyendecker.",
+    "credit": "Artist: WWWorm"
+  },
+  "portrait-sudya-enkhal-leyendecker.webp": {
+    "caption": "Enhal — a portrait based on the novel’s description, in the style of J. C. Leyendecker.",
+    "credit": "Artist: WWWorm"
+  },
+  "portrait-tot-bez-nogtej-leyendecker.webp": {
+    "caption": "The One Without Nails — a portrait based on the novel’s description, in the style of J. C. Leyendecker.",
+    "credit": "Artist: WWWorm"
+  },
+  "portrait-ugo-martines-leyendecker.webp": {
+    "caption": "Ugo Martinez — a portrait based on the novel’s description, in the style of J. C. Leyendecker.",
+    "credit": "Artist: WWWorm"
+  },
+  "portrait-varkhajt-leyendecker.webp": {
+    "caption": "Friedrich von Wahrheit — a portrait based on the novel’s description, in the style of J. C. Leyendecker.",
+    "credit": "Artist: WWWorm"
+  },
+  "portrait-viglaf-leyendecker.webp": {
+    "caption": "Wiglaf — a portrait based on the novel’s description, in the style of J. C. Leyendecker.",
+    "credit": "Artist: WWWorm"
+  },
+  "portrait-zejdvist-leyendecker.webp": {
+    "caption": "Claus von Zeidvist — a portrait based on the novel’s description, in the style of J. C. Leyendecker.",
+    "credit": "Artist: WWWorm"
+  },
+  "portrait-zolotoj-dukat-leyendecker.webp": {
+    "caption": "Golden Ducat — a portrait based on the novel’s description, in the style of J. C. Leyendecker.",
+    "credit": "Artist: WWWorm"
+  },
+  "portrait-kara-leyendecker.webp": {
+    "caption": "Kara as Red remembers her — a portrait based on the novel’s description, in the style of J. C. Leyendecker.",
+    "credit": "Artist: WWWorm"
+  },
+  "portrait-brojenshtoff-leyendecker.webp": {
+    "caption": "Brojenstoff — a portrait based on the novel’s description, in the style of J. C. Leyendecker.",
+    "credit": "Artist: WWWorm"
+  },
+  "portrait-roman-surzhikov.jpg": {
+    "caption": "Roman Surzhikov, a drawn portrait bearing the author’s signature.",
+    "credit": "Source: Worlds of Roman Surzhikov Wiki (Fandom)"
+  },
+  "portrait-joriksen-later-leyendecker.webp": {
+    "caption": "Fritjof Joriksen — a first-rank master fisherman, in the style of J. C. Leyendecker.",
+    "credit": "Artist: WWWorm",
+    "period": "Hofstadt · first-rank master"
+  },
+  "portrait-red-later-leyendecker.webp": {
+    "caption": "Red and Greta — the confession about the letter (ch. 33), in the style of J. C. Leyendecker.",
+    "credit": "Artist: WWWorm",
+    "period": "Dunkwald · Greta’s confession"
+  },
+  "portrait-red-neubiy-leyendecker.webp": {
+    "caption": "Red as Killnot at Dietrich’s inspection (ch. 2), in the style of J. C. Leyendecker.",
+    "credit": "Artist: WWWorm",
+    "period": "Ollandia · Killnot in the fusilier platoon"
+  }
+}

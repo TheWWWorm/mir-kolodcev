@@ -1,3 +1,4 @@
+import { t } from '../../core/locale';
 import { Component, ElementRef, computed, effect, inject, input, signal, untracked, viewChild } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { MapPlace } from '../../core/models';
@@ -19,6 +20,7 @@ interface View { z: number; x: number; y: number; base: number; }
   host: { '(window:resize)': 'fit()' },
 })
 export class MapPage {
+  protected readonly t = t;
   protected readonly site = SITE;
   /** ?p=<place key> opens the map centred on that place. */
   readonly p = input<string>();

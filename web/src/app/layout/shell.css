@@ -49,6 +49,11 @@
 .icon:hover {
   background: var(--sheet-2);
 }
+.language {
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-decoration: none;
+}
 .menu {
   display: none;
 }
@@ -116,6 +121,11 @@
 }
 .main {
   min-width: 0;
+}
+.supplementary-note {
+  margin: 12px clamp(16px, 4vw, 48px) 0;
+  color: var(--ink-3);
+  font: var(--fs-ui)/1.4 var(--sans);
 }
 .drawer-spoil {
   display: none;

@@ -1,4 +1,6 @@
 import RAW from '../../site.json';
+import EN from '../../site.en.json';
+import { LOCALE } from './locale';
 
 /**
  * Everything that differs between the wikis built on this engine: names, texts, spoiler units,
@@ -16,6 +18,7 @@ export interface SiteConfig {
   /** Prefix of localStorage keys. */
   key: string;
   about: string;
+  translationNote?: string;
   /** The whole work, as in «весь цикл», «прочитали цикл», «вопросы касаются всего цикла». */
   work: { acc: string; gen: string };
   spoilers: {
@@ -68,7 +71,7 @@ export interface SiteConfig {
   build?: { book?: string; bookPatterns?: [number, string][] };
 }
 
-export const SITE = RAW as unknown as SiteConfig;
+export const SITE = (LOCALE === 'en' ? { ...RAW, ...EN } : RAW) as unknown as SiteConfig;
 
 /** Fills {name} placeholders of a site text. */
 export function fmt(s: string, vars: Record<string, string | number>): string {
@@ -77,3 +80,4 @@ export function fmt(s: string, vars: Record<string, string | number>): string {
 
 /** Page title with the site name. */
 export const pageTitle = (t: string) => `${t} · ${SITE.name}`;
+export const sectionTitle = (path: string) => pageTitle(SITE.sections.find(([p]) => p === path)?.[1] ?? SITE.name);

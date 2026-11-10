@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, computed, inject, signal } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { ArticleBody, ArticleMeta, ArticleType, WikiExtra, WikiImage, WikiIndex } from './models';
+import { DATA_DIR } from './locale';
 
 /** Set while a failed article load has reloaded the page, so it happens once. */
 const RELOADED = 'wiki.reloaded';
@@ -16,6 +17,7 @@ export class WikiData {
 
   readonly articles = signal<ArticleMeta[]>([]);
   readonly images = signal<WikiImage[]>([]);
+  readonly aliases = signal<Record<string, string>>({});
   /** Plain-text start of every article for full-text search; empty until data/search.json arrives. */
   readonly texts = signal<Record<string, string>>({});
   readonly extra = signal<WikiExtra>({ chapters: {}, families: [], houses: [], relations: [], map: { places: {}, events: [] } });
@@ -24,13 +26,14 @@ export class WikiData {
   readonly books = computed(() => this.articles().filter((a) => a.type === 'book').sort((a, b) => a.order - b.order));
 
   async load(): Promise<void> {
-    const idx = await firstValueFrom(this.http.get<WikiIndex>('data/index.json'));
+    const idx = await firstValueFrom(this.http.get<WikiIndex>(`${DATA_DIR}/index.json`));
     this.articles.set(idx.articles);
+    this.aliases.set(idx.aliases ?? {});
     this.images.set(idx.images);
     this.extra.set(idx.data);
     // not needed for the first screen: fetch without holding up startup
-    this.http.get<Record<string, string>>('data/search.json').subscribe((t) => this.texts.set(t));
-    this.http.get<WikiExtra['routes']>('data/routes.json').subscribe((routes) => this.extra.update((x) => ({ ...x, routes })));
+    this.http.get<Record<string, string>>(`${DATA_DIR}/search.json`).subscribe((t) => this.texts.set(t));
+    this.http.get<WikiExtra['routes']>(`${DATA_DIR}/routes.json`).subscribe((routes) => this.extra.update((x) => ({ ...x, routes })));
   }
 
   get(slug: string): ArticleMeta | undefined {
@@ -48,7 +51,7 @@ export class WikiData {
   body(slug: string): Promise<ArticleBody> {
     let p = this.bodies.get(slug);
     if (!p) {
-      p = firstValueFrom(this.http.get<ArticleBody>(`data/a/${slug}.json`)).catch((e) => {
+      p = firstValueFrom(this.http.get<ArticleBody>(`${DATA_DIR}/a/${slug}.json`)).catch((e) => {
         this.bodies.delete(slug);
         // a tab still on the previous build asks for an article file that a new deploy has changed:
         // the service worker refuses it, and only a reload into the new build helps (once, so offline does not loop)

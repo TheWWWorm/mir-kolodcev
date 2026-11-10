@@ -1,3 +1,4 @@
+import { t } from '../../core/locale';
 import { Component, computed, inject, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TYPE_LABELS } from '../../core/models';
@@ -9,9 +10,9 @@ import { Spoilers } from '../../core/spoilers';
   imports: [RouterLink],
   template: `
     <div class="page">
-      <div class="crumbs"><a routerLink="/">Заглавная</a></div>
-      <h1 class="page-title">Поиск</h1>
-      <p class="page-sub">По запросу «{{ q() }}» найдено: {{ results().length }}.</p>
+      <div class="crumbs"><a routerLink="/">{{ t('Заглавная', 'Home') }}</a></div>
+      <h1 class="page-title">{{ t('Поиск', 'Search') }}</h1>
+      <p class="page-sub">{{ t('Результаты для', 'Results for') }} «{{ q() }}»: {{ results().length }}.</p>
       <ol class="results">
         @for (r of results(); track r.slug) {
           <li>
@@ -19,7 +20,7 @@ import { Spoilers } from '../../core/spoilers';
             <p [class.spoil-blur]="spoilers.partly(r)">{{ r.summary }}</p>
           </li>
         } @empty {
-          <li class="empty">Ничего не нашлось. Проверьте написание или попробуйте имя без отчества.</li>
+          <li class="empty">{{ t('Ничего не нашлось. Проверьте написание или попробуйте имя без отчества.', 'No results. Check the spelling or try a shorter search.') }}</li>
         }
       </ol>
     </div>
@@ -32,9 +33,10 @@ import { Spoilers } from '../../core/spoilers';
   `,
 })
 export class SearchPage {
+  protected readonly t = t;
   readonly q = input.required<string>();
   private readonly search = inject(Search);
   protected readonly spoilers = inject(Spoilers);
   protected readonly types = TYPE_LABELS;
-  protected readonly results = computed(() => this.search.find(decodeURIComponent(this.q())));
+  protected readonly results = computed(() => this.search.find(this.q()));
 }

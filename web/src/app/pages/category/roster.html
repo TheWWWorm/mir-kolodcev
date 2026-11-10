@@ -1,18 +1,18 @@
 <div class="directory-tools">
   <label class="directory-search"
-    ><span class="sr-only">Найти персонажа</span
+    ><span class="sr-only">{{ t('Найти персонажа', 'Find a character') }}</span
     ><svg viewBox="0 0 24 24" aria-hidden="true">
       <circle cx="10" cy="10" r="7" />
       <path d="m15 15 6 6" /></svg
     ><input
       class="field"
       type="search"
-      placeholder="Найти персонажа"
+      [placeholder]="t('Найти персонажа', 'Find a character')"
       [value]="query()"
       (input)="query.set($any($event.target).value)"
   /></label>
-  <div class="group-filter" aria-label="Группа персонажей">
-    <button class="btn" [attr.aria-pressed]="!group()" (click)="group.set('')">Все</button
+  <div class="group-filter" [attr.aria-label]="t('Группа персонажей', 'Character group')">
+    <button class="btn" [attr.aria-pressed]="!group()" (click)="group.set('')">{{ t('Все', 'All') }}</button
     ><button
       class="btn"
       [attr.aria-pressed]="group() === primary[0]"
@@ -27,11 +27,11 @@
       {{ primary[1] }}</button
     ><select
       class="field"
-      aria-label="Другие группы персонажей"
+      [attr.aria-label]="t('Другие группы персонажей', 'Other character groups')"
       [value]="primary.includes(group()) ? '' : group()"
       (change)="group.set($any($event.target).value)"
     >
-      <option value="">Другие разделы</option>
+      <option value="">{{ t('Другие разделы', 'Other groups') }}</option>
       @for (g of otherGroups(); track g.name) {
         <option [value]="g.name">{{ g.name }}</option>
       }
@@ -50,19 +50,19 @@
           ><span class="affiliation">{{ a.group }}</span>
           <h2>{{ a.title }}</h2>
           <span class="role">{{
-            spoilers.partly(a) ? 'Сведения частично скрыты' : a.ru || summary(a)
+            spoilers.partly(a) ? t('Сведения частично скрыты', 'Some details are hidden') : a.ru || summary(a)
           }}</span
           ><span class="feature-action"
-            >Открыть статью <span aria-hidden="true">→</span></span
+            >{{ t('Открыть статью', 'Read article') }} <span aria-hidden="true">→</span></span
           ></span
         ></a
       >
     }
   </div>
 }
-<nav class="alphabet" aria-label="Фильтр по первой букве">
-  <span>Перейти к букве:</span
-  ><button [attr.aria-pressed]="!letter()" (click)="letter.set('')">Все</button>
+<nav class="alphabet" [attr.aria-label]="t('Фильтр по первой букве', 'Filter by first letter')">
+  <span>{{ t('Перейти к букве:', 'Jump to a letter:') }}</span
+  ><button [attr.aria-pressed]="!letter()" (click)="letter.set('')">{{ t('Все', 'All') }}</button>
   @for (l of letters(); track l) {
     <button [attr.aria-pressed]="letter() === l" (click)="letter.set(letter() === l ? '' : l)">
       {{ l }}
@@ -71,8 +71,8 @@
 </nav>
 @if (filtering()) {
   <div class="result-count ui" role="status">
-    <span>Найдено: {{ count() }}</span
-    ><button class="btn" (click)="reset()">Сбросить фильтры</button>
+    <span>{{ t('Найдено:', 'Found:') }} {{ count() }}</span
+    ><button class="btn" (click)="reset()">{{ t('Сбросить фильтры', 'Reset filters') }}</button>
   </div>
 }
 <div class="groups">

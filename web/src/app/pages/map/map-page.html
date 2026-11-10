@@ -1,15 +1,15 @@
 <div class="page wide">
-  <div class="crumbs"><a routerLink="/">Заглавная</a></div>
+  <div class="crumbs"><a routerLink="/">{{ t('Заглавная', 'Home') }}</a></div>
   <h1 class="page-title">{{ site.map.title }}</h1>
   <p class="page-sub">{{ site.map.sub }}</p>
 
   <div class="tools ui">
-    <button class="btn" (click)="zoom(1.4)" aria-label="Приблизить">＋</button>
-    <button class="btn" (click)="zoom(1 / 1.4)" aria-label="Отдалить">－</button>
-    <button class="btn" (click)="fit()">Вписать</button>
-    <a class="btn" routerLink="/map3d">3D-карта</a>
-    <button class="btn" [attr.aria-pressed]="showLands()" (click)="showLands.set(!showLands())">Земли</button>
-    <button class="btn" [attr.aria-pressed]="showCities()" (click)="showCities.set(!showCities())">Города и места</button>
+    <button class="btn" (click)="zoom(1.4)" [attr.aria-label]="t('Приблизить', 'Zoom in')">＋</button>
+    <button class="btn" (click)="zoom(1 / 1.4)" [attr.aria-label]="t('Отдалить', 'Zoom out')">－</button>
+    <button class="btn" (click)="fit()">{{ t('Вписать', 'Fit map') }}</button>
+    <a class="btn" routerLink="/map3d">{{ t('3D-карта', '3D map') }}</a>
+    <button class="btn" [attr.aria-pressed]="showLands()" (click)="showLands.set(!showLands())">{{ t('Земли', 'Lands') }}</button>
+    <button class="btn" [attr.aria-pressed]="showCities()" (click)="showCities.set(!showCities())">{{ t('Города и места', 'Cities and places') }}</button>
   </div>
 
   <div class="stage" [class.folded]="tl.collapsed()">
@@ -37,14 +37,14 @@
 
     @if (popup(); as k) {
       <div class="pop" [style.left.px]="px(places()[k])" [style.top.px]="py(places()[k])" [class.above]="py(places()[k]) > 300">
-        <button class="x" (click)="popup.set('')" aria-label="Закрыть">×</button>
+        <button class="x" (click)="popup.set('')" [attr.aria-label]="t('Закрыть', 'Close')">×</button>
         <b>{{ placeTitle(k) }}</b>
         @if (summary(k)) { <p>{{ summary(k) }}</p> }
         @let evs = popupEvents(tl);
         @if (evs.length) {
           <div class="pop-ev">@for (e of evs; track e.i) {<button (click)="tl.show(e.i)">{{ e.s.label }}</button>}</div>
         }
-        @if (linked(k)) { <a [routerLink]="'/' + k">Читать статью</a> }
+        @if (linked(k)) { <a [routerLink]="'/' + k">{{ t('Читать статью', 'Read article') }}</a> }
       </div>
     }
   </div>

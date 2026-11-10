@@ -22,7 +22,8 @@ createServer(async (req, res) => {
   const file = join(ROOT, path);
   let target = join(ROOT, 'index.html');
   if (path !== '/' && (await isFile(file))) target = file;
-  else if (path !== '/' && (await isFile(file + '.html'))) target = file + '.html';
+  else if (path !== '/' && (await isFile(file.replace(/\/$/, '') + '.html'))) target = file.replace(/\/$/, '') + '.html';
+  else if (path !== '/' && (await isFile(join(file, 'index.html')))) target = join(file, 'index.html');
   try {
     const body = await readFile(target);
     res.writeHead(200, { 'Content-Type': TYPES[extname(target)] ?? 'application/octet-stream', 'Cache-Control': 'no-cache' });

@@ -1,3 +1,4 @@
+import { localized, t } from '../../core/locale';
 import { Component, computed, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { byTitle } from '../../core/format';
@@ -8,10 +9,10 @@ import { WikiData } from '../../core/wiki-data';
   imports: [RouterLink],
   template: `
     <div class="page">
-      <div class="crumbs"><a routerLink="/">Заглавная</a></div>
-      <h1 class="page-title">Все статьи</h1>
-      <p class="page-sub">{{ data.articles().length }} статей по алфавиту.</p>
-      <nav class="letters ui">@for (l of letters(); track l.letter) {<a href="/all" (click)="jump($event, l.letter)">{{ l.letter }}</a>}</nav>
+      <div class="crumbs"><a routerLink="/">{{ t('Заглавная', 'Home') }}</a></div>
+      <h1 class="page-title">{{ t('Все статьи', 'All articles') }}</h1>
+      <p class="page-sub">{{ data.articles().length }} {{ t('статей по алфавиту.', 'articles in alphabetical order.') }}</p>
+      <nav class="letters ui">@for (l of letters(); track l.letter) {<a [href]="allLink" (click)="jump($event, l.letter)">{{ l.letter }}</a>}</nav>
       <div class="az">
         @for (l of letters(); track l.letter) {
           <h2 [id]="'l-' + l.letter">{{ l.letter }}</h2>
@@ -29,6 +30,8 @@ import { WikiData } from '../../core/wiki-data';
   `,
 })
 export class AllArticlesPage {
+  protected readonly t = t;
+  protected readonly allLink = localized('/all');
   protected readonly data = inject(WikiData);
   protected readonly letters = computed(() => {
     const m = new Map<string, ReturnType<WikiData['articles']>>();

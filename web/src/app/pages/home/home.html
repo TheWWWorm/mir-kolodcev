@@ -11,7 +11,7 @@
         class="hero-search"
         (submit)="search($event, query.value)"
         role="search"
-        aria-label="Найти в энциклопедии"
+        [attr.aria-label]="t('Найти в энциклопедии', 'Search the encyclopedia')"
       >
         <svg viewBox="0 0 24 24" width="21" height="21" aria-hidden="true">
           <circle cx="10" cy="10" r="7" />
@@ -20,10 +20,10 @@
         <input
           #query
           type="search"
-          placeholder="Найти героя, место или событие"
-          aria-label="Найти героя, место или событие"
+          [placeholder]="t('Найти героя, место или событие', 'Find a character, place or event')"
+          [attr.aria-label]="t('Найти героя, место или событие', 'Find a character, place or event')"
         />
-        <button type="submit" aria-label="Искать"><span aria-hidden="true">→</span></button>
+        <button type="submit" [attr.aria-label]="t('Искать', 'Search')"><span aria-hidden="true">→</span></button>
       </form>
     </section>
     <a class="world-map" routerLink="/map" [attr.aria-label]="home.mapImage.aria">
@@ -40,7 +40,7 @@
             <path d="M19 10c0 5-7 12-7 12S5 15 5 10a7 7 0 1 1 14 0Z" />
             <circle cx="12" cy="10" r="2" /></svg
           >{{ home.mapImage.label }}</span
-        ><span class="map-action">Открыть карту <span aria-hidden="true">→</span></span></span
+        ><span class="map-action">{{ t('Открыть карту', 'Open map') }} <span aria-hidden="true">→</span></span></span
       >
     </a>
   </div>
@@ -64,10 +64,10 @@
           <h3>{{ book.title }}</h3>
           <span class="synopsis">{{
             spoilers.hidden(book) || spoilers.partly(book)
-              ? 'Сведения о сюжете скрыты с учётом выбранной ' + site.spoilers.word.gen + '.'
+              ? t('Сведения о сюжете скрыты с учётом выбранной ' + site.spoilers.word.gen + '.', 'The plot summary is hidden by your spoiler settings.')
               : book.summary
           }}</span
-          ><span class="open-book">Перейти к книге <span aria-hidden="true">→</span></span></span
+          ><span class="open-book">{{ t('Перейти к книге', 'Read about the book') }} <span aria-hidden="true">→</span></span></span
         >
       </a>
     }
@@ -79,14 +79,14 @@
       <a class="all-books" [routerLink]="home.side.all[0]">{{ home.side.all[1] }}</a>
     </section>
   </div>
-  <nav class="explore-grid" aria-label="Исследовать энциклопедию">
+  <nav class="explore-grid" [attr.aria-label]="t('Исследовать энциклопедию', 'Explore the encyclopedia')">
     <a routerLink="/c/character"
       ><svg viewBox="0 0 24 24" aria-hidden="true">
         <circle cx="12" cy="7" r="4" />
         <path d="M4 22v-3a8 8 0 0 1 16 0v3" /></svg
       ><span
-        ><b>Персонажи</b
-        ><small>Герои, их союзники и противники. Судьбы, связи и роли в истории.</small></span
+        ><b>{{ t('Персонажи', 'Characters') }}</b
+        ><small>{{ t('Герои, их союзники и противники. Судьбы, связи и роли в истории.', 'Heroes, allies and rivals, and their roles in the story.') }}</small></span
       ><span aria-hidden="true">→</span></a
     >
     <a routerLink="/c/house"
@@ -100,11 +100,11 @@
       ><svg viewBox="0 0 24 24" aria-hidden="true">
         <rect x="3" y="5" width="18" height="17" rx="2" />
         <path d="M7 2v6M17 2v6M3 11h18M7 15h2M13 15h2M7 18h2" /></svg
-      ><span><b>Хронология</b><small>{{ home.chronology }}</small></span
+      ><span><b>{{ t('Хронология', 'Timeline') }}</b><small>{{ home.chronology }}</small></span
       ><span aria-hidden="true">→</span></a
     >
   </nav>
-  <nav class="reference-links" aria-label="Другие разделы">
+  <nav class="reference-links" [attr.aria-label]="t('Другие разделы', 'More sections')">
     @for (r of home.references; track r[0]) {
       <a [routerLink]="r[0]">{{ r[1] }}</a>
     }

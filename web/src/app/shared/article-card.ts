@@ -4,6 +4,7 @@ import { ArticleMeta, TYPE_LABELS } from '../core/models';
 import { Spoilers } from '../core/spoilers';
 import { WikiData } from '../core/wiki-data';
 import { SITE } from '../core/site';
+import { t } from '../core/locale';
 
 @Component({
   selector: 'app-article-card',
@@ -20,10 +21,10 @@ import { SITE } from '../core/site';
           <span class="ru">{{ a.ru }}</span>
         }
         @if (spoilers.hidden(a)) {
-          <span class="sum muted">Появляется в {{ site.spoilers.word.prep }} {{ spoilers.bookTitle(a.first) }}</span>
+          <span class="sum muted">{{ t('Появляется в', 'Appears in') }} {{ site.spoilers.word.prep }} {{ spoilers.bookTitle(a.first) }}</span>
         } @else {
           <span class="sum">{{
-            spoilers.partly(a) ? 'Часть сведений скрыта с учётом выбранной ' + site.spoilers.word.gen + '.' : a.summary
+            spoilers.partly(a) ? t('Часть сведений скрыта с учётом выбранной ' + site.spoilers.word.gen + '.', 'Some details are hidden by your spoiler settings.') : a.summary
           }}</span>
         }
         @if (showType()) {
@@ -35,6 +36,7 @@ import { SITE } from '../core/site';
   styleUrl: './article-card.css',
 })
 export class ArticleCard {
+  protected readonly t = t;
   protected readonly site = SITE;
   readonly article = input.required<ArticleMeta>();
   readonly showType = input(false);

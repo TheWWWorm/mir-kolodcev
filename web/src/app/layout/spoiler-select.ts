@@ -2,6 +2,7 @@ import { Component, inject, input } from '@angular/core';
 import { ALL_BOOKS, Spoilers } from '../core/spoilers';
 import { WikiData } from '../core/wiki-data';
 import { SITE, fmt } from '../core/site';
+import { t } from '../core/locale';
 
 /** Header control: which book the reader has finished. */
 @Component({
@@ -10,16 +11,16 @@ import { SITE, fmt } from '../core/site';
     <label
       [class.on]="spoilers.active()"
       [class.stacked]="stacked()"
-      [title]="'Скрывать события ' + site.spoilers.word.genPl + ', которые вы ещё не прочитали'"
+      [title]="t('Скрывать события ' + site.spoilers.word.genPl + ', которые вы ещё не прочитали', 'Hide spoilers from unread ' + site.spoilers.word.genPl)"
     >
-      <span class="lbl">Прочитано до</span>
+      <span class="lbl"> {{ t('Прочитано до', 'Read through') }}</span>
       <select
         class="field"
         [class.expanded]="expanded()"
         (change)="spoilers.setLevel(+$any($event.target).value)"
-        [attr.aria-label]="'Прочитано до ' + site.spoilers.word.gen"
+        [attr.aria-label]="t('Прочитано до ' + site.spoilers.word.gen, 'Last ' + site.spoilers.word.gen + ' read')"
       >
-        <option [value]="all" [selected]="spoilers.level() === all">весь {{ site.work.acc }}</option>
+        <option [value]="all" [selected]="spoilers.level() === all"> {{ t('весь ' + site.work.acc, 'Entire ' + site.work.acc) }}</option>
         @for (b of spoilers.parts(); track b.order) {
           <option [value]="b.order" [selected]="spoilers.level() === b.order">{{ option(b) }}</option>
         }
@@ -72,6 +73,7 @@ import { SITE, fmt } from '../core/site';
   `,
 })
 export class SpoilerSelect {
+  protected readonly t = t;
   protected readonly site = SITE;
   protected option(b: { order: number; title: string }): string {
     return fmt(SITE.spoilers.option, { n: b.order, title: b.title });

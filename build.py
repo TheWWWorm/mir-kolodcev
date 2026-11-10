@@ -25,6 +25,7 @@ ROOT = os.path.abspath(sys.argv[1]) if len(sys.argv) > 1 else os.path.dirname(os
 CONFIG = json.load(open(os.path.join(ROOT, 'web', 'src', 'site.json'), encoding='utf-8'))
 BY_CHAPTER = CONFIG['spoilers']['unit'] == 'chapters'
 TITLES = {}
+LANG = 'ru'
 TYPES = ['book', 'character', 'house', 'place', 'event', 'concept']
 
 
@@ -59,16 +60,24 @@ def inline(text, links, slugs, missing):
     def link(m):
         target, _, label = m.group(1).partition('|')
         target = target.strip()
-        label = (label or TITLES.get(target, target)).strip()
+        label = (label or html.escape(TITLES.get(target, target), quote=False)).strip()
         if target in slugs:
             links.add(target)
-            return f'<a href="/{target}" class="wl">{label}</a>'
+            return f'<a href="/{LANG}/{html.escape(target, quote=True)}" class="wl">{label}</a>'
         missing.add(target)
-        return f'<span class="wl-missing" title="No article yet">{label}</span>'
+        tooltip = 'Статья пока не написана' if LANG == 'ru' else 'No article yet'
+        return f'<span class="wl-missing" title="{tooltip}">{label}</span>'
 
     text = re.sub(r'\[\[([^\]]+)\]\]', link, text)
     # [text](https://…) or [text](/path): a plain link outside the wiki's own articles
-    text = re.sub(r'(?<!\[)\[([^\[\]]+)\]\(((?:https?://|/)[^\s)]+)\)', r'<a href="\2">\1</a>', text)
+    def plain_link(m):
+        label, href = m.groups()
+        if href.startswith('/') and not re.match(r'^/(?:ru|en|img|data|icons)(?:/|$)', href):
+            href = f'/{LANG}{href}'
+        href = html.escape(html.unescape(href), quote=True)
+        return f'<a href="{href}">{label}</a>'
+
+    text = re.sub(r'(?<!\[)\[([^\[\]]+)\]\(((?:https?://|/(?!/))[^\s)"\x27<>]+)\)', plain_link, text)
     text = re.sub(r'\*\*(.+?)\*\*', r'<strong>\1</strong>', text)
     text = re.sub(r'(?<![\w*])\*(?!\s)(.+?)(?<!\s)\*(?![\w*])', r'<em>\1</em>', text)
     text = re.sub(r'(?<!\w)_(?!\s)(.+?)(?<!\s)_(?!\w)', r'<em>\1</em>', text)
@@ -123,12 +132,26 @@ def chapter_iso(n):
     return str(1000 + int(n)) if BY_CHAPTER and str(n).isdigit() else ''
 
 
-def render(md, slugs, missing):
+def headings(md):
+    return [m.groups() for line in md.split('\n') if (m := re.match(r'^(#{2,4})\s+(.*)$', line.rstrip()))]
+
+
+def render(md, slugs, missing, source=None, last=0):
     links, out, toc = set(), [], []
     para, lst, quote, table = [], None, [], []
+    translated = headings(md) if source is not None else []
+    original = headings(source) if source is not None else []
+    aligned = source is not None and [h[0] for h in original] == [h[0] for h in translated]
+    source_titles = iter(h[1].strip() for h in original)
 
     def cells(row):
-        return [c.strip() for c in row.strip().strip('|').split('|')]
+        cells = ['']
+        for token in re.split(r'(\[\[[^\]]+\]\]|\\\||\|)', row.strip().strip('|')):
+            if token == '|':
+                cells.append('')
+            else:
+                cells[-1] += token.replace('\\|', '|')
+        return [c.strip() for c in cells]
 
     def flush():
         nonlocal para, lst, quote, table
@@ -171,10 +194,12 @@ def render(md, slugs, missing):
             flush()
             lvl = len(h.group(1))
             title = h.group(2).strip()
-            anchor = 'h-' + re.sub(r'[^\w]+', '-', title.lower()).strip('-')
+            # Translations retain the original section addresses and spoiler boundaries.
+            original_title = next(source_titles) if aligned else title
+            anchor = 'h-' + re.sub(r'[^\w]+', '-', original_title.lower()).strip('-')
             if lvl == 2:
                 toc.append([anchor, title])
-            bk = heading_book(title)
+            bk = last if source is not None and not aligned else heading_book(original_title)
             out.append(f'<h{lvl} id="{anchor}"{f" data-book={chr(34)}{bk}{chr(34)}" if bk else ""}>{inline(title, links, slugs, missing)}</h{lvl}>')
         elif s.startswith('>'):
             if para or lst or table:
@@ -203,6 +228,11 @@ def load_images():
     """images.tsv: file, articles, caption, credit, optional first book/chapter, optional period label."""
     path = os.path.join(ROOT, 'images.tsv')
     images, by_slug = [], {}
+    translations = {}
+    path_en = os.path.join(ROOT, 'content-en', 'images.json')
+    if LANG == 'en' and os.path.isfile(path_en):
+        with open(path_en, encoding='utf-8') as f:
+            translations = json.load(f)
     if not os.path.exists(path):
         return images, by_slug
     for line in open(path, encoding='utf-8'):
@@ -220,6 +250,9 @@ def load_images():
             img['from'] = int(cols[4])
         if cols[5]:
             img['period'] = cols[5]
+        for key in ('caption', 'credit', 'period'):
+            if key in translations.get(fn, {}):
+                img[key] = translations[fn][key]
         for a in arts.split(','):
             slug, _, role = a.strip().partition(':')
             if slug:
@@ -338,8 +371,7 @@ def track_changes(data):
     return log[:150]
 
 
-def main():
-    images, img_by_slug = load_images()
+def read_entries():
     files = sorted(glob.glob(os.path.join(ROOT, 'content', '*', '*.md')))
     entries = {}
     for f in files:
@@ -351,14 +383,38 @@ def main():
         if slug in entries:
             print(f'warning: duplicate slug {slug}', file=sys.stderr)
         entries[slug] = dict(meta=meta, body=body, type=t)
+    return entries
 
+
+def build(source, original=None):
+    images, img_by_slug = load_images()
+    entries = source
+    if LANG == 'en':
+        entries = source.copy()
+        for f in sorted(glob.glob(os.path.join(ROOT, 'content-en', '*', '*.md'))):
+            slug = os.path.splitext(os.path.basename(f))[0]
+            if slug not in source or os.path.basename(os.path.dirname(f)) != source[slug]['type']:
+                print(f'warning: translation without matching source: {f}', file=sys.stderr)
+                continue
+            meta, body = parse(f)
+            # Reading order and spoiler metadata always come from the canonical article.
+            for key in ('order', 'books', 'chapters'):
+                meta[key] = source[slug]['meta'].get(key, '')
+            entries[slug] = dict(meta=meta, body=body, type=source[slug]['type'])
+
+    TITLES.clear()
     slugs = set(entries)
     TITLES.update({k: v['meta'].get('title', k) for k, v in entries.items()})
     missing = {}
     data = {}
     for slug, e in entries.items():
         miss = set()
-        body_html, links, toc = render(e['body'], slugs, miss)
+        translated = e is not source[slug]
+        if translated and [h[0] for h in headings(e['body'])] != [h[0] for h in headings(source[slug]['body'])]:
+            print(f'warning: {slug}: translated headings no longer align with the source', file=sys.stderr)
+        body_html, links, toc = render(e['body'], slugs, miss,
+                                       source[slug]['body'] if translated else None,
+                                       original[slug]['last'] if translated else 0)
         info = []
         for k, v in e['meta']['infobox']:
             l2 = set()
@@ -378,6 +434,8 @@ def main():
             infobox=info, html=body_html, toc=toc, links=links, words=len(text.split()),
             text=' '.join(text.split())[:1200],
         )
+        if LANG == 'en' and not translated:
+            data[slug]['language'] = 'ru'
         when = next((v for k, v in meta['infobox'] if k in ('Дата', 'Время', 'Год', 'Датировка')), '')
         glava = next((v for k, v in meta['infobox'] if k == 'Глава'), '') if BY_CHAPTER else ''
         if glava and re.search(r'\d+', glava):
@@ -437,7 +495,22 @@ def main():
         if start:
             d['span'] = [start, max(end, start, isos[-1] if isos else '')]
 
-    out_dir = os.path.join(ROOT, 'web', 'public', 'data')
+    if original is not None:
+        for slug, d in data.items():
+            ru = original[slug]
+            for key in ('first', 'last', 'iso', 'span', 'when'):
+                if key in ru:
+                    d[key] = ru[key]
+            if entries[slug] is not source[slug] and 'when' in d:
+                date = next((v for k, v in entries[slug]['meta']['infobox']
+                             if k.casefold() in ('date', 'time', 'year', 'dating', 'chapter')), '')
+                if date:
+                    d['when'] = re.sub(r'\[\[([^\]|]+)\|?([^\]]*)\]\]',
+                                       lambda m: m.group(2) or TITLES.get(m.group(1).strip(), m.group(1)), date)
+            if entries[slug] is not source[slug]:
+                d['searchAliases'] = list(dict.fromkeys(filter(None, [ru['title'], ru['ru'], *ru['aliases']])))
+
+    out_dir = os.path.join(ROOT, 'web', 'public', 'data', *(['en'] if LANG == 'en' else []))
     art_dir = os.path.join(out_dir, 'a')
     os.makedirs(art_dir, exist_ok=True)
     for f in glob.glob(os.path.join(art_dir, '*.json')):
@@ -457,7 +530,7 @@ def main():
     index = [{k: v for k, v in d.items() if k not in heavy} for d in data.values()]
     # data/quiz.json: questions for the /ispytaniya page, each pointing to an article to read more
     qp = os.path.join(ROOT, 'data', 'quiz.json')
-    if os.path.exists(qp):
+    if LANG == 'ru' and os.path.exists(qp):
         quiz = json.load(open(qp, encoding='utf-8'))
         for lv in quiz.get('levels', []):
             for q in lv.get('questions', []):
@@ -469,7 +542,7 @@ def main():
             fh.write(dump(quiz))
     # data/persona.json: the /kto-ty test «which hero are you»; every answer gives points to heroes (articles)
     pp = os.path.join(ROOT, 'data', 'persona.json')
-    if os.path.exists(pp):
+    if LANG == 'ru' and os.path.exists(pp):
         persona = json.load(open(pp, encoding='utf-8'))
         heroes = {r.get('slug') for r in persona.get('results', [])}
         for slug in heroes - set(data):
@@ -480,13 +553,21 @@ def main():
                     print(f'warning: persona.json: «{o.get("text", "")[:40]}» gives points to {slug}, not a result', file=sys.stderr)
         with open(os.path.join(out_dir, 'persona.json'), 'w', encoding='utf-8') as fh:
             fh.write(dump(persona))
-    with open(os.path.join(out_dir, 'changes.json'), 'w', encoding='utf-8') as fh:
-        fh.write(dump(track_changes(data)))
+    if LANG == 'ru':
+        with open(os.path.join(out_dir, 'changes.json'), 'w', encoding='utf-8') as fh:
+            fh.write(dump(track_changes(data)))
     mp = os.path.join(ROOT, 'data', 'map.json')
     extra['map'] = json.load(open(mp, encoding='utf-8')) if os.path.exists(mp) else {'places': {}, 'events': []}
     out = os.path.join(out_dir, 'index.json')
+    aliases = {}
+    redirects = os.path.join(ROOT, 'web', 'public', '_redirects')
+    if os.path.isfile(redirects):
+        for line in open(redirects, encoding='utf-8'):
+            parts = line.split()
+            if len(parts) == 3 and re.fullmatch(r'/[\w-]+', parts[0]) and parts[1][1:] in slugs and parts[1].startswith('/'):
+                aliases[parts[0][1:]] = parts[1][1:]
     with open(out, 'w', encoding='utf-8') as fh:
-        fh.write(dump(dict(articles=index, images=images, data=extra)))
+        fh.write(dump(dict(articles=index, images=images, data=extra, aliases=aliases)))
     words = sum(d['words'] for d in data.values())
     print(f'{len(data)} articles, {words} words -> {os.path.relpath(out, ROOT)}')
     for t in TYPES:
@@ -495,6 +576,15 @@ def main():
         print(f'{len(missing)} missing link targets:')
         for k, v in sorted(missing.items(), key=lambda kv: -len(kv[1])):
             print(f'  {k}  <- {", ".join(sorted(v)[:6])}{" ..." if len(v) > 6 else ""}')
+    return data
+
+
+def main():
+    global LANG
+    entries = read_entries()
+    original = build(entries)
+    LANG = 'en'
+    build(entries, original)
 
 
 if __name__ == '__main__':

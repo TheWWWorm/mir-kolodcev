@@ -1,3 +1,4 @@
+import { LOCALE, t } from '../../core/locale';
 import { Component, DestroyRef, computed, inject, input, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { ArticleMeta } from '../../core/models';
@@ -14,6 +15,7 @@ import { SITE } from '../../core/site';
   styleUrl: './roster.css',
 })
 export class Roster {
+  protected readonly t = t;
   readonly groups = input.required<Group[]>();
   protected readonly data = inject(WikiData);
   protected readonly spoilers = inject(Spoilers);
@@ -39,8 +41,8 @@ export class Roster {
       .filter((a): a is ArticleMeta => !!a && !!this.data.imageSrc(a) && !this.spoilers.hidden(a)),
   );
   protected readonly letters = computed(() =>
-    [...new Set(this.items().map((a) => a.title[0].toLocaleUpperCase('ru')))].sort((a, b) =>
-      a.localeCompare(b, 'ru'),
+    [...new Set(this.items().map((a) => a.title[0].toLocaleUpperCase(LOCALE)))].sort((a, b) =>
+      a.localeCompare(b, LOCALE),
     ),
   );
   protected readonly otherGroups = computed(() =>
@@ -57,7 +59,7 @@ export class Roster {
         ...g,
         items: g.items.filter(
           (a) =>
-            (!this.letter() || a.title[0].toLocaleUpperCase('ru') === this.letter()) &&
+            (!this.letter() || a.title[0].toLocaleUpperCase(LOCALE) === this.letter()) &&
             (!q || norm([a.title, a.ru, ...a.aliases].join(' ')).includes(q)),
         ),
       }))

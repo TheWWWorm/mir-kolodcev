@@ -1,3 +1,4 @@
+import { t } from '../../core/locale';
 import { Component, computed, inject, resource } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { RouterLink } from '@angular/router';
@@ -22,16 +23,16 @@ const MONTHS = ['января', 'февраля', 'марта', 'апреля', 
   imports: [RouterLink, ArticleCard],
   template: `
     <div class="page">
-      <div class="crumbs"><a routerLink="/">Заглавная</a></div>
-      <h1 class="page-title">Что нового</h1>
-      <p class="page-sub">Новые статьи и статьи, которые заметно дополнились. Мелкие правки здесь не отмечаются.</p>
+      <div class="crumbs"><a routerLink="/">{{ t('Заглавная', 'Home') }}</a></div>
+      <h1 class="page-title">{{ t('Что нового', 'What’s new') }}</h1>
+      <p class="page-sub">{{ t('Новые статьи и статьи, которые заметно дополнились. Мелкие правки здесь не отмечаются.', 'New and substantially expanded articles. Minor edits are omitted.') }}</p>
       @if (log.isLoading()) {
-        <p class="muted" role="status">Загрузка…</p>
+        <p class="muted" role="status">{{ t('Загрузка…', 'Loading…') }}</p>
       } @else if (log.error()) {
-        <p role="alert">Не удалось загрузить список изменений.</p>
-        <button class="btn" (click)="log.reload()">Повторить</button>
+        <p role="alert">{{ t('Не удалось загрузить список изменений.', 'Could not load the change log.') }}</p>
+        <button class="btn" (click)="log.reload()">{{ t('Повторить', 'Try again') }}</button>
       } @else if (!days().length) {
-        <p class="muted">Пока ничего: изменения начнут отмечаться со следующего обновления вики.</p>
+        <p class="muted">{{ t('Пока ничего: изменения начнут отмечаться со следующего обновления вики.', 'No changes yet. Updates will appear here.') }}</p>
       }
       @for (d of days(); track d.date) {
         <section>
@@ -68,6 +69,7 @@ const MONTHS = ['января', 'февраля', 'марта', 'апреля', 
   `,
 })
 export class ChangesPage {
+  protected readonly t = t;
   private readonly http = inject(HttpClient);
   private readonly data = inject(WikiData);
   protected readonly log = resource({ loader: () => firstValueFrom(this.http.get<Change[]>('data/changes.json')) });

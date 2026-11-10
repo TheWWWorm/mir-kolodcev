@@ -2,16 +2,17 @@ import { Component, ElementRef, effect, inject, viewChild } from '@angular/core'
 import { ALL_BOOKS, Spoilers } from '../core/spoilers';
 import { WikiData } from '../core/wiki-data';
 import { SITE } from '../core/site';
+import { t } from '../core/locale';
 
 /** First visit: ask which book the reader has finished, so spoilers are hidden from the start. */
 @Component({
   selector: 'app-reading-dialog',
   template: `
     <dialog #dlg aria-labelledby="reading-title" (cancel)="pick(all)">
-      <button type="button" class="x" (click)="pick(all)" [attr.aria-label]="'Закрыть — показывать весь ' + site.work.acc" title="Закрыть">×</button>
+      <button type="button" class="x" (click)="pick(all)" [attr.aria-label]="t('Закрыть — показывать весь ' + site.work.acc, 'Close and show all content')" [title]="t('Закрыть', 'Close')" >×</button>
       <h2 id="reading-title">{{ site.spoilers.question }}</h2>
-      <p>Вики скроет события и персонажей из {{ site.spoilers.word.genPl }}, до которых вы ещё не добрались. Выбор можно изменить в любой момент в поле «Прочитано до» вверху страницы.</p>
-      <button type="button" class="all" (click)="pick(all)">Прочитал всё — показывать весь {{ site.work.acc }}</button>
+      <p>{{ t('Вики скроет события и персонажей из ' + site.spoilers.word.genPl + ', до которых вы ещё не добрались. Выбор можно изменить в поле «Прочитано до».', 'The wiki hides events and characters you haven’t reached. You can change your choice under “Read through”.') }}</p>
+      <button type="button" class="all" (click)="pick(all)">{{ t('Прочитал всё — показывать весь ' + site.work.acc, 'I’ve finished reading — show everything') }}</button>
       <ol>
         @for (b of spoilers.parts(); track b.order) {
           <li>
@@ -151,6 +152,7 @@ import { SITE } from '../core/site';
   `,
 })
 export class ReadingDialog {
+  protected readonly t = t;
   protected readonly site = SITE;
   protected readonly data = inject(WikiData);
   private readonly spoilers = inject(Spoilers);

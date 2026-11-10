@@ -1,3 +1,4 @@
+import { localized, t } from '../../core/locale';
 import { Component, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { WikiData } from '../../core/wiki-data';
@@ -8,13 +9,13 @@ import { FamilyTree } from '../../shared/family-tree';
   imports: [RouterLink, FamilyTree],
   template: `
     <div class="page">
-      <div class="crumbs"><a routerLink="/">Заглавная</a></div>
-      <h1 class="page-title">Родословные</h1>
-      <p class="page-sub">Семейные древа по данным книг. ⚭ — брак; дети, рождённые вне брака, подписаны именем второго родителя. Ветви, чья связь с основной линией в книгах не названа, показаны отдельно.</p>
-      <nav class="jump ui">@for (f of data.extra().families; track f.house; let i = $index) {<a href="/families" (click)="go($event, i)">{{ f.title }}</a>}</nav>
+      <div class="crumbs"><a routerLink="/">{{ t('Заглавная', 'Home') }}</a></div>
+      <h1 class="page-title">{{ t('Родословные', 'Family trees') }}</h1>
+      <p class="page-sub">{{ t('Семейные древа по данным книг. ⚭ — брак; дети, рождённые вне брака, подписаны именем второго родителя. Ветви, чья связь с основной линией в книгах не названа, показаны отдельно.', 'Family trees based on the books. ⚭ marks a marriage. For children born outside marriage, the other parent is named where known. Branches with no stated connection to the main line appear separately.') }}</p>
+      <nav class="jump ui">@for (f of data.extra().families; track f.house; let i = $index) {<a [href]="familiesLink" (click)="go($event, i)">{{ f.title }}</a>}</nav>
       @for (f of data.extra().families; track f.house; let i = $index) {
         <section [id]="'fam-' + i">
-          <h2 class="section-title">{{ f.title }}@if (data.get(f.house)) { <a class="art ui" [routerLink]="'/' + f.house">статья о роде</a> }</h2>
+          <h2 class="section-title">{{ f.title }}@if (data.get(f.house)) { <a class="art ui" [routerLink]="'/' + f.house">{{ t('статья о роде', 'Read about this house') }}</a> }</h2>
           @if (f.note) { <p class="muted note">{{ f.note }}</p> }
           <app-family-tree [family]="f" />
         </section>
@@ -29,6 +30,8 @@ import { FamilyTree } from '../../shared/family-tree';
   `,
 })
 export class FamiliesPage {
+  protected readonly t = t;
+  protected readonly familiesLink = localized('/families');
   protected readonly data = inject(WikiData);
   protected go(ev: Event, i: number): void {
     ev.preventDefault();

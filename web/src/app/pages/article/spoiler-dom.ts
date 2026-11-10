@@ -1,4 +1,5 @@
 import { SITE } from '../../core/site';
+import { t } from '../../core/locale';
 
 /**
  * Folds article sections about books after `level` and blurs sections that are not tied to a book.
@@ -14,9 +15,9 @@ export function applySpoilers(body: HTMLElement, level: number, bookTitle: (orde
   const fold = (book: number, heading: HTMLElement) => {
     const ph = document.createElement('div');
     ph.className = 'spoil-ph';
-    ph.innerHTML = `<b></b><span></span><button class="btn" type="button">Показать</button>`;
+    ph.innerHTML = `<b></b><span></span><button class="btn" type="button">${t('Показать', 'Show')}</button>`;
     ph.querySelector('b')!.textContent = heading.textContent;
-    ph.querySelector('span')!.textContent = `Скрыто: события ${SITE.spoilers.word.gen} ${bookTitle(book)}, которую вы ещё не прочитали.`;
+    ph.querySelector('span')!.textContent = t(`Скрыто: события ${SITE.spoilers.word.gen} ${bookTitle(book)}, которую вы ещё не прочитали.`, `Hidden: spoilers for ${bookTitle(book)}.`);
     heading.before(ph);
     const items: HTMLElement[] = [];
     ph.querySelector('button')!.addEventListener('click', () => { items.forEach((x) => (x.hidden = false)); ph.remove(); });
@@ -40,6 +41,6 @@ export function applySpoilers(body: HTMLElement, level: number, bookTitle: (orde
 
   const note = document.createElement('p');
   note.className = 'spoil-note';
-  note.textContent = `Защита от спойлеров: ${hidden ? `${hidden} разд. о непрочитанных ${SITE.spoilers.word.prepPl} свёрнуто, ` : ''}общие разделы размыты. Нажмите на размытый текст, чтобы прочитать его.`;
+  note.textContent = t(`Защита от спойлеров: ${hidden ? `${hidden} разд. о непрочитанных ${SITE.spoilers.word.prepPl} свёрнуто, ` : ''}общие разделы размыты. Нажмите на размытый текст, чтобы прочитать его.`, 'Spoiler protection is on. Select blurred text or open a hidden section to reveal it.');
   body.prepend(note);
 }

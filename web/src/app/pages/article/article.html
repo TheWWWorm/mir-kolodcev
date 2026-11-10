@@ -1,18 +1,21 @@
 @if (meta(); as m) {
   <div class="page" [class.book-page]="bookView()">
     <div class="crumbs">
-      <a routerLink="/">Заглавная</a> /
+      <a routerLink="/">{{ t('Заглавная', 'Home') }}</a> /
       <a [routerLink]="'/c/' + m.type">{{ types[m.type].many }}</a>
     </div>
 
+    @if (m.language) {
+      <p class="muted">This article is available in Russian. An English translation has not been added yet.</p>
+    }
     @if (spoilers.hidden(m)) {
       <div class="gate">
-        <h1 class="page-title">{{ m.title }}</h1>
+        <h1 class="page-title" [attr.lang]="m.language">{{ m.title }}</h1>
         <p>
-          Эта статья относится к {{ site.spoilers.word.prep }} {{ spoilers.bookTitle(m.first) }}, а вы отметили, что
-          прочитали {{ site.work.acc }} только до {{ spoilers.upTo(spoilers.level()) }}.
+          {{ t('Эта статья относится к', 'This article contains spoilers for') }} {{ spoilers.bookTitle(m.first) }}.
+          {{ t('Прочитано до:', 'You have read through:') }} {{ spoilers.upTo(spoilers.level()) }}.
         </p>
-        <button class="btn" (click)="spoilers.reveal(m.slug)">Показать статью со спойлерами</button>
+        <button class="btn" (click)="spoilers.reveal(m.slug)">{{ t('Показать статью со спойлерами', 'Show article with spoilers') }}</button>
       </div>
     } @else {
       @if (bookView()) {
@@ -22,7 +25,7 @@
           }
           <div class="book-intro">
             <p class="book-kind ui">{{ m.group }}</p>
-            <h1 class="page-title">{{ m.title }}</h1>
+            <h1 class="page-title" [attr.lang]="m.language">{{ m.title }}</h1>
             @if (m.summary) {
               <p
                 class="book-summary"
@@ -40,42 +43,42 @@
                 <span>{{ bookYear() }}</span>
               }
               @if (narrators().length) {
-                <span>Рассказчиков: {{ narrators().length }}</span>
+                <span>{{ t('Рассказчиков:', 'Narrators:') }} {{ narrators().length }}</span>
               }
             </div>
           </div>
           <aside class="cycle-info">
-            <span class="ui">В цикле</span><strong>{{ m.group }}</strong>
+            <span class="ui">{{ t('В цикле', 'In the series') }}</span><strong>{{ m.group }}</strong>
             @if (nextBook(); as next) {
-              <span class="ui">Следующая книга</span
+              <span class="ui">{{ t('Следующая книга', 'Next book') }}</span
               ><a [routerLink]="'/' + next.slug"
                 >{{ next.title }} <span aria-hidden="true">→</span></a
               >
             }
             <a class="all-books ui" routerLink="/c/book"
-              >Все книги <span aria-hidden="true">→</span></a
+              >{{ t('Все книги', 'All books') }} <span aria-hidden="true">→</span></a
             >
           </aside>
         </header>
         <aside class="book-reading">
           <app-spoiler-select [expanded]="true" /><span
-            >Содержание глав может раскрывать сюжет.</span
+            >{{ t('Содержание глав может раскрывать сюжет.', 'Chapter summaries may contain spoilers.') }}</span
           >
         </aside>
-        <nav class="book-sections" aria-label="Разделы книги">
+        <nav class="book-sections" [attr.aria-label]="t('Разделы книги', 'Book sections')">
           @if (chapters().length) {
             <a
               [routerLink]="tocLink('h-glavy')"
               [class.active]="!anchor() || anchor() === 'h-glavy'"
-              >Главы</a
+              >{{ t('Главы', 'Chapters') }}</a
             >
           }
-          <a [routerLink]="tocLink('h-about')" [class.active]="anchor() === 'h-about'">О книге</a>
+          <a [routerLink]="tocLink('h-about')" [class.active]="anchor() === 'h-about'">{{ t('О книге', 'About the book') }}</a>
           @if (narrators().length) {
-            <a [routerLink]="tocLink('h-pov')" [class.active]="anchor() === 'h-pov'">Персонажи</a>
+            <a [routerLink]="tocLink('h-pov')" [class.active]="anchor() === 'h-pov'">{{ t('Персонажи', 'Characters') }}</a>
           }
           @if (articleBody()?.gallery?.length) {
-            <a [routerLink]="tocLink('h-art')" [class.active]="anchor() === 'h-art'">Иллюстрации</a>
+            <a [routerLink]="tocLink('h-art')" [class.active]="anchor() === 'h-art'">{{ t('Иллюстрации', 'Illustrations') }}</a>
           }
         </nav>
       } @else {
@@ -83,7 +86,7 @@
           @if (m.type === 'event' && m.when) {
             <p class="when">{{ m.when }}</p>
           }
-          <h1 class="page-title">{{ m.title }}</h1>
+          <h1 class="page-title" [attr.lang]="m.language">{{ m.title }}</h1>
           @if (m.ru) {
             <p class="page-sub">{{ m.ru }}</p>
           }
@@ -92,7 +95,7 @@
           }
           @if (bookChips().length) {
             <details class="appearances">
-              <summary>Появления в книгах</summary>
+              <summary>{{ t('Появления в книгах', 'Appears in') }}</summary>
               <p class="books ui">
                 @for (b of bookChips(); track b.slug) {
                   <a [routerLink]="'/' + b.slug">{{ b.title }}</a>
@@ -105,9 +108,9 @@
 
       <div class="layout" [class.no-toc]="toc().length < 3" [class.book-layout]="bookView()">
         @if (!bookView() && toc().length >= 3) {
-          <nav class="toc ui" aria-label="Содержание">
+          <nav class="toc ui" [attr.aria-label]="t('Содержание', 'Contents')">
             <details [open]="!compact()">
-              <summary>В статье</summary>
+              <summary>{{ t('В статье', 'On this page') }}</summary>
 
               <ol>
                 @for (t of toc(); track t[0]) {
@@ -122,26 +125,27 @@
 
         <article class="body">
           @if (!bookView() && m.summary) {
-            <p class="lede" [class.spoil-blur]="spoilers.partly(m)" (click)="unblur($event)">
+            <p [attr.lang]="m.language" class="lede" [class.spoil-blur]="spoilers.partly(m)" (click)="unblur($event)">
               {{ m.summary }}
             </p>
           }
           @if (body.isLoading()) {
-            <p class="muted" role="status">Загрузка статьи…</p>
+            <p class="muted" role="status">{{ t('Загрузка статьи…', 'Loading article…') }}</p>
           }
           @if (body.error()) {
-            <p role="alert">Не удалось загрузить статью.</p>
-            <button class="btn" (click)="body.reload()">Повторить загрузку</button>
+            <p role="alert">{{ t('Не удалось загрузить статью.', 'Could not load the article.') }}</p>
+            <button class="btn" (click)="body.reload()">{{ t('Повторить загрузку', 'Try again') }}</button>
           }
           @if (bookView()) {
             <app-chapter-table [book]="m.slug" />
           }
           @if (bookView()) {
-            <h2 class="section-title" id="h-about">О книге</h2>
+            <h2 class="section-title" id="h-about">{{ t('О книге', 'About the book') }}</h2>
           }
           <div
             class="prose"
             #content
+            [attr.lang]="m.language"
             [attr.aria-busy]="body.isLoading() || null"
             (click)="bodyClick($event)"
             (pointerdown)="bodyDown($event)"
@@ -149,14 +153,14 @@
 
           <div class="prose">
             @for (f of families(); track f.title) {
-              <h2 id="h-rod">Родословное древо</h2>
+              <h2 id="h-rod">{{ t('Родословное древо', 'Family tree') }}</h2>
               @if (f.note) {
                 <p class="muted">{{ f.note }}</p>
               }
               <app-family-tree [family]="f" />
             }
             @if (m.slug === 'velikie-doma') {
-              <h2>Сводная таблица</h2>
+              <h2>{{ t('Сводная таблица', 'At a glance') }}</h2>
             }
           </div>
           @if (m.slug === 'velikie-doma') {
@@ -165,7 +169,7 @@
 
           @if (articleBody()?.gallery?.length) {
             <section class="art">
-              <h2 class="section-title" id="h-art">Иллюстрации</h2>
+              <h2 class="section-title" id="h-art">{{ t('Иллюстрации', 'Illustrations') }}</h2>
               <div class="gallery">
                 @for (i of articleBody()!.gallery; track i) {
                   <app-figure [index]="i" />
@@ -176,7 +180,7 @@
 
           @if (backlinks().length) {
             <section class="back ui">
-              <h2>Ссылки сюда</h2>
+              <h2>{{ t('Ссылки сюда', 'Links to this page') }}</h2>
               <p>
                 @for (b of backlinks(); track b.slug) {
                   <a [routerLink]="'/' + b.slug">{{ b.title }}</a>
@@ -186,9 +190,9 @@
           }
           @if (site.issues && articleBody()) {
             <p class="report-line ui">
-              Нашли ошибку или неточность?
-              <button class="link" (pointerdown)="noteSelection()" (click)="report()">Сообщите нам</button>
-              — выделите неверное место в тексте, и оно попадёт в сообщение.
+              {{ t('Нашли ошибку или неточность?', 'Found an error?') }}
+              <button class="link" (pointerdown)="noteSelection()" (click)="report()">{{ t('Сообщите нам', 'Report it') }}</button>
+              {{ t('— выделите неверное место в тексте, и оно попадёт в сообщение.', 'Select the text to include it in your report.') }}
             </p>
           }
         </article>
@@ -197,9 +201,9 @@
           @if (bookView()) {
             @if (bookPlaces().length) {
               <section class="book-places">
-                <h2>Места этой книги</h2>
+                <h2>{{ t('Места этой книги', 'Places in this book') }}</h2>
                 <app-mini-map [keys]="bookPlaces()" [labels]="false" [minSpan]="20" />
-                <nav aria-label="Места книги">
+                <nav [attr.aria-label]="t('Места книги', 'Places in the book')">
                   @for (k of bookPlaces().slice(0, 4); track k) {
                     <a routerLink="/map" [queryParams]="{ p: k }">{{ data.title(k) }}</a>
                   }
@@ -208,7 +212,7 @@
             }
             @if (narrators().length) {
               <section class="narrator-guide" id="h-pov">
-                <h2>Истории книги</h2>
+                <h2>{{ t('Истории книги', 'Stories in this book') }}</h2>
                 @for (n of narrators(); track n.slug; let i = $index) {
                   <a
                     [routerLink]="'/' + n.slug"
@@ -222,7 +226,7 @@
               </section>
             }
             <details class="book-facts">
-              <summary>Сведения о книге</summary>
+              <summary>{{ t('Сведения о книге', 'Book facts') }}</summary>
               <dl>
                 @for (row of articleBody()?.infobox ?? []; track row[0]) {
                   <dt>{{ row[0] }}</dt>
@@ -246,10 +250,10 @@
             @if (onMap() || hasRelations()) {
               <p class="ib-links ui">
                 @if (onMap()) {
-                  <a routerLink="/map" [queryParams]="{ p: m.slug }">Показать на карте</a>
+                  <a routerLink="/map" [queryParams]="{ p: m.slug }">{{ t('Показать на карте', 'Show on map') }}</a>
                 }
                 @if (hasRelations()) {
-                  <a routerLink="/relations" [queryParams]="{ id: m.slug }">Связи на схеме</a>
+                  <a routerLink="/relations" [queryParams]="{ id: m.slug }">{{ t('Связи на схеме', 'View relationships') }}</a>
                 }
               </p>
             }
@@ -263,7 +267,7 @@
                 ></dd>
               }
               @if (m.aliases.length) {
-                <dt>Другие имена</dt>
+                <dt>{{ t('Другие имена', 'Other names') }}</dt>
                 <dd [class.spoil-blur]="blurInfo('Другие имена', m.aliases.join(', '))" (click)="unblur($event)">
                   {{ m.aliases.join(', ') }}
                 </dd>
@@ -276,11 +280,11 @@
   </div>
 } @else {
   <div class="page">
-    <h1 class="page-title">Статьи нет</h1>
+    <h1 class="page-title">{{ t('Статьи нет', 'Article not found') }}</h1>
     <p>
-      Статьи «{{ slug() }}» в вики нет.
-      <a [routerLink]="'/search/' + slug()">Поискать по тексту</a> или вернуться на
-      <a routerLink="/">заглавную</a>.
+      {{ t('Статья не найдена:', 'Article not found:') }} «{{ slug() }}».
+      <a [routerLink]="'/search/' + slug()">{{ t('Поискать по тексту', 'Search the wiki') }}</a> {{ t('или вернуться на', 'or return to the') }}
+      <a routerLink="/">{{ t('заглавную', 'home page') }}</a>.
     </p>
   </div>
 }

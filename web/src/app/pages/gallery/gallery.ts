@@ -1,3 +1,4 @@
+import { t } from '../../core/locale';
 import { Component, computed, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { WikiImage } from '../../core/models';
@@ -6,18 +7,18 @@ import { Figure } from '../../shared/figure';
 import { SITE } from '../../core/site';
 import { Spoilers } from '../../core/spoilers';
 
-const FAN = 'Читательский фан-арт';
+const FAN = t('Читательский фан-арт', 'Fan art');
 
 /** `character` tells whether an article is about a character. */
 const KINDS: [string, (im: WikiImage, character: (slug: string) => boolean) => boolean][] = [
   // portraits drawn as such (Мир колодцев); fragments cut out of scenes stay out of the gallery page
-  ['Портреты', (im, character) => im.src.includes('/portrait-') && im.slugs.some(character)],
-  ['Священные Предметы', (im) => im.src.includes('/po-')],
-  ['Гербы', (im) => im.src.includes('/gerb')],
-  ['Обложки', (im) => im.src.includes('/cover-')],
-  ['Карты', (im) => im.src.includes('/map')],
+  [t('Портреты', 'Portraits'), (im, character) => im.src.includes('/portrait-') && im.slugs.some(character)],
+  [t('Священные Предметы', 'Sacred Objects'), (im) => im.src.includes('/po-')],
+  [t('Гербы', 'Coats of arms'), (im) => im.src.includes('/gerb')],
+  [t('Обложки', 'Covers'), (im) => im.src.includes('/cover-')],
+  [t('Карты', 'Maps'), (im) => im.src.includes('/map')],
   [FAN, (im) => im.src.includes('/fan-')],
-  ['Иллюстрации к изданиям', () => true],
+  [t('Иллюстрации к изданиям', 'Book illustrations'), () => true],
 ];
 
 @Component({
@@ -25,17 +26,17 @@ const KINDS: [string, (im: WikiImage, character: (slug: string) => boolean) => b
   imports: [RouterLink, Figure],
   template: `
     <div class="page">
-      <div class="crumbs"><a routerLink="/">Заглавная</a></div>
-      <h1 class="page-title">Иллюстрации</h1>
+      <div class="crumbs"><a routerLink="/">{{ t('Заглавная', 'Home') }}</a></div>
+      <h1 class="page-title">{{ t('Иллюстрации', 'Gallery') }}</h1>
       <p class="page-sub">{{ site.gallery.sub }}</p>
       @for (g of groups(); track g.name) {
         <h2 class="section-title">{{ g.name }}</h2>
         @if (g.name === fan) {
-          <p class="note">Роман Суржиков намеренно не вводил канонических портретов персонажей и оставил внешность героев на волю читательской фантазии. Эти картинки в основном прислали читатели. Автору они нравятся, но это не утверждённый канон: «железобетонного канона внешности в Полари вообще нет».</p>
+          <p class="note">{{ t('Роман Суржиков намеренно не вводил канонических портретов персонажей и оставил внешность героев на волю читательской фантазии. Эти картинки в основном прислали читатели. Автору они нравятся, но это не утверждённый канон: «железобетонного канона внешности в Полари вообще нет».', 'Roman Surzhikov left the characters’ appearance to readers’ imaginations. Readers contributed most of these pictures. The author likes them, but they are not official portraits.') }}</p>
         }
         <div class="grid">@for (i of g.items; track i) {<app-figure [index]="i" />}</div>
       }
-      <p class="credits ui">Права на иллюстрации принадлежат их авторам и издательствам; в подписях указан художник, если он известен.</p>
+      <p class="credits ui">{{ t('Права на иллюстрации принадлежат их авторам и издательствам; в подписях указан художник, если он известен.', 'Illustration rights belong to the artists and publishers. Captions name the artist where known.') }}</p>
     </div>
   `,
   styles: `
@@ -45,6 +46,7 @@ const KINDS: [string, (im: WikiImage, character: (slug: string) => boolean) => b
   `,
 })
 export class GalleryPage {
+  protected readonly t = t;
   protected readonly site = SITE;
   private readonly data = inject(WikiData);
   private readonly spoilers = inject(Spoilers);

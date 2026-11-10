@@ -1,10 +1,11 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { SITE } from '../core/site';
 import { WikiData } from '../core/wiki-data';
+import { DATA_DIR, LOCALE, t } from '../core/locale';
 
-const KEY = `${SITE.key}.offline`;
+const KEY = `${SITE.key}.offline${LOCALE === 'en' ? '.en' : ''}`;
 /** Files the pages load besides the articles (the index itself is kept by the service worker from the start). */
-const EXTRA = ['data/search.json', 'data/routes.json', 'data/quiz.json', 'data/changes.json'];
+const EXTRA = [`${DATA_DIR}/search.json`, `${DATA_DIR}/routes.json`, 'data/quiz.json', 'data/persona.json', 'data/changes.json'];
 const PARALLEL = 6;
 
 type Saved = '' | 'texts' | 'all';
@@ -19,10 +20,10 @@ type Saved = '' | 'texts' | 'all';
   template: `
     @if (supported) {
       <section class="offline" aria-labelledby="offline-title">
-        <div class="group-title" id="offline-title">Без сети</div>
+        <div class="group-title" id="offline-title">{{ t('Без сети', 'Offline reading') }}</div>
         @if (busy()) {
           <p class="note" role="status">
-            Сохраняется: {{ done() }} из {{ total() }}
+            {{ t('Сохраняется:', 'Saving:') }} {{ done() }} {{ t('из', 'of') }} {{ total() }}
             <progress [value]="done()" [max]="total()"></progress>
           </p>
         } @else {
@@ -30,12 +31,12 @@ type Saved = '' | 'texts' | 'all';
             <p class="note" role="alert">{{ failed() }}</p>
           }
           @if (saved() === '') {
-            <button class="act" (click)="save(false)">Сохранить статьи для чтения без сети</button>
-            <p class="note">Около {{ size() }}; иллюстрации можно добавить потом.</p>
+            <button class="act" (click)="save(false)">{{ t('Сохранить статьи для чтения без сети', 'Save articles for offline reading') }}</button>
+            <p class="note">{{ t('Около ' + size() + '; иллюстрации можно добавить потом.', 'About ' + size() + '; illustrations can be downloaded separately.') }}</p>
           } @else {
-            <p class="note">Статьи{{ saved() === 'all' ? ' и иллюстрации' : '' }} сохранены и открываются без сети.</p>
+            <p class="note">{{ t('Статьи' + (saved() === 'all' ? ' и иллюстрации' : '') + ' сохранены и открываются без сети.', (saved() === 'all' ? 'Articles and illustrations' : 'Articles') + ' are available offline.') }}</p>
             @if (saved() === 'texts') {
-              <button class="act" (click)="save(true)">Добавить иллюстрации</button>
+              <button class="act" (click)="save(true)">{{ t('Добавить иллюстрации', 'Download illustrations too') }}</button>
             }
           }
         }
@@ -56,6 +57,7 @@ type Saved = '' | 'texts' | 'all';
   `,
 })
 export class OfflineSave {
+  protected readonly t = t;
   private readonly data = inject(WikiData);
   protected readonly supported = 'serviceWorker' in navigator && !!navigator.serviceWorker;
   protected readonly saved = signal<Saved>(read());
@@ -66,7 +68,7 @@ export class OfflineSave {
   /** Rough size of the article files: the words of all articles, about 15 bytes each in the JSON (Cyrillic text plus markup). */
   protected readonly size = computed(() => {
     const mb = (this.data.articles().reduce((s, a) => s + a.words, 0) * 15) / 1e6;
-    return mb < 1 ? 'одного мегабайта' : `${Math.round(mb)} МБ`;
+    return mb < 1 ? t('одного мегабайта', '1 MB') : Math.round(mb) + t(' МБ', ' MB');
   });
 
   constructor() {
@@ -86,7 +88,7 @@ export class OfflineSave {
       if (!quiet) this.failed.set('Сохранение пока недоступно: обновите страницу и попробуйте ещё раз.');
       return;
     }
-    const urls = [...EXTRA, ...this.data.articles().map((a) => `data/a/${a.slug}.json`)];
+    const urls = [...EXTRA, ...this.data.articles().map((a) => `${DATA_DIR}/a/${a.slug}.json`)];
     if (images) urls.push(...new Set(this.data.images().map((i) => i.src).filter(Boolean)));
     if (!quiet) {
       this.busy.set(true);

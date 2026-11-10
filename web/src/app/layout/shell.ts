@@ -2,6 +2,7 @@ import { Component, ElementRef, inject, signal, viewChild } from '@angular/core'
 import { NavigationEnd, Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { Meta } from '@angular/platform-browser';
 import { SITE } from '../core/site';
+import { LOCALE, localized, pathLocale, rememberLocale, t, unlocalized, WikiLocale } from '../core/locale';
 import { Theme } from '../core/theme';
 import { WikiData } from '../core/wiki-data';
 import { SearchBox } from './search-box';
@@ -10,6 +11,9 @@ import { LightboxView } from '../shared/lightbox-view';
 import { ReadingDialog } from './reading-dialog';
 import { LinkPreview } from './link-preview';
 import { OfflineSave } from './offline-save';
+
+const RUSSIAN_FEATURES = new Set(['/ispytaniya', '/kto-ty', '/stratemy-igra']);
+const MIXED_FEATURES = new Set(['/map', '/map3d', '/c/house', '/c/event', '/chronology', '/relations', '/gallery', '/families']);
 
 @Component({
   selector: 'app-shell',
@@ -37,6 +41,13 @@ export class Shell {
 
   protected readonly site = SITE;
   protected readonly nav = SITE.nav;
+  protected readonly t = t;
+  protected readonly supplementaryNotice = signal('');
+  protected readonly otherLocale: WikiLocale = LOCALE === 'en' ? 'ru' : 'en';
+  protected readonly languageLink = signal(localized('/', this.otherLocale));
+  protected rememberLanguage(): void {
+    rememberLocale(this.otherLocale);
+  }
   protected navIcon(path: string): string {
     if (path.startsWith('http'))
       return 'M22 12a10 10 0 1 1-20 0 10 10 0 0 1 20 0ZM2 12h20M12 2a15 15 0 0 1 0 20M12 2a15 15 0 0 0 0 20';
@@ -76,21 +87,35 @@ export class Shell {
       const href = a?.getAttribute('href');
       if (ev.defaultPrevented || ev.button || ev.metaKey || ev.ctrlKey || ev.shiftKey || ev.altKey) return;
       if (!href?.startsWith('/') || href.startsWith('//') || a!.target || a!.hasAttribute('download')) return;
+      const locale = pathLocale(href);
+      if (locale && locale !== LOCALE) return;
+      // Links to static files (including legacy Markdown links) belong to the browser.
+      if (/^\/(?:img|data|icons)\//.test(unlocalized(href))) return;
       ev.preventDefault();
-      router.navigateByUrl(href);
+      router.navigateByUrl(unlocalized(href));
     });
     // keep the description and canonical address in step with the page, as the prerendered copy has them
     const meta = inject(Meta), data = inject(WikiData);
-    const about = meta.getTag('name="description"')?.content ?? '';
     const canonical = document.head.querySelector<HTMLLinkElement>('link[rel=canonical]');
     router.events.subscribe((e) => {
       if (!(e instanceof NavigationEnd)) return;
       this.navOpen.set(false);
       const path = e.urlAfterRedirects.split(/[?#]/)[0];
+      if (LOCALE === 'en') {
+        this.supplementaryNotice.set(RUSSIAN_FEATURES.has(path) ? 'This feature is currently available in Russian.'
+          : MIXED_FEATURES.has(path) ? 'Some supplementary text is still in Russian.' : '');
+      }
       // an article section (/slug/anchor) belongs to the article's page
       const article = data.get(path.split('/')[1]);
-      meta.updateTag({ name: 'description', content: article?.summary || about });
-      if (canonical) canonical.href = location.origin + (article ? '/' + article.slug : path);
+      const description = article?.summary || SITE.sections.find(([p]) => '/' + p === path)?.[2] || SITE.about;
+      meta.updateTag({ name: 'description', content: description });
+      if (canonical) canonical.href = SITE.url + localized(article ? '/' + article.slug : path, article?.language ?? LOCALE);
+      this.languageLink.set(localized(path, this.otherLocale) + location.search + location.hash);
+      for (const lang of ['ru', 'en', 'x-default'] as const) {
+        const alternate = document.head.querySelector<HTMLLinkElement>(`link[hreflang="${lang}"]`);
+        const target = article ? '/' + article.slug : path;
+        if (alternate) alternate.href = SITE.url + (lang === 'x-default' ? target : localized(target, lang));
+      }
     });
   }
 }
