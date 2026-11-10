@@ -33,7 +33,7 @@
   <app-spoiler-select class="spoil" />
   <a class="icon language" [href]="languageLink()" [attr.hreflang]="otherLocale" [attr.lang]="otherLocale"
      [attr.aria-label]="t('Read in English', 'Читать по-русски')" [title]="t('Read in English', 'Читать по-русски')"
-     (click)="rememberLanguage()">{{ otherLocale.toUpperCase() }}</a>
+     (click)="rememberLanguage($event)">{{ otherLocale.toUpperCase() }}</a>
   <button class="icon" (click)="theme.toggle()" [attr.aria-label]="t('Сменить тему', 'Change theme')" [title]="t('Сменить тему', 'Change theme')">
     <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
       <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" fill="currentColor" />

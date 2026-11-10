@@ -44,9 +44,16 @@ export class Shell {
   protected readonly t = t;
   protected readonly supplementaryNotice = signal('');
   protected readonly otherLocale: WikiLocale = LOCALE === 'en' ? 'ru' : 'en';
-  protected readonly languageLink = signal(localized('/', this.otherLocale));
-  protected rememberLanguage(): void {
+  protected readonly languageLink = signal(this.currentLanguageLink());
+
+  protected rememberLanguage(event: MouseEvent): void {
+    // A click can arrive before a lazy route finishes loading or after a hash change.
+    (event.currentTarget as HTMLAnchorElement).setAttribute('href', this.currentLanguageLink());
     rememberLocale(this.otherLocale);
+  }
+
+  private currentLanguageLink(): string {
+    return localized(location.pathname + location.search + location.hash, this.otherLocale);
   }
   protected navIcon(path: string): string {
     if (path.startsWith('http'))
@@ -110,7 +117,7 @@ export class Shell {
       const description = article?.summary || SITE.sections.find(([p]) => '/' + p === path)?.[2] || SITE.about;
       meta.updateTag({ name: 'description', content: description });
       if (canonical) canonical.href = SITE.url + localized(article ? '/' + article.slug : path, article?.language ?? LOCALE);
-      this.languageLink.set(localized(path, this.otherLocale) + location.search + location.hash);
+      this.languageLink.set(this.currentLanguageLink());
       for (const lang of ['ru', 'en', 'x-default'] as const) {
         const alternate = document.head.querySelector<HTMLLinkElement>(`link[hreflang="${lang}"]`);
         const target = article ? '/' + article.slug : path;

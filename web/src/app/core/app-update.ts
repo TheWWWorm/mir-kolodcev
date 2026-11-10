@@ -1,4 +1,5 @@
 import { Injectable, inject } from '@angular/core';
+import { Location } from '@angular/common';
 import { NavigationStart, Router } from '@angular/router';
 import { SwUpdate } from '@angular/service-worker';
 
@@ -19,6 +20,7 @@ const EVERY = 30 * 60_000;
 export class AppUpdate {
   private readonly sw = inject(SwUpdate);
   private readonly router = inject(Router);
+  private readonly path = inject(Location);
   private readonly opened = Date.now();
   private ready = false;
 
@@ -36,7 +38,7 @@ export class AppUpdate {
       if (!this.ready || !(e instanceof NavigationStart)) return;
       // a back/forward has already put the destination in the address bar; a link click has not yet
       if (e.navigationTrigger === 'popstate') location.reload();
-      else location.assign(e.url);
+      else location.assign(this.path.prepareExternalUrl(e.url));
     });
 
     document.addEventListener('visibilitychange', () => {
