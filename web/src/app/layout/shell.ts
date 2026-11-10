@@ -2,7 +2,7 @@ import { Component, ElementRef, inject, signal, viewChild } from '@angular/core'
 import { NavigationEnd, Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { Meta } from '@angular/platform-browser';
 import { SITE } from '../core/site';
-import { LOCALE, localized, pathLocale, rememberLocale, t, unlocalized, WikiLocale } from '../core/locale';
+import { LOCALE, localized, pathLocale, rememberLocale, t, unlocalized } from '../core/locale';
 import { Theme } from '../core/theme';
 import { WikiData } from '../core/wiki-data';
 import { SearchBox } from './search-box';
@@ -13,7 +13,7 @@ import { LinkPreview } from './link-preview';
 import { OfflineSave } from './offline-save';
 
 const RUSSIAN_FEATURES = new Set(['/ispytaniya', '/kto-ty', '/stratemy-igra']);
-const MIXED_FEATURES = new Set(['/map', '/map3d', '/c/house', '/c/event', '/chronology', '/relations', '/gallery', '/families']);
+const MIXED_FEATURES = new Set(['/map3d', '/relations', '/gallery', '/families']);
 
 @Component({
   selector: 'app-shell',
@@ -43,17 +43,16 @@ export class Shell {
   protected readonly nav = SITE.nav;
   protected readonly t = t;
   protected readonly supplementaryNotice = signal('');
-  protected readonly otherLocale: WikiLocale = LOCALE === 'en' ? 'ru' : 'en';
-  protected readonly languageLink = signal(this.currentLanguageLink());
+  protected readonly locale = LOCALE;
 
-  protected rememberLanguage(event: MouseEvent): void {
-    // A click can arrive before a lazy route finishes loading or after a hash change.
-    (event.currentTarget as HTMLAnchorElement).setAttribute('href', this.currentLanguageLink());
-    rememberLocale(this.otherLocale);
-  }
-
-  private currentLanguageLink(): string {
-    return localized(location.pathname + location.search + location.hash, this.otherLocale);
+  protected changeLanguage(select: HTMLSelectElement): void {
+    const language = select.value;
+    // If the reader goes back, the restored page should show its own language.
+    select.value = LOCALE;
+    if ((language !== 'ru' && language !== 'en') || language === LOCALE) return;
+    rememberLocale(language);
+    // Use the current address even while a lazy route is loading.
+    location.assign(localized(location.pathname + location.search + location.hash, language));
   }
   protected navIcon(path: string): string {
     if (path.startsWith('http'))
@@ -117,7 +116,6 @@ export class Shell {
       const description = article?.summary || SITE.sections.find(([p]) => '/' + p === path)?.[2] || SITE.about;
       meta.updateTag({ name: 'description', content: description });
       if (canonical) canonical.href = SITE.url + localized(article ? '/' + article.slug : path, article?.language ?? LOCALE);
-      this.languageLink.set(this.currentLanguageLink());
       for (const lang of ['ru', 'en', 'x-default'] as const) {
         const alternate = document.head.querySelector<HTMLLinkElement>(`link[hreflang="${lang}"]`);
         const target = article ? '/' + article.slug : path;

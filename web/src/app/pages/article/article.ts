@@ -119,7 +119,7 @@ export class ArticlePage {
       chapter:
         this.chapters()
           .find((c) => c.pov === slug)
-          ?.h.replace(/^Глава\s+[^.]+\.\s*/, '') ?? '',
+          ?.h.replace(/^(?:Глава|Chapter)\s+[^.]+\.\s*/, '') ?? '',
     })),
   );
   protected readonly bookYear = computed(() => {

@@ -1,9 +1,9 @@
 import { Component, computed, inject, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { byTitle, plural } from '../../core/format';
+import { byTitle, EN_MONTHS, plural } from '../../core/format';
 import { ArticleMeta } from '../../core/models';
 import { SITE } from '../../core/site';
-import { t } from '../../core/locale';
+import { LOCALE, t } from '../../core/locale';
 import { Spoilers } from '../../core/spoilers';
 import { WikiData } from '../../core/wiki-data';
 
@@ -367,7 +367,7 @@ export class Shelf {
           .filter(Boolean)
           .sort();
         const fmt = (iso: string) =>
-          `${MONTHS_NOM[+iso.slice(5, 7)] ?? ''} ${iso.slice(0, 4)}`.trim();
+          `${(LOCALE === 'en' ? EN_MONTHS[+iso.slice(5, 7) - 1] : MONTHS_NOM[+iso.slice(5, 7)]) ?? ''} ${iso.slice(0, 4)}`.trim();
         const span = ch.length
           ? fmt(ch[0]) === fmt(ch[ch.length - 1])
             ? fmt(ch[0])

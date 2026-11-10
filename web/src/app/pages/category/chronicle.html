@@ -16,7 +16,7 @@
 </div>
 <aside class="reading">
   <app-spoiler-select [expanded]="true" /><span
-    >Поздние события скрываются с учётом прочитанной {{ site.spoilers.word.gen }}.</span
+    >{{ t('Поздние события скрываются с учётом прочитанной ' + site.spoilers.word.gen + '.', 'The timeline hides spoilers for parts you haven’t read.') }}</span
   >
 </aside>
 @if (dated()) {
@@ -41,7 +41,7 @@
     <p class="sr-only" role="status">{{ t('Найдено событий:', 'Events found:') }} {{ visible().length }}</p>
     @if (periodStories().length) {
       <section class="stories" [attr.aria-label]="t('Истории этого периода', 'Stories in this period')">
-        <h3>{{ month() ? 'Истории этого месяца' : 'Истории этого года' }}</h3>
+        <h3>{{ month() ? t('Истории этого месяца', 'Stories this month') : t('Истории этого года', 'Stories this year') }}</h3>
         <ul>
           @for (s of periodStories(); track s.id) {
             <li>
@@ -75,7 +75,7 @@
               <span>{{ a.group }}</span>
               @if (a.open) {
                 <a [routerLink]="'/' + a.open"
-                  >{{ a.article ? 'Открыть статью' : data.title(a.open) }}
+                  >{{ a.article ? t('Открыть статью', 'Read article') : data.title(a.open) }}
                   <span aria-hidden="true">→</span></a
                 >
               }
@@ -87,7 +87,7 @@
     @if (!visible().length && !periodStories().length) {
       <div class="empty" role="status">
         <p>
-          За выбранный период событий не найдено. Проверьте фильтр и последнюю прочитанную {{ site.spoilers.word.acc }}.
+          {{ t('За выбранный период событий не найдено. Проверьте фильтр и последнюю прочитанную ' + site.spoilers.word.acc + '.', 'No events match this period. Check the search and your spoiler settings.') }}
         </p>
         <button class="btn" (click)="month.set(''); query.set('')">{{ t('Показать весь год', 'Show the full year') }}</button>
       </div>

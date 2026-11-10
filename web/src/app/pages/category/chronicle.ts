@@ -1,4 +1,4 @@
-import { t } from '../../core/locale';
+import { LOCALE, t } from '../../core/locale';
 import { Component, computed, inject, input, linkedSignal, resource, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { ArticleMeta } from '../../core/models';
@@ -7,8 +7,9 @@ import { Spoilers } from '../../core/spoilers';
 import { WikiData } from '../../core/wiki-data';
 import { SpoilerSelect } from '../../layout/spoiler-select';
 import { SITE } from '../../core/site';
+import { EN_MONTHS } from '../../core/format';
 
-const MONTHS = [
+const MONTHS = LOCALE === 'en' ? EN_MONTHS : [
   'Январь',
   'Февраль',
   'Март',
@@ -22,7 +23,7 @@ const MONTHS = [
   'Ноябрь',
   'Декабрь',
 ];
-const SHORT_MONTHS = [
+const SHORT_MONTHS = LOCALE === 'en' ? EN_MONTHS.map((m) => m.slice(0, 3)) : [
   'Янв',
   'Фев',
   'Мар',
@@ -36,8 +37,8 @@ const SHORT_MONTHS = [
   'Ноя',
   'Дек',
 ];
-const ANCIENT = 'Древность';
-const UNDATED = 'Без даты';
+const ANCIENT = t('Древность', 'Distant past');
+const UNDATED = t('Без даты', 'Undated');
 
 /** One line of the chronology: an event article or a key event from the map timeline. */
 interface Entry {
@@ -116,11 +117,11 @@ export class Chronicle {
       .map((a) => ({
         id: a.slug,
         iso: a.iso ?? '',
-        when: (byArticle.get(a.slug)?.label || a.when || a.iso || 'Дата не указана').replace(/\s*\(.*$/, '').trim(),
+        when: (byArticle.get(a.slug)?.label || a.when || a.iso || t('Дата не указана', 'Date unknown')).replace(/\s*\(.*$/, '').trim(),
         era: this.eraLabel(byArticle.get(a.slug)?.era),
         w: byArticle.get(a.slug)?.w,
         title: a.title,
-        summary: this.spoilers.partly(a) ? `Часть сведений скрыта с учётом выбранной ${SITE.spoilers.word.gen}.` : a.summary,
+        summary: this.spoilers.partly(a) ? t(`Часть сведений скрыта с учётом выбранной ${SITE.spoilers.word.gen}.`, 'Some details are hidden by your spoiler settings.') : a.summary,
         group: a.group,
         article: a,
         open: a.slug,
@@ -139,7 +140,7 @@ export class Chronicle {
           when: e.label,
           title,
           summary: rest,
-          group: ['Ключевое событие', this.data.get(e.p) ? this.data.title(e.p) : ''].filter(Boolean).join(' · '),
+          group: [t('Ключевое событие', 'Key event'), this.data.extra().map.places[e.p] ? this.data.title(e.p) : ''].filter(Boolean).join(' · '),
           open: links[0] ?? (this.data.get(e.p) ? e.p : ''),
           links,
           era: this.eraLabel(e.era),
@@ -151,7 +152,7 @@ export class Chronicle {
         this.bucketKey(this.bucketOf(a)).localeCompare(this.bucketKey(this.bucketOf(b))) ||
         (a.w ?? 0) - (b.w ?? 0) ||
         (a.iso || '9999').localeCompare(b.iso || '9999') ||
-        a.title.localeCompare(b.title, 'ru'),
+        a.title.localeCompare(b.title, LOCALE),
     );
   });
   /** Books by their in-world span; a collection («Фантазии») is split into its stories. */
@@ -160,10 +161,10 @@ export class Chronicle {
     for (const b of this.data.books()) {
       if (!b.span || !this.spoilers.bookVisible(b.order)) continue;
       const parts = new Map<string, string[]>();
-      if (b.group === 'Внецикловое')
+      if (b.group === t('Внецикловое', 'Outside the Main Series'))
         for (const c of this.data.extra().chapters[b.slug] ?? []) {
           if (!c.iso) continue;
-          const t = c.h.replace(/\.?\s+Часть\s+\d+$/, '').trim();
+          const t = c.h.replace(/\.?\s+(?:Часть|Part)\s+\d+$/, '').trim();
           parts.set(t, [...(parts.get(t) ?? []), c.iso]);
         }
       if (!parts.size) {
@@ -221,7 +222,7 @@ export class Chronicle {
     this.info.hasValue() && this.selected()?.article && !this.spoilers.partly(this.selected()?.article)
       ? this.info
           .value()
-          .infobox.filter(([k]) => !/дат|врем|тип/i.test(k))
+          .infobox.filter(([k]) => !/дат|врем|тип|^(?:date|time|type)\b/i.test(k))
           .slice(0, 4)
       : [],
   );
@@ -235,7 +236,7 @@ export class Chronicle {
       .slice(0, 3);
   });
   protected readonly monthTitle = computed(() =>
-    this.month() ? MONTHS[+this.month() - 1] : 'События',
+    this.month() ? MONTHS[+this.month() - 1] : t('События', 'Events'),
   );
   protected monthValue(index: number): string {
     return String(index + 1).padStart(2, '0');
@@ -252,7 +253,7 @@ export class Chronicle {
   }
   protected span(s: Story): string {
     const one = (iso: string) =>
-      iso.length >= 7 ? `${MONTHS[+iso.slice(5, 7) - 1].toLowerCase()} ${iso.slice(0, 4)}` : iso.slice(0, 4);
+      iso.length >= 7 ? `${LOCALE === 'en' ? EN_MONTHS[+iso.slice(5, 7) - 1] : MONTHS[+iso.slice(5, 7) - 1].toLowerCase()} ${iso.slice(0, 4)}` : iso.slice(0, 4);
     const [a, b] = [one(s.from), one(s.to)];
     return a === b ? a : a.slice(-4) === b.slice(-4) ? `${a.slice(0, -5)} — ${b}` : `${a} — ${b}`;
   }

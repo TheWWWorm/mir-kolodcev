@@ -1,13 +1,13 @@
 <section class="timeline" [class.folded]="collapsed()">
   <button class="fold ui" (click)="toggle()" [attr.aria-expanded]="!collapsed()" aria-controls="timeline-body">
-    <span>Шкала времени и маршруты</span><span class="chev" aria-hidden="true"></span>
+    <span>{{ t('Шкала времени и маршруты', 'Timeline and character journeys') }}</span><span class="chev" aria-hidden="true"></span>
   </button>
   @if (!collapsed()) {
   <div id="timeline-body">
   @if (narrators().length) {
-    <label class="jr ui">Маршрут героя
+    <label class="jr ui">{{ t('Маршрут героя', 'Character journey') }}
       <select class="field" (change)="setJourney($any($event.target).value)">
-        <option value="" [selected]="!journeySlug()">не показывать</option>
+        <option value="" [selected]="!journeySlug()">{{ t('не показывать', 'None') }}</option>
         @for (s of narrators(); track s) { <option [value]="s" [selected]="s === journeySlug()">{{ title(s) }}</option> }
       </select>
     </label>
@@ -17,36 +17,46 @@
     @let j = journey()[step()];
     @if (j) {
       <div class="card">
-        <div class="when">Маршрут: <a [routerLink]="'/' + journeySlug()">{{ title(journeySlug()) }}</a>, шаг {{ step() + 1 }} из {{ journey().length }} — <button class="place" (click)="placeClick.emit(j.key)">{{ title(j.key) }}</button></div>
+        <div class="when">{{ t('Маршрут:', 'Journey:') }} <a [routerLink]="'/' + journeySlug()">{{ title(journeySlug()) }}</a>, {{ t('шаг', 'step') }} {{ step() + 1 }} {{ t('из', 'of') }} {{ journey().length }} — <button class="place" (click)="placeClick.emit(j.key)">{{ title(j.key) }}</button></div>
         @for (it of j.items; track $index) {
-          <p class="what"><b>{{ it.c.date }}</b>. «{{ title(it.book) }}»@if (it.c.h) {, {{ it.c.h }}}{{ ': ' }}<span [innerHTML]="it.c.sum"></span></p>
+          <p class="what">
+            @if (routeDate(it.c); as date) { <b>{{ date }}.</b> }
+            «{{ title(it.book) }}»@if (it.c.h) {, {{ it.c.h }}}
+            @if (!it.c.detailLanguage && it.c.sum) { : <span [innerHTML]="it.c.sum"></span> }
+          </p>
+          @if (it.c.detailLanguage && it.c.sum) {
+            <details class="source-note"><summary>Read the Russian route note</summary><p lang="ru" [innerHTML]="it.c.sum"></p></details>
+          }
         }
-        <div class="nav"><button class="btn" (click)="showStep(step() - 1)" [disabled]="step() === 0">Назад</button><button class="btn" (click)="showStep(step() + 1)" [disabled]="step() >= journey().length - 1">Дальше</button></div>
+        <div class="nav"><button class="btn" (click)="showStep(step() - 1)" [disabled]="step() === 0">{{ t('Назад', 'Back') }}</button><button class="btn" (click)="showStep(step() + 1)" [disabled]="step() >= journey().length - 1">{{ t('Дальше', 'Next') }}</button></div>
       </div>
     }
   } @else {
     <div class="row">
-      <button class="btn" (click)="show(cur() - 1)" aria-label="Предыдущее событие">◀</button>
-      <button class="btn" (click)="togglePlay()" [attr.aria-label]="playing() ? 'Пауза' : 'Воспроизвести'">{{ playing() ? '❚❚' : '▶' }}</button>
-      <button class="btn" (click)="show(cur() + 1)" aria-label="Следующее событие">▶▶</button>
-      <input type="range" min="0" [max]="stops().length - 1" [value]="cur()" (input)="show(+$any($event.target).value)" aria-label="Шкала времени" />
-      <span class="count ui">{{ cur() + 1 }} из {{ stops().length }}</span>
+      <button class="btn" (click)="show(cur() - 1)" [attr.aria-label]="t('Предыдущее событие', 'Previous event')" >◀</button>
+      <button class="btn" (click)="togglePlay()" [attr.aria-label]="playing() ? t('Пауза', 'Pause') : t('Воспроизвести', 'Play')">{{ playing() ? '❚❚' : '▶' }}</button>
+      <button class="btn" (click)="show(cur() + 1)" [attr.aria-label]="t('Следующее событие', 'Next event')" >▶▶</button>
+      <input type="range" min="0" [max]="stops().length - 1" [value]="cur()" (input)="show(+$any($event.target).value)" [attr.aria-label]="t('Шкала времени', 'Timeline')"  />
+      <span class="count ui">{{ cur() + 1 }} {{ t('из', 'of') }} {{ stops().length }}</span>
     </div>
     <div class="ticks">@for (t of ticks(); track t.i) {<button [style.left.%]="t.left" (click)="show(t.i)">{{ t.label }}</button>}</div>
     <div class="mode ui">
-      <button class="btn" [attr.aria-pressed]="!onlyKey()" (click)="onlyKey.set(false)">Все главы</button>
-      <button class="btn" [attr.aria-pressed]="onlyKey()" (click)="onlyKey.set(true)">Только ключевые события</button>
+      <button class="btn" [attr.aria-pressed]="!onlyKey()" (click)="onlyKey.set(false)">{{ t('Все главы', 'Include chapter events') }}</button>
+      <button class="btn" [attr.aria-pressed]="onlyKey()" (click)="onlyKey.set(true)">{{ t('Только ключевые события', 'Key events only') }}</button>
     </div>
     @if (stop(); as s) {
       <div class="card">
         <div class="when">{{ s.label }} — <button class="place" (click)="placeClick.emit(s.p)">{{ title(s.p) }}</button></div>
         <p class="what" [innerHTML]="s.html"></p>
+        @if (s.sourceNote) {
+          <details class="source-note"><summary>Read the Russian chapter summary</summary><p lang="ru" [innerHTML]="s.sourceNote"></p></details>
+        }
         @if (s.links.length) {
-          <p class="links ui">Подробнее: @for (l of s.links; track l; let last = $last) {@if (data.get(l)) {<a [routerLink]="'/' + l">{{ title(l) }}</a>@if (!last) {, }}}</p>
+          <p class="links ui">{{ t('Подробнее:', 'Further reading:') }} @for (l of s.links; track l; let last = $last) {@if (data.get(l)) {<a [routerLink]="'/' + l">{{ title(l) }}</a>@if (!last) {, }}}</p>
         }
       </div>
     }
-    <ol class="near ui" aria-label="События рядом по времени">
+    <ol class="near ui" [attr.aria-label]="t('События рядом по времени', 'Nearby events')" >
       @for (n of nearby(); track n.i) {
         <li [class.on]="n.i === cur()"><button (click)="show(n.i)"><span class="d">{{ n.s.label }}</span><span class="p">{{ title(n.s.p) }}</span></button></li>
       }

@@ -1,4 +1,4 @@
-import { LOCALE, t } from '../core/locale';
+import { t } from '../core/locale';
 import { Component, computed, inject, input, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { plural } from '../core/format';
@@ -10,7 +10,7 @@ import { WikiData } from '../core/wiki-data';
   template: `
     @if (rows().length) {
       <h2 id="h-glavy">{{ t('Указатель глав', 'Chapter index') }}</h2>
-      @if (english) { <p class="muted ui">Chapter titles and summaries are currently in Russian.</p> }
+      @if (hasRussianDetails()) { <p class="muted ui">Some chapter summaries and setting details are available in Russian.</p> }
       <p class="muted ui" role="status">
         {{
           filtered().length === rows().length
@@ -68,14 +68,14 @@ import { WikiData } from '../core/wiki-data';
                   }
                 </td>
                 <td>
-                  {{ r.date }}<span class="sub" [innerHTML]="r.place"></span>
+                  <span [attr.lang]="r.detailLanguage">{{ r.date }}</span><span class="sub" [attr.lang]="r.detailLanguage" [innerHTML]="r.place"></span>
                   @if (r.key && data.extra().map.places[r.key]) {
                     <a class="sub" routerLink="/map" [queryParams]="{ p: r.key }"
                       >{{ t('Показать на карте', 'Show on map') }}</a
                     >
                   }
                 </td>
-                <td [innerHTML]="r.sum"></td>
+                <td [attr.lang]="r.detailLanguage" [innerHTML]="r.sum"></td>
               </tr>
             }
           </tbody>
@@ -88,9 +88,9 @@ import { WikiData } from '../core/wiki-data';
               {{ r.h }}<span>{{ data.title(r.pov) }}</span>
             </summary>
             <div class="chapter-body">
-              <p>{{ r.date }}</p>
-              <p [innerHTML]="r.place"></p>
-              <p [innerHTML]="r.sum"></p>
+              <p [attr.lang]="r.detailLanguage">{{ r.date }}</p>
+              <p [attr.lang]="r.detailLanguage" [innerHTML]="r.place"></p>
+              <p [attr.lang]="r.detailLanguage" [innerHTML]="r.sum"></p>
               @if (r.key && data.extra().map.places[r.key]) {
                 <a routerLink="/map" [queryParams]="{ p: r.key }">{{ t('Показать на карте', 'Show on map') }}</a>
               }
@@ -183,12 +183,12 @@ import { WikiData } from '../core/wiki-data';
 })
 export class ChapterTable {
   protected readonly t = t;
-  protected readonly english = LOCALE === 'en';
   readonly book = input.required<string>();
   protected readonly data = inject(WikiData);
   protected readonly query = signal('');
   protected readonly narrator = signal('');
   protected readonly rows = computed(() => this.data.extra().chapters[this.book()] ?? []);
+  protected readonly hasRussianDetails = computed(() => this.rows().some((r) => r.detailLanguage === 'ru'));
   protected readonly narrators = computed(() => [
     ...new Set(
       this.rows()

@@ -1,5 +1,7 @@
 import { Chapter, MapEvent } from '../../core/models';
 import { SITE } from '../../core/site';
+import { LOCALE, t } from '../../core/locale';
+import { EN_MONTHS } from '../../core/format';
 
 const BY_CHAPTER = SITE.spoilers.unit === 'chapters';
 
@@ -9,6 +11,7 @@ export interface Stop {
   label: string;
   p: string;
   html: string;
+  sourceNote?: string;
   links: string[];
   key: boolean;
   pov?: string;
@@ -29,10 +32,11 @@ export function chapterStops(chapters: Record<string, Chapter[]>, bookTitle: (sl
     for (const c of rows) {
       if (!c.iso || !c.key || c.iso < SITE.timeline.minIso) continue;
       out.push({
-        d: c.iso, label: c.date || isoLabel(c.iso), p: c.key, key: false, pov: c.pov, book,
+        d: c.iso, label: (!c.detailLanguage && c.date) || isoLabel(c.iso), p: c.key, key: false, pov: c.pov, book,
         html: BY_CHAPTER
-          ? `<i>Глава ${escapeHtml(c.n)}. ${escapeHtml(c.h)}.</i> ${c.sum}`
-          : `<i>«${escapeHtml(bookTitle(book))}», ${escapeHtml(c.h)}.</i> ${c.sum}`,
+          ? `<i>${t('Глава', 'Chapter')} ${escapeHtml(c.n)}. ${escapeHtml(c.h)}.</i> ${c.detailLanguage ? '' : c.sum}`
+          : `<i>«${escapeHtml(bookTitle(book))}», ${escapeHtml(c.h)}.</i> ${c.detailLanguage ? '' : c.sum}`,
+        sourceNote: c.detailLanguage ? c.sum : undefined,
         links: c.pov ? [c.pov] : [],
       });
     }
@@ -42,8 +46,13 @@ export function chapterStops(chapters: Record<string, Chapter[]>, bookTitle: (sl
 }
 
 export function isoLabel(iso: string): string {
-  if (BY_CHAPTER && /^1\d\d\d$/.test(iso) && +iso < 1100) return `глава ${+iso - 1000}`;
+  if (BY_CHAPTER && /^1\d\d\d$/.test(iso) && +iso < 1100) return `${t('глава', 'Chapter')} ${+iso - 1000}`;
   const [y, m, d] = iso.split('-').map(Number);
+  if (LOCALE === 'en') {
+    if (!m) return String(y);
+    const month = EN_MONTHS[m - 1];
+    return d && d !== 15 && d !== 1 && d !== 25 ? `${d} ${month} ${y}` : `${month} ${y}`;
+  }
   if (!m) return `${y} г.`;
   return d && d !== 15 && d !== 1 && d !== 25 ? `${d} ${MONTHS[m]} ${y}` : `${MONTHS[m].replace(/я$/, 'ь').replace(/а$/, '')} ${y}`;
 }

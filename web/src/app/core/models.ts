@@ -62,6 +62,7 @@ export interface Chapter {
   place: string;
   key: string;
   sum: string;
+  detailLanguage?: 'ru';
 }
 
 export interface FamilyPerson {

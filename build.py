@@ -273,12 +273,49 @@ def read_tsv(path):
     return [dict(zip(head, (l.split('\t') + [''] * len(head))[:len(head)])) for l in lines[1:]]
 
 
+def load_map():
+    path = os.path.join(ROOT, 'data', 'map.json')
+    if not os.path.isfile(path):
+        return {'places': {}, 'events': []}
+    with open(path, encoding='utf-8') as f:
+        data = json.load(f)
+    translation = os.path.join(ROOT, 'data', 'en', 'map-text.json')
+    if LANG != 'en' or not os.path.isfile(translation):
+        return data
+    with open(translation, encoding='utf-8') as f:
+        labels = json.load(f)
+    for slug, place in data['places'].items():
+        title = labels.get('places', {}).get(slug) or TITLES.get(slug)
+        if title:
+            place['title'] = title
+    for era in data.get('eras', []):
+        era['label'] = labels.get('eras', {}).get(era['id'], era['label'])
+    for event in data['events']:
+        key = '/'.join(str(event.get(k, '')) for k in ('d', 'p', 'era', 'w')).rstrip('/')
+        if tr := labels['events'].get(key):
+            for field in ('label', 't'):
+                event[field] = tr[field]
+        else:
+            print(f'warning: no English map event for {key}', file=sys.stderr)
+    return data
+
+
 def load_data(slugs, data):
     """data/: chapters/<book>.tsv, families.json, houses.tsv, relations.tsv -> window.WIKI_DATA."""
     d = os.path.join(ROOT, 'data')
     miss = set()
     html = lambda t: inline(t or '', set(), slugs, miss)
     extra = dict(chapters={}, families=[], houses=[], relations=[])
+    def localized_json(name):
+        path = os.path.join(d, 'en', name)
+        if LANG == 'en' and os.path.isfile(path):
+            with open(path, encoding='utf-8') as f:
+                return json.load(f)
+        return {}
+
+    headings_en = localized_json('chapter-headings.json')
+    chapters_en = localized_json('chapter-text.json')
+    routes_en = localized_json('route-text.json')
     for f in sorted(glob.glob(os.path.join(d, 'chapters', '*.tsv'))):
         book = os.path.splitext(os.path.basename(f))[0]
         if book not in data:
@@ -286,9 +323,18 @@ def load_data(slugs, data):
             continue
         rows = []
         for r in read_tsv(f):
-            rows.append(dict(n=r.get('n', ''), h=r.get('heading', ''), pov=r.get('pov', '') if r.get('pov', '') in slugs else '',
-                             date=r.get('date', ''), iso=r.get('iso', '') or chapter_iso(r.get('n', '')), place=html(r.get('place', '')),
-                             key=r.get('mapkey', ''), sum=html(r.get('summary', ''))))
+            n, heading = r.get('n', ''), r.get('heading', '')
+            if h := headings_en.get(re.sub(r'\d+', '#', heading)):
+                numbers = iter(re.findall(r'\d+', heading))
+                heading = re.sub('#', lambda _: next(numbers), h)
+            detail = chapters_en.get(book, {}).get(n, {})
+            chapter = dict(n=n, h=heading, pov=r.get('pov', '') if r.get('pov', '') in slugs else '',
+                           date=detail.get('date', r.get('date', '')), iso=r.get('iso', '') or chapter_iso(n),
+                           place=html(detail.get('place', r.get('place', ''))), key=r.get('mapkey', ''),
+                           sum=html(detail.get('summary', r.get('summary', ''))))
+            if LANG == 'en' and not detail:
+                chapter['detailLanguage'] = 'ru'
+            rows.append(chapter)
         extra['chapters'][book] = rows
     fam = os.path.join(d, 'families.json')
     if os.path.exists(fam):
@@ -305,8 +351,10 @@ def load_data(slugs, data):
             h['note'] = strip_src(h.get('note', ''))
     hs = os.path.join(d, 'houses.tsv')
     if os.path.exists(hs):
+        en = os.path.join(d, 'en', 'houses.tsv')
+        localized = {r['slug']: r for r in read_tsv(en)} if LANG == 'en' and os.path.isfile(en) else {}
         for r in read_tsv(hs):
-            extra['houses'].append({k: (v if k == 'slug' else html(v)) for k, v in r.items()})
+            extra['houses'].append({k: (v if k == 'slug' else html(localized.get(r['slug'], {}).get(k, v))) for k, v in r.items()})
     rel = os.path.join(d, 'relations.tsv')
     if os.path.exists(rel):
         for r in read_tsv(rel):
@@ -330,9 +378,13 @@ def load_data(slugs, data):
                 print(f'warning: routes.tsv: unknown hero or book {hero} / {book}', file=sys.stderr)
                 continue
             ch = next((c for c in extra['chapters'].get(book, []) if c['n'] == r.get('n')), None)
-            extra['routes'].setdefault(hero, []).append(dict(
+            note = routes_en.get('/'.join([hero, book, r.get('n', ''), r.get('mapkey', '')]))
+            step = dict(
                 book=book, n=r.get('n', ''), h=ch['h'] if ch else '', pov=hero, date=r.get('date', ''), iso=r.get('iso', '') or chapter_iso(r.get('n', '')),
-                place='', key=r.get('mapkey', ''), sum=html(r.get('note', ''))))
+                place='', key=r.get('mapkey', ''), sum=html(note if note is not None else r.get('note', '')))
+            if LANG == 'en' and note is None:
+                step['detailLanguage'] = 'ru'
+            extra['routes'].setdefault(hero, []).append(step)
     if miss:
         print(f'data files: {len(miss)} missing link targets: {", ".join(sorted(miss)[:12])}')
     return extra
@@ -556,8 +608,7 @@ def build(source, original=None):
     if LANG == 'ru':
         with open(os.path.join(out_dir, 'changes.json'), 'w', encoding='utf-8') as fh:
             fh.write(dump(track_changes(data)))
-    mp = os.path.join(ROOT, 'data', 'map.json')
-    extra['map'] = json.load(open(mp, encoding='utf-8')) if os.path.exists(mp) else {'places': {}, 'events': []}
+    extra['map'] = load_map()
     out = os.path.join(out_dir, 'index.json')
     aliases = {}
     redirects = os.path.join(ROOT, 'web', 'public', '_redirects')

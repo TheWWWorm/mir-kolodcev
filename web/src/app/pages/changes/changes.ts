@@ -1,10 +1,10 @@
-import { t } from '../../core/locale';
+import { LOCALE, t } from '../../core/locale';
 import { Component, computed, inject, resource } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { RouterLink } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
 import { ArticleMeta } from '../../core/models';
-import { plural } from '../../core/format';
+import { EN_MONTHS, plural } from '../../core/format';
 import { WikiData } from '../../core/wiki-data';
 import { ArticleCard } from '../../shared/article-card';
 
@@ -38,7 +38,7 @@ const MONTHS = ['января', 'февраля', 'марта', 'апреля', 
         <section>
           <h2 class="day">{{ d.label }}</h2>
           @if (d.added.length) {
-            <h3 class="kind ui">{{ d.added.length }} {{ count(d.added.length, 'новая статья', 'новые статьи', 'новых статей') }}</h3>
+            <h3 class="kind ui">{{ d.added.length }} {{ t(count(d.added.length, 'новая статья', 'новые статьи', 'новых статей'), d.added.length === 1 ? 'new article' : 'new articles') }}</h3>
             <div class="grid">
               @for (a of d.added; track a.slug) {
                 <app-article-card [article]="a" [showType]="true" />
@@ -46,7 +46,7 @@ const MONTHS = ['января', 'февраля', 'марта', 'апреля', 
             </div>
           }
           @if (d.expanded.length) {
-            <h3 class="kind ui">{{ d.expanded.length }} {{ count(d.expanded.length, 'статья дополнена', 'статьи дополнены', 'статей дополнено') }}</h3>
+            <h3 class="kind ui">{{ d.expanded.length }} {{ t(count(d.expanded.length, 'статья дополнена', 'статьи дополнены', 'статей дополнено'), d.expanded.length === 1 ? 'expanded article' : 'expanded articles') }}</h3>
             <div class="grid">
               @for (a of d.expanded; track a.slug) {
                 <app-article-card [article]="a" [showType]="true" />
@@ -93,5 +93,5 @@ export class ChangesPage {
 
 function dayLabel(iso: string): string {
   const [y, m, d] = iso.split('-').map(Number);
-  return `${d} ${MONTHS[m - 1]} ${y}`;
+  return `${d} ${LOCALE === 'en' ? EN_MONTHS[m - 1] : MONTHS[m - 1]} ${y}`;
 }

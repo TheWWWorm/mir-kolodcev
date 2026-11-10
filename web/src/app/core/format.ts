@@ -7,3 +7,6 @@ export function plural(n: number, one: string, few: string, many: string): strin
 }
 
 export const byTitle = <T extends { title: string }>(a: T, b: T) => a.title.localeCompare(b.title, LOCALE);
+
+const EN_MONTH = new Intl.DateTimeFormat('en', { month: 'long', timeZone: 'UTC' });
+export const EN_MONTHS = Array.from({ length: 12 }, (_, i) => EN_MONTH.format(new Date(Date.UTC(2000, i, 1))));

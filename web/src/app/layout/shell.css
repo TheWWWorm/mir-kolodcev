@@ -50,9 +50,9 @@
   background: var(--sheet-2);
 }
 .language {
-  font-size: 0.8rem;
-  font-weight: 700;
-  text-decoration: none;
+  flex: none;
+  min-height: 2.75rem;
+  font: var(--fs-ui)/1.2 var(--sans);
 }
 .menu {
   display: none;
@@ -198,5 +198,27 @@
   }
   .backdrop.open {
     display: block;
+  }
+}
+
+@media (max-width: 420px) {
+  .bar {
+    gap: 6px;
+    padding-inline: 10px;
+  }
+  .bar .icon {
+    width: 2.25rem;
+  }
+  .brand {
+    gap: 6px;
+    font-size: 18px;
+  }
+  .brand .star {
+    width: 18px;
+    flex: none;
+  }
+  .language {
+    max-width: 6.25rem;
+    padding-inline: 5px;
   }
 }

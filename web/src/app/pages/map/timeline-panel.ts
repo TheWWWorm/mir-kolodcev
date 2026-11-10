@@ -3,8 +3,10 @@ import { RouterLink } from '@angular/router';
 import { Chapter } from '../../core/models';
 import { Spoilers } from '../../core/spoilers';
 import { WikiData } from '../../core/wiki-data';
-import { Stop, byDate, chapterStops, keyStops } from './timeline';
+import { Stop, byDate, chapterStops, isoLabel, keyStops } from './timeline';
 import { SITE } from '../../core/site';
+import { LOCALE, t } from '../../core/locale';
+import { EN_MONTHS } from '../../core/format';
 
 /** One stop of a hero's route: consecutive chapters in the same place are merged. */
 export interface RouteStep { key: string; items: { book: string; c: Chapter }[] }
@@ -20,6 +22,7 @@ export interface RouteStep { key: string; items: { book: string; c: Chapter }[] 
   styleUrl: './timeline-panel.css',
 })
 export class TimelinePanel implements OnDestroy {
+  protected readonly t = t;
   protected readonly data = inject(WikiData);
   private readonly spoilers = inject(Spoilers);
 
@@ -111,6 +114,9 @@ export class TimelinePanel implements OnDestroy {
   }
 
   protected title(k: string): string { return this.data.title(k); }
+  protected routeDate(c: Chapter): string {
+    return (!c.detailLanguage && c.date) || (c.iso ? isoLabel(c.iso) : '');
+  }
 
   show(i: number, focus = true): void {
     const n = this.stops().length;
@@ -146,7 +152,8 @@ function readFolded(): boolean {
 }
 
 function tickLabel(m: string): string {
-  if (SITE.spoilers.unit === 'chapters') return 'гл. ' + (+m - 1000);
+  if (SITE.spoilers.unit === 'chapters') return t('гл. ', 'Ch. ') + (+m - 1000);
+  if (LOCALE === 'en') return m.length > 4 ? `${EN_MONTHS[+m.slice(5) - 1]?.slice(0, 3)} ${m.slice(0, 4)}` : m;
   const months = ['', 'янв.', 'фев.', 'март', 'апр.', 'май', 'июнь', 'июль', 'авг.', 'сен.', 'окт.', 'нояб.', 'дек.'];
   return m.length > 4 ? `${months[+m.slice(5)]} ${m.slice(0, 4)}` : `${m} г.`;
 }

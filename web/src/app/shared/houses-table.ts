@@ -3,6 +3,7 @@ import { RouterLink } from '@angular/router';
 import { SITE } from '../core/site';
 import { Spoilers } from '../core/spoilers';
 import { WikiData } from '../core/wiki-data';
+import { t } from '../core/locale';
 
 @Component({
   selector: 'app-houses-table',
@@ -11,7 +12,7 @@ import { WikiData } from '../core/wiki-data';
     <div
       class="table-wrap"
       tabindex="0"
-      [attr.aria-label]="site.houses.aria + ', доступна горизонтальная прокрутка'"
+      [attr.aria-label]="site.houses.aria + t(', доступна горизонтальная прокрутка', ', scroll horizontally for more')"
     >
       <table class="table">
         <thead>
@@ -55,6 +56,7 @@ import { WikiData } from '../core/wiki-data';
   `,
 })
 export class HousesTable {
+  protected readonly t = t;
   protected readonly site = SITE;
   protected readonly data = inject(WikiData);
   protected readonly spoilers = inject(Spoilers);

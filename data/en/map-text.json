@@ -1,0 +1,128 @@
+{
+  "places": {},
+  "events": {
+    "1034/laerta/solanta/1": {
+      "label": "About 16 years before the novel",
+      "t": "The channel chart: Carlos el Niña buys a chart of the approach to Solanta from a Black sailor and plans the expedition with Maduro."
+    },
+    "1003/solanta/solanta/2": {
+      "label": "About 16 years before the novel",
+      "t": "The Solantian Expedition: the schooner Santa Eliza takes a coastal fort in Solanta, and the doge signs a treaty of alliance."
+    },
+    "1034/solanta/solanta/3": {
+      "label": "About 16 years before the novel",
+      "t": "The navigator is handed over: the doge demands the man who knows the channel. Carlos hands over Rodrigo da Vira, whom the doge sells into slavery."
+    },
+    "1022/laerta/solanta/4": {
+      "label": "Three months later",
+      "t": "A posthumous decoration: Carlos and Fatima win their case against the High Table, and the supposedly dead navigator da Vira is awarded the Order of Courage."
+    },
+    "1022/laerta/solanta/5": {
+      "label": "Later",
+      "t": "Carmencita Estevos’s lawsuit: the obrera Shadow asks the court to recognize her as da Vira’s widow and her infant as his son. The court refuses."
+    },
+    "1004/dunkvald/dangar/1": {
+      "label": "Ch. 4",
+      "t": "A Catalian in the mycelium: Red is brought in bonds to the forest camp of enslaved diggers. Joriksen promises freedom in return for a schönbrun."
+    },
+    "1012/dunkvald/dangar/2": {
+      "label": "Ch. 12",
+      "t": "A prize instead of freedom: water appears at the thirteenth yard, but Red is taken to Greta instead, and he flees into the forest."
+    },
+    "1015/dunkvald/dangar/3": {
+      "label": "Ch. 15",
+      "t": "The schönbrun recipe: Yakka brings back the fugitive; the letter goes to Laerta, and Red sings as he digs at night."
+    },
+    "1019/dunkvald/dangar/4": {
+      "label": "Ch. 19",
+      "t": "Buried alive: Red’s cough goes away, and the foreman buries him in the pit."
+    },
+    "1023/dunkvald/dangar/5": {
+      "label": "Ch. 23",
+      "t": "No sarcoma: Baron Landau declares that the schönbrun has cured Red."
+    },
+    "1027/dunkvald/dangar/6": {
+      "label": "Ch. 27",
+      "t": "Täuschung: Klein reveals the deception, Red slaughters people on the road, and Landau seizes him with an unknown power."
+    },
+    "1033/dunkvald/dangar/7": {
+      "label": "Ch. 33",
+      "t": "A beast in the pit: years of executions under the Zustand, the “THOU SHALT NOT KILL” brand, and Greta’s death. Red is taken into the army."
+    },
+    "1002/ollandiya/war/1": {
+      "label": "Ch. 2–34",
+      "t": "The Ollandian War."
+    },
+    "1033/ollandiya/war/2": {
+      "label": "Before ch. 2",
+      "t": "Neubiy: in the army, Red becomes a “stone” rifleman in a platoon attached to Dietrich’s battery."
+    },
+    "1002/ollandiya/war/3": {
+      "label": "Ch. 2",
+      "t": "The battle at the well on the hill."
+    },
+    "1014/dunkvald/war/4": {
+      "label": "Spring",
+      "t": "The destruction of Dunkwald."
+    },
+    "1014/khofshtadt/war/5": {
+      "label": "Ch. 14",
+      "t": "Fishing at Baroness Walbrecht’s."
+    },
+    "1031/latsen/war/6": {
+      "label": "Ch. 31",
+      "t": "Dietrich’s arrest: Klein finds a body in the well by the railway halt but backs down before the Lourds and the Eyrings."
+    },
+    "1028/ollandiya/war/7": {
+      "label": "Six months before ch. 28",
+      "t": "Ollandia capitulates: the war is over."
+    },
+    "1032/tres-molinos/before/1": {
+      "label": "Before ch. 1",
+      "t": "Six Dangarians: van Halm hires servants from the Empire. The eldest speaks Catalian well and has letters branded below his collarbone."
+    },
+    "1032/tres-molinos/before/2": {
+      "label": "Before ch. 1",
+      "t": "Five at Last Winter: the heroes of Solanta visit van Halm."
+    },
+    "1034/tres-molinos/before/3": {
+      "label": "Before ch. 1",
+      "t": "A letter to Carlos: da Vira writes that he has already taken revenge. A chart of the channel to Solanta is drawn on the back."
+    },
+    "1005/laerta/before/4": {
+      "label": "Before ch. 1",
+      "t": "The death of Doctor Juanes."
+    },
+    "1001/laerta/novel/1": {
+      "label": "Ch. 1",
+      "t": "The duel debate with Ramires."
+    },
+    "1003/laerta/novel/2": {
+      "label": "Ch. 3",
+      "t": "A book commission: Filippe di Berro asks Alvaro to write about what has become of the heroes of Solanta."
+    },
+    "1007/laerta/novel/3": {
+      "label": "Ch. 7–30",
+      "t": "Obrero unrest in Laerta."
+    },
+    "1022/laerta/novel/4": {
+      "label": "Ch. 22",
+      "t": "The Scroll’s archive: Alvaro and Beatriz find the navigator da Vira’s file."
+    },
+    "1032/tres-molinos/novel/5": {
+      "label": "Ch. 32",
+      "t": "A thousand curses: Alvaro and Fernan go to Tres Molinos and inspect the House Above."
+    },
+    "1034/tres-molinos/novel/6": {
+      "label": "Ch. 34",
+      "t": "The night at Last Winter."
+    }
+  },
+  "eras": {
+    "solanta": "Solanta",
+    "dangar": "Red in Dangar",
+    "war": "The Ollandian War",
+    "before": "Before the novel",
+    "novel": "Catalia in the novel"
+  }
+}
