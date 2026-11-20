@@ -119,7 +119,7 @@ export class Shell {
       for (const lang of ['ru', 'en', 'x-default'] as const) {
         const alternate = document.head.querySelector<HTMLLinkElement>(`link[hreflang="${lang}"]`);
         const target = article ? '/' + article.slug : path;
-        if (alternate) alternate.href = SITE.url + (lang === 'x-default' ? target : localized(target, lang));
+        if (alternate) alternate.href = SITE.url + localized(target, lang === 'x-default' ? 'ru' : lang);
       }
     });
   }

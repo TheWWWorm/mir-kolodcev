@@ -1,5 +1,6 @@
 // After ng build, generate article HTML and discovery metadata for each language.
-// Unprefixed pages retain their Russian preview and resolve the reader's language on startup.
+// Unprefixed article and section addresses redirect (301) to their Russian page; only the home page `/`
+// stays unprefixed and resolves the reader's language on startup.
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -15,10 +16,20 @@ const index = {
 };
 const shell = readFileSync(join(OUT, 'index.html'), 'utf8');
 const russianDescription = shell.match(/<meta\s+name="description"\s+content="([^"]*)"/)[1];
+const pathLocale = (p) => /^\/(ru|en)(?=\/|$)/.test(p);
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 const href = (lang, path) => `/${lang}/${path}`;
 const url = (lang, path) => ru.url + href(lang, path);
 const urls = [];
+const redirects = [];
+
+// Site name for Google results (shown above the address instead of the bare domain).
+// It is read from the home page of the subdomain, so every copy of the home page carries it.
+function websiteJson(lang) {
+  const names = [configs[lang].name, configs[lang === 'ru' ? 'en' : 'ru'].name].map((n) => n.replace(' · ', ' '));
+  return JSON.stringify({ '@context': 'https://schema.org', '@type': 'WebSite', name: names[0], alternateName: names.slice(1), url: ru.url + '/', inLanguage: lang })
+    .replace(/</g, '\\u003c');
+}
 
 function page(lang, { path, title, description, image, type = 'website', body = '', translated = true }) {
   const name = configs[lang].name;
@@ -29,13 +40,15 @@ function page(lang, { path, title, description, image, type = 'website', body = 
     `<link rel="canonical" href="${esc(canonical)}" />`,
     `<link rel="alternate" hreflang="ru" href="${esc(url('ru', path))}" />`,
     translated ? `<link rel="alternate" hreflang="en" href="${esc(url('en', path))}" />` : '',
-    `<link rel="alternate" hreflang="x-default" href="${esc(ru.url + '/' + path)}" />`,
+    // x-default must name a canonical page: unprefixed copies defer to /ru/
+    `<link rel="alternate" hreflang="x-default" href="${esc(url('ru', path))}" />`,
     `<meta property="og:site_name" content="${esc(name)}" />`,
     `<meta property="og:locale" content="${lang === 'en' ? 'en_US' : 'ru_RU'}" />`,
     `<meta property="og:type" content="${type}" />`,
     `<meta property="og:url" content="${esc(canonical)}" />`,
     `<meta property="og:title" content="${esc(title.replace(` · ${name}`, ''))}" />`,
     `<meta property="og:description" content="${esc(description)}" />`,
+    path === '' ? `<script type="application/ld+json">${websiteJson(lang)}</script>` : '',
     image ? `<meta property="og:image" content="${esc(ru.url + '/' + image)}" />` : '',
     `<meta name="twitter:card" content="${image ? 'summary_large_image' : 'summary'}" />`,
   ].filter(Boolean).join('\n    ');
@@ -70,7 +83,7 @@ for (const lang of ['ru', 'en']) {
     const file = path ? path + '.html' : 'index.html';
     const html = page(lang, options);
     write(`${lang}/${file}`, html);
-    if (lang === 'ru') write(file, html);
+    if (lang === 'ru') path ? redirects.push(`/${path} /ru/${path} 301`) : write(file, html);
     if (lang === 'ru' || translated !== false) urls.push(url(lang, path));
   }
   for (const a of articles) {
@@ -80,11 +93,25 @@ for (const lang of ['ru', 'en']) {
     const facts = infobox.map(([k, v]) => `<dt>${esc(k)}</dt><dd>${v}</dd>`).join('');
     const crumbs = `<nav><a href="${href(lang, '')}">${esc(config.name)}</a> › <a href="${href(lang, 'c/' + a.type)}">${esc(many)}</a></nav>`;
     const body = `<main class="boot">${crumbs}<article lang="${a.language ?? lang}"><h1>${esc(a.title)}</h1><p>${esc(description)}</p>${facts ? `<dl>${facts}</dl>` : ''}${html}</article></main>`;
-    render({ path: a.slug, title: `${a.title} · ${config.name}`, description, image: images[a.image]?.src, type: 'article', body, translated: translatedSlugs.has(a.slug) });
+    const options = { path: a.slug, title: `${a.title} · ${config.name}`, description, image: images[a.image]?.src, type: 'article', body, translated: translatedSlugs.has(a.slug) };
+    render(options);
+    // book tabs (/slug/h-about …) are real routes: give them the book's own preview and canonical address
+    if (a.type === 'book') for (const tab of ['h-glavy', 'h-about', 'h-pov', 'h-art']) {
+      const html = page(lang, options);
+      write(`${lang}/${a.slug}/${tab}.html`, html);
+      if (lang === 'ru') redirects.push(`/${a.slug}/${tab} /ru/${a.slug}/${tab} 301`);
+    }
   }
   for (const [path, title, description] of sections) render({ path, title: `${title} · ${config.name}`, description });
   render({ path: '', title: config.name, description: lang === 'ru' ? russianDescription : config.about, image: images.find((i) => /map/.test(i.src))?.src });
 }
+
+// Old article names (public/_redirects) go straight to the language page, without a second hop.
+const aliases = readFileSync(join(OUT, '_redirects'), 'utf8').split('\n').map((l) => l.trim().split(/\s+/))
+  .filter(([from, to]) => from?.startsWith('/') && to?.startsWith('/') && !pathLocale(from))
+  .flatMap(([from, to, code = '301']) => ['ru', 'en'].map((lang) => `${lang === 'ru' ? from : '/en' + from} /${lang}${to} ${code}`)
+    .concat(`/ru${from} /ru${to} ${code}`));
+writeFileSync(join(OUT, '_redirects'), [...aliases, ...redirects].join('\n') + '\n');
 
 write('sitemap.xml', `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
@@ -96,7 +123,10 @@ Allow: /
 Disallow: /search/
 Disallow: /ru/search/
 Disallow: /en/search/
+Disallow: /random$
+Disallow: /ru/random$
+Disallow: /en/random$
 
 Sitemap: ${ru.url}/sitemap.xml
 `);
-console.log(`pages: ${index.ru.articles.length} Russian articles, ${translatedSlugs.size} English translations, sitemap with ${urls.length} addresses`);
+console.log(`pages: ${index.ru.articles.length} Russian articles, ${translatedSlugs.size} English translations, sitemap with ${urls.length} addresses, ${aliases.length + redirects.length} redirects`);

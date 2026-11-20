@@ -15,10 +15,20 @@ const TYPES = {
   '.woff2': 'font/woff2', '.bin': 'application/octet-stream', '.glb': 'model/gltf-binary',
 };
 
+// static rules from _redirects, as Cloudflare applies them before serving files
+const REDIRECTS = new Map(await readFile(join(ROOT, '_redirects'), 'utf8').then((t) => t.split('\n')
+  .map((l) => l.trim().split(/\s+/)).filter(([f, t]) => f?.startsWith('/') && t).map(([f, t, c]) => [f, [t, Number(c) || 302]]), () => []));
+
 const isFile = (p) => stat(p).then((s) => s.isFile(), () => false);
 
 createServer(async (req, res) => {
   const path = normalize(decodeURIComponent(new URL(req.url, 'http://x').pathname)).replace(/^(\.\.[/\\])+/, '');
+  const redirect = REDIRECTS.get(path.replace(/\/$/, '') || '/');
+  if (redirect) {
+    const { search } = new URL(req.url, 'http://x');
+    res.writeHead(redirect[1], { Location: redirect[0] + search }).end();
+    return;
+  }
   const file = join(ROOT, path);
   let target = join(ROOT, 'index.html');
   if (path !== '/' && (await isFile(file))) target = file;
